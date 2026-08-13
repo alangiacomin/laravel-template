@@ -1,0 +1,16 @@
+.nav-link.active {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+/*.container {*/
+/*    margin-top: 1rem;*/
+/*    margin-bottom: 1rem;*/
+/*}*/
+
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+}
