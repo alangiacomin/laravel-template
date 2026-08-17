@@ -19,8 +19,7 @@ class UserController extends Controller
     #[GateAuthorize(GateEnum::USER_VIEW)]
     public function index(IUserRepository $userRepository)
     {
-        // $usersWithRoles = $userRepository->allWithRoles();
-        $usersWithRoles = $userRepository->all();
+        $usersWithRoles = $userRepository->allWithRoles();
 
         return inertia('Admin/Users/Users', [
             'users' => $usersWithRoles->map(fn ($item) => AdminUserData::fromUserItem($item['user'], $item['roles'])
