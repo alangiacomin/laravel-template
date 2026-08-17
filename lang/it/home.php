@@ -1,0 +1,33 @@
+<?php
+
+return [
+    'browser_title' => 'Home',
+    'head_title' => 'Template Laravel Riutilizzabile',
+    'head_subtitle' => 'Questo starter mantiene il telaio essenziale per progetti web moderni.',
+    'head_subtitle2' => 'Include separazione app/backoffice, autenticazione e supporto multilingua.',
+    'vai_esempio' => 'Apri la pagina esempio',
+    'inizia_ora' => 'Parti dal template',
+    'scopri' => 'Scopri come funziona',
+    'promo_title' => 'Un punto di partenza pulito e minimale',
+    'promo_subtitle' => 'Tutto il necessario per sviluppare funzionalità in fretta, senza vincoli di dominio.',
+    'feat_struttura_title' => 'Struttura Chiara',
+    'feat_struttura_subtitle' => 'Un\'architettura base solida per mantenere il codice ordinato fin da subito.',
+    'feat_auth_title' => 'Autenticazione Pronta',
+    'feat_auth_subtitle' => 'Login e gestione utenti sono già integrati nel flusso applicativo.',
+    'feat_multilingua_title' => 'Multilingua',
+    'feat_multilingua_subtitle' => 'Traduzioni e route localizzate sono disponibili per progetti internazionali.',
+
+    'cta_title' => 'Avvia più velocemente il tuo prossimo progetto',
+    'cta_subtitle' => 'Usa questo template come base leggera ed estendilo con la tua logica di business.',
+    'cta_stop_dupes_title' => 'App + Backoffice',
+    'cta_stop_dupes_subtitle' => 'Mantieni separate in modo chiaro le pagine utente e gli strumenti amministrativi.',
+    'cta_stats_title' => 'Fondamenta Pronte',
+    'cta_stats_subtitle' => 'Le funzioni essenziali sono già presenti, così puoi concentrarti su ciò che rende unico il prodotto.',
+    'cta_editions_title' => 'Crescita Modulare',
+    'cta_editions_subtitle' => 'Aggiungi nuove pagine e route in modo incrementale, mantenendo una struttura coerente.',
+    'cta_cloud_title' => 'Base Affidabile',
+    'cta_cloud_subtitle' => 'Un setup pragmatico pensato per scalare da prototipo ad applicazione reale.',
+    'cta_start_today_title' => 'Inizia oggi stesso',
+    'cta_start_today_subtitle' => 'Crea un account o accedi per provare il flusso di autenticazione base.',
+    'cta_already_have_account' => 'Hai già un account?',
+];

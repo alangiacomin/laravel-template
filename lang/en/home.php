@@ -1,0 +1,33 @@
+<?php
+
+return [
+    'browser_title' => 'Home',
+    'head_title' => 'Reusable Laravel Template',
+    'head_subtitle' => 'This starter keeps the essential foundation for modern web projects.',
+    'head_subtitle2' => 'It includes app/backoffice separation, authentication and multilingual support.',
+    'vai_esempio' => 'Open the example page',
+    'inizia_ora' => 'Start from the template',
+    'scopri' => 'Discover how it works',
+    'promo_title' => 'A clean and minimal starting point',
+    'promo_subtitle' => 'Everything you need to build features quickly, without domain-specific baggage.',
+    'feat_structure_title' => 'Clear Structure',
+    'feat_structure_subtitle' => 'A solid base architecture that helps teams keep code organized from day one.',
+    'feat_auth_title' => 'Auth Ready',
+    'feat_auth_subtitle' => 'Login and user management screens are already integrated into the project flow.',
+    'feat_multilanguage_title' => 'Multilanguage',
+    'feat_multilanguage_subtitle' => 'Translations and localized routes are available to support international projects.',
+
+    'cta_title' => 'Start your next project faster',
+    'cta_subtitle' => 'Use this template as a lightweight foundation and extend it with your own business logic.',
+    'cta_stop_dupes_title' => 'App + Backoffice',
+    'cta_stop_dupes_subtitle' => 'Keep user-facing pages and admin tools clearly separated and easy to maintain.',
+    'cta_stats_title' => 'Production-ready Basics',
+    'cta_stats_subtitle' => 'Core features are already in place, so you can focus on what makes your product unique.',
+    'cta_editions_title' => 'Modular Growth',
+    'cta_editions_subtitle' => 'Add new pages and routes incrementally while preserving a consistent project structure.',
+    'cta_cloud_title' => 'Reliable Foundation',
+    'cta_cloud_subtitle' => 'A pragmatic setup designed to scale from prototype to real-world applications.',
+    'cta_start_today_title' => 'Start today',
+    'cta_start_today_subtitle' => 'Create an account or sign in to test the base authentication flow.',
+    'cta_already_have_account' => 'Already have an account?',
+];
