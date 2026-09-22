@@ -4,15 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7fb550d7e794d8ac3f371b61bf9bbd01",
+    "content-hash": "efc9c4a6e4aa30fb87495496fae9f3db",
     "packages": [
         {
             "name": "alangiacomin/laravel-cqrs",
-            "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "/home/alan/Git/laravel-cqrs",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alangiacomin/laravel-cqrs.git",
                 "reference": "010e40dade7e3ca6ab212cb1e5063093349c7c02"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alangiacomin/laravel-cqrs/zipball/010e40dade7e3ca6ab212cb1e5063093349c7c02",
+                "reference": "010e40dade7e3ca6ab212cb1e5063093349c7c02",
+                "shasum": ""
             },
             "require": {
                 "inertiajs/inertia-laravel": "^3.3.1",
@@ -41,28 +47,12 @@
                 }
             },
             "autoload": {
-                "exclude-from-classmap": [],
                 "psr-4": {
                     "AlanGiacomin\\LaravelCqrs\\": "src"
-                }
+                },
+                "exclude-from-classmap": []
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Tests\\": "tests"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "./vendor/bin/pest --no-coverage --compact"
-                ],
-                "test-coverage": [
-                    "@putenv XDEBUG_MODE=coverage",
-                    "./vendor/bin/pest --coverage --coverage-html coverage --compact"
-                ],
-                "phpstan": [
-                    "vendor/bin/phpstan analyse --memory-limit=1G --error-format=table"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -80,10 +70,11 @@
                 "cqrs",
                 "laravel"
             ],
-            "transport-options": {
-                "symlink": true,
-                "relative": false
-            }
+            "support": {
+                "issues": "https://github.com/alangiacomin/laravel-cqrs/issues",
+                "source": "https://github.com/alangiacomin/laravel-cqrs/tree/v1.0.0"
+            },
+            "time": "2026-09-22T19:09:53+00:00"
         },
         {
             "name": "brick/math",
@@ -10955,9 +10946,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "alangiacomin/laravel-cqrs": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
