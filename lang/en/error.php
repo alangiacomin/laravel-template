@@ -2,7 +2,7 @@
 
 return [
     '403_message' => 'You do not have permission to access this page.',
-    '403_message_banned' => 'Your account has been suspended. It is not possible to access the application.',
+    '403_message_banned' => 'Your account has been suspended. You cannot access the application.',
     '404_message' => 'The page you are looking for does not exist or is not available.',
     '500_message' => 'A server error has occurred. Please try again later.',
     '503_message' => 'The requested service is currently unavailable. Please try again later.',
@@ -17,12 +17,12 @@ return [
     'title' => 'Error',
 
     '403_hint' => 'Contact the site administrator for more information.',
-    '403_hint_banned' => 'For more information you can contact support.',
+    '403_hint_banned' => 'For more information, contact support.',
     'hint' => 'Check the URL and try again.',
 
     'back_to_site' => 'Back to site',
 
     'email_not_verified' => 'Your email address is not verified.',
-    'account_banned' => 'Your account has been banned.',
+    'account_banned' => 'Your account has been blocked.',
     'route_not_found' => 'Route :route not found',
 ];

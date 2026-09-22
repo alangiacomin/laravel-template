@@ -20,7 +20,7 @@ const Header: FC<HeaderProps> = ({toggleSidebar}): ReactNode => {
             <button
                 className="btn btn-outline-light d-lg-none me-auto"
                 onClick={toggleSidebar}
-                aria-label="Toggle navigation"
+                aria-label={__('global.toggle_navigation')}
             >
                 <i className="bi bi-list"></i>
             </button>

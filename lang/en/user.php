@@ -3,7 +3,7 @@
 return [
     'edit_profile' => 'Edit profile',
     'name' => 'Name',
-    'registered_at' => 'Registered at',
+    'registered_at' => 'Registration date',
     'status_verified' => 'Verified',
     'status_unverified' => 'Unverified',
     'status_banned' => 'Banned',

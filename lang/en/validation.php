@@ -132,11 +132,11 @@ return [
     'present_unless' => 'The :attribute field must be present unless :other is :value.',
     'present_with' => 'The :attribute field must be present when :values is present.',
     'present_with_all' => 'The :attribute field must be present when :values are present.',
-    'prohibited' => 'The :attribute field is prohibited.',
-    'prohibited_if' => 'The :attribute field is prohibited when :other is :value.',
-    'prohibited_if_accepted' => 'The :attribute field is prohibited when :other is accepted.',
-    'prohibited_if_declined' => 'The :attribute field is prohibited when :other is declined.',
-    'prohibited_unless' => 'The :attribute field is prohibited unless :other is in :values.',
+    'prohibited' => 'The :attribute field is not allowed.',
+    'prohibited_if' => 'The :attribute field is not allowed when :other is :value.',
+    'prohibited_if_accepted' => 'The :attribute field is not allowed when :other is accepted.',
+    'prohibited_if_declined' => 'The :attribute field is not allowed when :other is declined.',
+    'prohibited_unless' => 'The :attribute field is not allowed unless :other is in :values.',
     'prohibits' => 'The :attribute field prohibits :other from being present.',
     'regex' => 'The :attribute field format is invalid.',
     'required' => 'The :attribute field is required.',
@@ -179,7 +179,7 @@ return [
 
     'custom' => [
         'attribute-name' => [
-            'rule-name' => 'custom-message',
+            'rule-name' => 'custom message',
         ],
     ],
 
@@ -194,5 +194,7 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'permissions' => 'permissions',
+    ],
 ];

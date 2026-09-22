@@ -39,6 +39,6 @@ class RoleController extends Controller
 
         SpatieRole::findOrFail($id)->syncPermissions($permissions);
 
-        return $this->flashSuccess('Ruolo aggiornato con successo.');
+        return $this->flashSuccess(__('admin.role_updated'));
     }
 }

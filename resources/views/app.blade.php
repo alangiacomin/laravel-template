@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="description" content="Add your project description here"/>
+    <meta name="description" content="{{ __('global.meta_description') }}"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name') }}</title>
     <link rel="preconnect" href="https://cdn.jsdelivr.net">

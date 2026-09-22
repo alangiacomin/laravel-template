@@ -3,10 +3,10 @@
 return [
     'edit_profile' => 'Modifica profilo',
     'name' => 'Nome',
-    'registered_at' => 'Registrato il',
+    'registered_at' => 'Data di registrazione',
     'status_verified' => 'Verificato',
     'status_unverified' => 'Non verificato',
-    'status_banned' => 'Bannato',
+    'status_banned' => 'Bloccato',
     'email' => 'Email',
     'password' => 'Password',
     'id' => 'ID',

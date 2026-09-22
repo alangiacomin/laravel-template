@@ -29,7 +29,7 @@ class RoleUpdateRequest extends FormRequest
     {
         return [
             'permissions' => [
-                'description' => 'Le autorizzazioni da assegnare al ruolo.',
+                'description' => __('validation.attributes.permissions'),
                 'example' => '[\'admin\', \'user\']',
             ],
         ];

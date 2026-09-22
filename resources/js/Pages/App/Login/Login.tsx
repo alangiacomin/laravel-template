@@ -43,8 +43,8 @@ const Login: FC = (): ReactNode => {
                         <div className="card p-4">
                             <div className="text-center mb-4">
                                 <i className="bi bi-person-circle display-4 text-primary"></i>
-                                <h2 className="fw-bold mt-2">Accedi</h2>
-                                <p className="text-muted">Accedi per continuare a usare il template base</p>
+                                <h2 className="fw-bold mt-2">{__('login.heading')}</h2>
+                                <p className="text-muted">{__('login.subtitle')}</p>
                             </div>
                             <Form form={form}>
                                 <Input
@@ -74,21 +74,21 @@ const Login: FC = (): ReactNode => {
                                         onClick={() => {
                                             fakeSubmit("admin@example.com", "password123");
                                         }}>
-                                        Admin
+                                        {__('login.demo_admin')}
                                     </Button>
                                     <Button
                                         onClick={() => {
                                             fakeSubmit("editor@example.com", "password123");
                                         }}
                                     >
-                                        Editor
+                                        {__('login.demo_editor')}
                                     </Button>
                                     <Button
                                         onClick={() => {
                                             fakeSubmit("user@example.com", "password123");
                                         }}
                                     >
-                                        User
+                                        {__('login.demo_user')}
                                     </Button>
                                 </div>
                             )}

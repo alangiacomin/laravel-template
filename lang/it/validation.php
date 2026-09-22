@@ -125,18 +125,18 @@ return [
         'mixed' => 'Il campo :attribute deve contenere almeno una lettera maiuscola e una minuscola.',
         'numbers' => 'Il campo :attribute deve contenere almeno un numero.',
         'symbols' => 'Il campo :attribute deve contenere almeno un simbolo.',
-        'uncompromised' => 'Il :attribute fornito è apparso in una violazione di dati. Scegli un :attribute diverso.',
+        'uncompromised' => 'Il valore di :attribute è comparso in una violazione dei dati. Scegli un valore diverso.',
     ],
     'present' => 'Il campo :attribute deve essere presente.',
     'present_if' => 'Il campo :attribute deve essere presente quando :other è :value.',
     'present_unless' => 'Il campo :attribute deve essere presente a meno che :other sia :value.',
     'present_with' => 'Il campo :attribute deve essere presente quando :values è presente.',
     'present_with_all' => 'Il campo :attribute deve essere presente quando :values sono presenti.',
-    'prohibited' => 'Il campo :attribute è proibito.',
-    'prohibited_if' => 'Il campo :attribute è proibito quando :other è :value.',
-    'prohibited_if_accepted' => 'Il campo :attribute è proibito quando :other è accettato.',
-    'prohibited_if_declined' => 'Il campo :attribute è proibito quando :other è rifiutato.',
-    'prohibited_unless' => 'Il campo :attribute è proibito a meno che :other sia in :values.',
+    'prohibited' => 'Il campo :attribute non è consentito.',
+    'prohibited_if' => 'Il campo :attribute non è consentito quando :other è :value.',
+    'prohibited_if_accepted' => 'Il campo :attribute non è consentito quando :other è accettato.',
+    'prohibited_if_declined' => 'Il campo :attribute non è consentito quando :other è rifiutato.',
+    'prohibited_unless' => 'Il campo :attribute non è consentito a meno che :other sia in :values.',
     'prohibits' => 'Il campo :attribute impedisce la presenza di :other.',
     'regex' => 'Il formato del campo :attribute non è valido.',
     'required' => 'Il campo :attribute è obbligatorio.',
@@ -179,7 +179,7 @@ return [
 
     'custom' => [
         'attribute-name' => [
-            'rule-name' => 'messaggio-personalizzato',
+            'rule-name' => 'messaggio personalizzato',
         ],
     ],
 
@@ -194,5 +194,7 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'permissions' => 'autorizzazioni',
+    ],
 ];

@@ -1,13 +1,14 @@
 import {useContext} from "react"
 import {ToastContext} from "../../Providers/ToastContext.tsx";
+import useTranslations from "../../hooks/useTranslations.tsx";
 
 const ToastStack = () => {
     const toastContext = useContext(ToastContext);
+    const __ = useTranslations();
 
     if (!toastContext) {
         return null;
     }
-
     const {toasts, removeToast} = toastContext;
 
     if (!toasts.length) {
@@ -24,6 +25,7 @@ const ToastStack = () => {
                         <button
                             className="btn-close btn-close-white ms-2"
                             onClick={() => removeToast(toast.id)}
+                            aria-label={__('global.close')}
                         />
                     </div>
                 </div>

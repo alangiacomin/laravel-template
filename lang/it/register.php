@@ -2,7 +2,7 @@
 
 return [
     'page_title' => 'Registrati',
-    'new_user' => 'Nuovo su questo sito?',
+    'new_user' => 'Non hai ancora un account?',
     'create_account' => 'Crea un account',
     'name' => 'Nome',
     'email' => 'Email',
@@ -10,5 +10,7 @@ return [
     'confirm_password' => 'Conferma password',
     'submit' => 'Registrati',
     'already_have_account' => 'Hai già un account?',
-    'login' => 'Accedi qui',
+    'login' => 'Accedi',
+    'heading' => 'Registrati',
+    'subtitle' => 'Crea il tuo account per usare il template base',
 ];

@@ -47,8 +47,8 @@ const Register: FC = (): ReactNode => {
                         <div className="card p-4">
                             <div className="text-center mb-4">
                                 <i className="bi bi-person-plus display-4 text-primary"></i>
-                                <h2 className="fw-bold mt-2">Registrati</h2>
-                                <p className="text-muted">Crea il tuo account per usare il template base</p>
+                                <h2 className="fw-bold mt-2">{__('register.heading')}</h2>
+                                <p className="text-muted">{__('register.subtitle')}</p>
                             </div>
                             <Form form={form}>
                                 <Input

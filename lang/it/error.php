@@ -2,7 +2,7 @@
 
 return [
     '403_message' => 'Non hai i permessi per accedere a questa pagina.',
-    '403_message_banned' => 'Il tuo account è stato sospeso. Non è possibile accedere all’applicazione.',
+    '403_message_banned' => 'Il tuo account è stato sospeso. Non puoi accedere all’applicazione.',
     '404_message' => 'La pagina che stai cercando non esiste o non è disponibile.',
     '500_message' => 'Si è verificato un errore nel server. Riprova più tardi.',
     '503_message' => 'Il servizio richiesto non è attualmente disponibile. Riprova più tardi.',
@@ -17,7 +17,7 @@ return [
     'title' => 'Errore',
 
     '403_hint' => 'Contatta l\'amministratore del sito per ulteriori informazioni.',
-    '403_hint_banned' => 'Per maggiori informazioni puoi contattare il supporto.',
+    '403_hint_banned' => 'Per maggiori informazioni, contatta il supporto.',
     'hint' => 'Controlla l\'URL e riprova.',
 
     'back_to_site' => 'Torna al sito',

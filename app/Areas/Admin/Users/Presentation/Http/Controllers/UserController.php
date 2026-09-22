@@ -49,7 +49,7 @@ class UserController extends Controller
     {
         dispatch_sync(new BloccaUtenteCommand($id));
 
-        return $this->flashSuccess('Utente bloccato con successo');
+        return $this->flashSuccess(__('admin.user_blocked'));
     }
 
     #[GateAuthorize(GateEnum::USER_MANAGE)]
@@ -57,6 +57,6 @@ class UserController extends Controller
     {
         dispatch_sync(new SbloccaUtenteCommand($id));
 
-        return $this->flashSuccess('Utente sbloccato con successo');
+        return $this->flashSuccess(__('admin.user_unblocked'));
     }
 }

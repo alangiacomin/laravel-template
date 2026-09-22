@@ -12,4 +12,10 @@ return [
     'back' => 'Indietro',
     'user' => 'Profilo',
     'home' => 'Home',
+    'language' => 'Lingua',
+    'toggle_navigation' => 'Apri o chiudi la navigazione',
+    'breadcrumb' => 'Percorso di navigazione',
+    'close' => 'Chiudi',
+    'copyright' => '© :year Company Inc.',
+    'meta_description' => 'Template Laravel riutilizzabile per progetti web moderni.',
 ];

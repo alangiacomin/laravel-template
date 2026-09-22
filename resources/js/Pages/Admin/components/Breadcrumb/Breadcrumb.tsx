@@ -1,6 +1,7 @@
 import {FC, ReactNode} from "react";
 import {Link} from "@inertiajs/react";
 import classNames from "classnames";
+import useTranslations from "../../../../hooks/useTranslations.tsx";
 
 export type BreadcrumbElement = {
     name: string,
@@ -12,8 +13,9 @@ type BreadcrumbProps = {
 }
 
 const Breadcrumb: FC<BreadcrumbProps> = ({elements}: BreadcrumbProps): ReactNode => {
+    const __ = useTranslations();
     return (
-        <nav aria-label="breadcrumb">
+        <nav aria-label={__('global.breadcrumb')}>
             <ol className="breadcrumb">
                 {elements.map((element, index: number) => {
                     const isLast = index === elements.length - 1;
