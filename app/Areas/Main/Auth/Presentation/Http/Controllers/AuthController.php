@@ -7,8 +7,10 @@ use App\Areas\Main\Auth\Application\Commands\RegisterUserCommand;
 use App\Areas\Main\Auth\Application\Data\UserData;
 use App\Areas\Main\Auth\Presentation\Http\Requests\LoginRequest;
 use App\Areas\Main\Auth\Presentation\Http\Requests\RegisterRequest;
+use App\Infrastructure\Session\SessionPreserver;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Attributes\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -87,11 +89,10 @@ class AuthController extends Controller
     /**
      * Logout
      */
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::logout();
-        request()->session()->invalidate();
-        request()->session()->regenerateToken();
+        app(SessionPreserver::class)->invalidate($request);
 
         return $this->hardRedirect(route('home'));
     }

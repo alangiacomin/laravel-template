@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\Middleware;
 
+use App\Infrastructure\Session\SessionPreserver;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,8 +14,7 @@ class EnsureUserIsNotBanned
     {
         if (auth()->check() && auth()->user()->isBanned()) {
             auth()->logout();
-            request()->session()->invalidate();
-            request()->session()->regenerateToken();
+            app(SessionPreserver::class)->invalidate($request);
 
             throw new AccessDeniedHttpException(__('error.account_banned'));
         }

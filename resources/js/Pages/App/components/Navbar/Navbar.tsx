@@ -10,6 +10,7 @@ import NavbarDropdownDivider from "./NavbarDropdownDivider.tsx";
 import {useRoutes} from "../../../../hooks/useRoutes.ts";
 import useTranslations from "../../../../hooks/useTranslations.tsx";
 import useAppData from "../../../../hooks/useAppData.tsx";
+import LanguageSelector from "../LanguageSelector/LanguageSelector.tsx";
 
 const Navbar: FC = (): ReactNode => {
     const [isBurgerOpen, setIsBurgerOpen] = useState(false);
@@ -56,6 +57,9 @@ const Navbar: FC = (): ReactNode => {
                         })}
                     </ul>
                     <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li className="nav-item d-flex align-items-center me-lg-2 my-2 my-lg-0">
+                            <LanguageSelector/>
+                        </li>
                         {!user && (
                             <>
                                 <li className="nav-item">
