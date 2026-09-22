@@ -7,6 +7,7 @@ use App\Areas\Main\Auth\Application\Commands\RegisterUserCommand;
 use App\Areas\Main\Auth\Application\Data\UserData;
 use App\Areas\Main\Auth\Presentation\Http\Requests\LoginRequest;
 use App\Areas\Main\Auth\Presentation\Http\Requests\RegisterRequest;
+use App\Infrastructure\Routing\LocalizedRoute;
 use App\Infrastructure\Session\SessionPreserver;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\RedirectResponse;
@@ -56,7 +57,7 @@ class AuthController extends Controller
             Auth::login($user);
         }
 
-        return $this->spaRedirect(route('verification.notice'));
+        return $this->spaRedirect(LocalizedRoute::url('verification.notice'));
     }
 
     /**
@@ -83,7 +84,7 @@ class AuthController extends Controller
 
         request()->session()->regenerate();
 
-        return $this->hardRedirect(route('home'));
+        return $this->hardRedirect(LocalizedRoute::url('home'));
     }
 
     /**
@@ -94,7 +95,7 @@ class AuthController extends Controller
         Auth::logout();
         app(SessionPreserver::class)->invalidate($request);
 
-        return $this->hardRedirect(route('home'));
+        return $this->hardRedirect(LocalizedRoute::url('home'));
     }
 
     #[Middleware('auth')]
@@ -102,7 +103,7 @@ class AuthController extends Controller
     {
         $user = Auth::user();
         if ($user != null && $user->hasVerifiedEmail()) {
-            return $this->spaRedirect(route('home'));
+            return $this->spaRedirect(LocalizedRoute::url('home'));
         }
 
         return inertia('App/Register/VerificationNotice');

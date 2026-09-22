@@ -6,6 +6,7 @@ import Form from "../../../components/Form/useForm.tsx";
 import Button from "../../../components/Button/Button.tsx";
 import Input from "../../../components/Input/Input.tsx";
 import {useRoutes} from "../../../hooks/useRoutes.ts";
+import {localizedRoute} from "../../../localizedRoute.ts";
 import useTranslations from "../../../hooks/useTranslations.tsx";
 
 type RolePageProps = {
@@ -36,7 +37,7 @@ const Role: FC = (): ReactNode => {
     const {patch, isDirty, processing, reset} = form;
 
     const onSubmit = useCallback(() => {
-        patch(route('admin.role.update', {id: role.id}), {
+        patch(localizedRoute('admin.role.update', {id: role.id}), {
             onSuccess: (page) => {
                 if (page.flash.error) {
                     reset();

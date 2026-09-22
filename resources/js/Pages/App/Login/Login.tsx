@@ -7,6 +7,7 @@ import {Link, useForm} from "@inertiajs/react";
 import Form from "../../../components/Form/useForm.tsx";
 import useTranslations from "../../../hooks/useTranslations.tsx";
 import {useRoutes} from "../../../hooks/useRoutes.ts";
+import {localizedRoute} from "../../../localizedRoute.ts";
 
 type CredenzialiType = {
     email: string;
@@ -32,7 +33,7 @@ const Login: FC = (): ReactNode => {
     }
 
     const onSubmit = useCallback(() => {
-        form.post(route('login'));
+        form.post(localizedRoute('login'));
     }, [form]);
 
     return (

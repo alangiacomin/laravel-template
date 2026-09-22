@@ -4,15 +4,18 @@ use App\Areas\Main\Auth\Presentation\Http\Controllers\AuthController;
 use App\Areas\Main\Auth\Presentation\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/login', [AuthController::class, 'loginView'])->name('login');
-Route::get('/register', [AuthController::class, 'registerView'])->name('register');
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+/** @var array<string, string> $localizedRoutes */
+$localizedRoutes = $localizedRoutes ?? [];
 
-Route::get('/user', [AuthController::class, 'userView'])->name('user.show');
-Route::get('/email/verify', [AuthController::class, 'verificationNoticeView'])->name('verification.notice');
-Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'emailVerification'])->name('verification.verify');
+Route::get('/'.$localizedRoutes['login'], [AuthController::class, 'loginView'])->name('login');
+Route::get('/'.$localizedRoutes['register'], [AuthController::class, 'registerView'])->name('register');
+Route::get('/'.$localizedRoutes['logout'], [AuthController::class, 'logout'])->name('logout');
 
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
+Route::get('/'.$localizedRoutes['user.show'], [AuthController::class, 'userView'])->name('user.show');
+Route::get('/'.$localizedRoutes['verification.notice'], [AuthController::class, 'verificationNoticeView'])->name('verification.notice');
+Route::get('/'.$localizedRoutes['verification.verify'], [AuthController::class, 'emailVerification'])->name('verification.verify');
 
-Route::patch('/user/{id}/update', [UserController::class, 'update'])->name('user.update');
+Route::post('/'.$localizedRoutes['login'], [AuthController::class, 'login']);
+Route::post('/'.$localizedRoutes['register'], [AuthController::class, 'register']);
+
+Route::patch('/'.$localizedRoutes['user.update'], [UserController::class, 'update'])->name('user.update');

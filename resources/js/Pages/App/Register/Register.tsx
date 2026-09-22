@@ -8,6 +8,7 @@ import {Link, useForm} from "@inertiajs/react";
 import {faker} from "@faker-js/faker/locale/it";
 import Form from "../../../components/Form/useForm.tsx";
 import {useRoutes} from "../../../hooks/useRoutes.ts";
+import {localizedRoute} from "../../../localizedRoute.ts";
 import useTranslations from "../../../hooks/useTranslations.tsx";
 
 type CredenzialiType = {
@@ -36,7 +37,7 @@ const Register: FC = (): ReactNode => {
     const {post} = form;
 
     const onSubmit = useCallback(() => {
-        post(route('register'), {});
+        post(localizedRoute('register'), {});
     }, [post]);
 
     return (

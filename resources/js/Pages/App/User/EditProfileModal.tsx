@@ -4,6 +4,7 @@ import Input from "../../../components/Input/Input.tsx";
 import Form from "../../../components/Form/useForm.tsx";
 import Modal from "../../../components/Modal/Modal.tsx";
 import {useForm} from "@inertiajs/react";
+import {localizedRoute} from "../../../localizedRoute.ts";
 import useTranslations from "../../../hooks/useTranslations.tsx";
 import {UserData} from "../../../types/generated";
 
@@ -31,7 +32,7 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
 
     const saveEdits = useCallback(() => {
         patch(
-            route('user.update', {id: user.id}),
+            localizedRoute('user.update', {id: user.id}),
             {
                 onSuccess: () => {
                     onClose();

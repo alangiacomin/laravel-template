@@ -3,8 +3,10 @@
 namespace App\Areas\Main\Language\Presentation\Http\Controllers;
 
 use AlanGiacomin\LaravelCqrs\App\Presentation\Http\Controllers\Controller;
+use App\Infrastructure\Routing\LocalizedRoute;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LanguageController extends Controller
 {
@@ -20,6 +22,36 @@ class LanguageController extends Controller
 
         $request->session()->put('locale', $locale);
 
-        return back();
+        $currentRoute = null;
+        $referer = $request->headers->get('referer');
+
+        if ($referer) {
+            $path = parse_url($referer, PHP_URL_PATH);
+
+            if (is_string($path)) {
+                $probe = Request::create($path, 'GET');
+
+                try {
+                    $currentRoute = app('router')->getRoutes()->match($probe);
+                } catch (NotFoundHttpException) {
+                    $currentRoute = null;
+                }
+            }
+        }
+
+        $currentRoute ??= $request->route();
+        $logicalName = $currentRoute ? LocalizedRoute::logicalName($currentRoute) : null;
+
+        if ($logicalName) {
+            $parameters = $currentRoute->parameters();
+            unset($parameters['locale']);
+
+            $target = LocalizedRoute::url($logicalName, $parameters, $locale);
+            $query = parse_url($referer ?: '', PHP_URL_QUERY);
+
+            return redirect()->to($target.($query ? '?'.$query : ''));
+        }
+
+        return redirect()->to(LocalizedRoute::url('home', [], $locale));
     }
 }

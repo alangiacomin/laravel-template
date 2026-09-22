@@ -21,7 +21,7 @@ class UserControllerTest extends TestCase
 
     public function test_guest_cannot_view_users_list(): void
     {
-        $response = $this->get('/admin/users');
+        $response = $this->get('/it/admin/utenti');
 
         $response->assertRedirect();
         $this->assertGuest();
@@ -31,7 +31,7 @@ class UserControllerTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->get('/admin/users');
+        $response = $this->actingAs($user)->get('/it/admin/utenti');
 
         $response->assertOk();
     }
@@ -42,7 +42,7 @@ class UserControllerTest extends TestCase
             'banned_at' => now(),
         ]);
 
-        $response = $this->actingAs($user)->get('/admin/users');
+        $response = $this->actingAs($user)->get('/it/admin/utenti');
 
         $response->assertForbidden();
     }
@@ -52,7 +52,7 @@ class UserControllerTest extends TestCase
         $user = User::factory()->create();
         $other = User::factory()->create();
 
-        $response = $this->actingAs($user)->get("/admin/users/{$other->id}");
+        $response = $this->actingAs($user)->get("/it/admin/utenti/{$other->id}");
 
         $response->assertOk();
     }
@@ -62,7 +62,7 @@ class UserControllerTest extends TestCase
         $user = User::factory()->create();
         $other = User::factory()->create(['name' => 'Old Name']);
 
-        $response = $this->actingAs($user)->patch("/admin/users/{$other->id}/update", [
+        $response = $this->actingAs($user)->patch("/it/admin/utenti/{$other->id}/aggiorna", [
             'name' => 'New Name',
         ]);
 
@@ -80,7 +80,7 @@ class UserControllerTest extends TestCase
 
         $other = User::factory()->create(['name' => 'Old Name']);
 
-        $response = $this->actingAs($admin)->patch("/admin/users/{$other->id}/update", [
+        $response = $this->actingAs($admin)->patch("/it/admin/utenti/{$other->id}/aggiorna", [
             'name' => 'New Name',
         ]);
 
@@ -96,7 +96,7 @@ class UserControllerTest extends TestCase
         $user = User::factory()->create();
         $other = User::factory()->create();
 
-        $response = $this->actingAs($user)->patch("/admin/users/{$other->id}/blocca");
+        $response = $this->actingAs($user)->patch("/it/admin/utenti/{$other->id}/blocca");
 
         $response->assertForbidden();
         $this->assertNull($other->refresh()->banned_at);
@@ -109,7 +109,7 @@ class UserControllerTest extends TestCase
 
         $other = User::factory()->create();
 
-        $response = $this->actingAs($admin)->patch("/admin/users/{$other->id}/blocca");
+        $response = $this->actingAs($admin)->patch("/it/admin/utenti/{$other->id}/blocca");
 
         $response->assertRedirect();
         $this->assertNotNull($other->refresh()->banned_at);
@@ -124,7 +124,7 @@ class UserControllerTest extends TestCase
             'banned_at' => now(),
         ]);
 
-        $response = $this->actingAs($admin)->patch("/admin/users/{$other->id}/sblocca");
+        $response = $this->actingAs($admin)->patch("/it/admin/utenti/{$other->id}/sblocca");
 
         $response->assertRedirect();
         $this->assertNull($other->refresh()->banned_at);

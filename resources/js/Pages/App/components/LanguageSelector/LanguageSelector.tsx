@@ -3,14 +3,15 @@ import {usePage} from "@inertiajs/react";
 import useInertia from "../../../../hooks/useInertia.ts";
 import useTranslations from "../../../../hooks/useTranslations.tsx";
 import {SharedPageProps} from "../../../page.types.ts";
+import {localizedRoute} from "../../../../localizedRoute.ts";
 
 const LanguageSelector: FC = (): ReactNode => {
-    const {locale} = usePage<SharedPageProps>().props;
+    const {locale, locales} = usePage<SharedPageProps>().props;
     const {inertiaRouter} = useInertia();
     const __ = useTranslations();
 
     const changeLocale = (event: ChangeEvent<HTMLSelectElement>) => {
-        inertiaRouter.post(route('language.update'), {
+        inertiaRouter.post(localizedRoute('language.update'), {
             locale: event.target.value,
         });
     };
@@ -25,9 +26,11 @@ const LanguageSelector: FC = (): ReactNode => {
                 onChange={changeLocale}
                 aria-label={__('global.language')}
             >
-                <option value="it">IT</option>
-                <option value="en">EN</option>
-                <option value="fr">FR</option>
+                {locales.map((availableLocale) => (
+                    <option key={availableLocale} value={availableLocale}>
+                        {availableLocale.toUpperCase()}
+                    </option>
+                ))}
             </select>
         </label>
     );

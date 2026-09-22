@@ -1,6 +1,7 @@
 import {usePage} from '@inertiajs/react';
 import {SharedPageProps} from "../Pages/page.types.ts";
 import {useCallback} from "react";
+import {localizedRoute} from "../localizedRoute.ts";
 
 export const useRoutes = () => {
     const {url} = usePage<SharedPageProps>();
@@ -13,19 +14,19 @@ export const useRoutes = () => {
 
     const routes = {
         app: {
-            home: () => route('home'),
-            examplePage: () => route('example.page'),
-            login: () => route('login'),
-            logout: () => route('logout'),
-            register: () => route('register'),
-            user: () => route('user.show'),
+            home: () => localizedRoute('home'),
+            examplePage: () => localizedRoute('example.page'),
+            login: () => localizedRoute('login'),
+            logout: () => localizedRoute('logout'),
+            register: () => localizedRoute('register'),
+            user: () => localizedRoute('user.show'),
         },
         admin: {
-            dashboard: () => route('admin.dashboard'),
-            users: () => route('admin.users'),
-            user: (id: number) => route('admin.user.show', {id}),
-            roles: () => route('admin.roles'),
-            role: (id: number) => route('admin.role.show', {id}),
+            dashboard: () => localizedRoute('admin.dashboard'),
+            users: () => localizedRoute('admin.users'),
+            user: (id: number) => localizedRoute('admin.user.show', {id}),
+            roles: () => localizedRoute('admin.roles'),
+            role: (id: number) => localizedRoute('admin.role.show', {id}),
         },
     }
 

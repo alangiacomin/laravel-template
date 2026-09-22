@@ -9,6 +9,7 @@ import Form from "../../../components/Form/useForm.tsx";
 import Button from "../../../components/Button/Button.tsx";
 import useAuth from "../../../hooks/useAuth.tsx";
 import {useRoutes} from "../../../hooks/useRoutes.ts";
+import {localizedRoute} from "../../../localizedRoute.ts";
 import {useToast} from "../../../components/Toast/useToast.tsx";
 import useTranslations from "../../../hooks/useTranslations.tsx";
 import useInertia, {PageWithFlash} from "../../../hooks/useInertia.ts";
@@ -48,7 +49,7 @@ const User: FC = (): ReactNode => {
     const {isDirty, processing} = form;
 
     const onSubmit = useCallback(() => {
-        form.patch(route('admin.user.update', {id: user.id}), {
+        form.patch(localizedRoute('admin.user.update', {id: user.id}), {
             onSuccess: () => {
                 router.visit(routes.admin.users());
             },
@@ -57,7 +58,7 @@ const User: FC = (): ReactNode => {
 
     const onBlocca = useCallback(() => {
         inertiaRouter.patch(
-            route('admin.user.blocca', {id: user.id}),
+            localizedRoute('admin.user.blocca', {id: user.id}),
             {},
             {
                 onSuccess: (page: PageWithFlash<string>) => {
@@ -71,7 +72,7 @@ const User: FC = (): ReactNode => {
 
     const onSblocca = useCallback(() => {
         inertiaRouter.patch(
-            route('admin.user.sblocca', {id: user.id}),
+            localizedRoute('admin.user.sblocca', {id: user.id}),
             {},
             {
                 onSuccess: (page: PageWithFlash<string>) => {

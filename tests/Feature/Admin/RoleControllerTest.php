@@ -23,7 +23,7 @@ class RoleControllerTest extends TestCase
 
     public function test_guest_cannot_view_roles_list(): void
     {
-        $response = $this->get('/admin/roles');
+        $response = $this->get('/it/admin/ruoli');
 
         $response->assertRedirect();
         $this->assertGuest();
@@ -33,7 +33,7 @@ class RoleControllerTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->get('/admin/roles');
+        $response = $this->actingAs($user)->get('/it/admin/ruoli');
 
         $response->assertOk();
     }
@@ -44,7 +44,7 @@ class RoleControllerTest extends TestCase
             'banned_at' => now(),
         ]);
 
-        $response = $this->actingAs($user)->get('/admin/roles');
+        $response = $this->actingAs($user)->get('/it/admin/ruoli');
 
         $response->assertForbidden();
     }
@@ -54,7 +54,7 @@ class RoleControllerTest extends TestCase
         $user = User::factory()->create();
         $role = Role::where('name', RoleEnum::USER->value)->first();
 
-        $response = $this->actingAs($user)->get("/admin/roles/{$role->id}");
+        $response = $this->actingAs($user)->get("/it/admin/ruoli/{$role->id}");
 
         $response->assertOk();
     }
@@ -64,7 +64,7 @@ class RoleControllerTest extends TestCase
         $user = User::factory()->create();
         $role = Role::where('name', RoleEnum::EDITOR->value)->first();
 
-        $response = $this->actingAs($user)->patch("/admin/roles/{$role->id}/update", [
+        $response = $this->actingAs($user)->patch("/it/admin/ruoli/{$role->id}/aggiorna", [
             'permissions' => [PermissionEnum::TODOS_DELETE->value => true],
         ]);
 
@@ -81,7 +81,7 @@ class RoleControllerTest extends TestCase
 
         $role = Role::where('name', RoleEnum::EDITOR->value)->first();
 
-        $response = $this->actingAs($admin)->patch("/admin/roles/{$role->id}/update", [
+        $response = $this->actingAs($admin)->patch("/it/admin/ruoli/{$role->id}/aggiorna", [
             'permissions' => [
                 PermissionEnum::TODOS_CREATE->value => true,
                 PermissionEnum::TODOS_READ->value => true,
@@ -103,7 +103,7 @@ class RoleControllerTest extends TestCase
 
         $role = Role::where('name', RoleEnum::USER->value)->first();
 
-        $response = $this->actingAs($superAdmin)->patch("/admin/roles/{$role->id}/update", [
+        $response = $this->actingAs($superAdmin)->patch("/it/admin/ruoli/{$role->id}/aggiorna", [
             'permissions' => [PermissionEnum::USER_READ->value => true],
         ]);
 

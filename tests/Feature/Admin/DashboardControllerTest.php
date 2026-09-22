@@ -20,7 +20,7 @@ class DashboardControllerTest extends TestCase
 
     public function test_guest_cannot_view_admin_dashboard(): void
     {
-        $response = $this->get('/admin');
+        $response = $this->get('/it/admin');
 
         $response->assertRedirect();
         $this->assertGuest();
@@ -30,7 +30,7 @@ class DashboardControllerTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->get('/admin');
+        $response = $this->actingAs($user)->get('/it/admin');
 
         $response->assertOk();
     }
@@ -41,7 +41,7 @@ class DashboardControllerTest extends TestCase
             'banned_at' => now(),
         ]);
 
-        $response = $this->actingAs($user)->get('/admin');
+        $response = $this->actingAs($user)->get('/it/admin');
 
         $response->assertForbidden();
     }
