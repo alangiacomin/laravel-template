@@ -1,43 +1,37 @@
-import {router, usePage} from '@inertiajs/react';
+import {usePage} from '@inertiajs/react';
 import {SharedPageProps} from "../Pages/page.types.ts";
 import {useCallback} from "react";
 
 export const useRoutes = () => {
-    const {url, props} = usePage<SharedPageProps>();
-    const {locale, defaultLocale, routerSlugs} = props;
+    const {url} = usePage<SharedPageProps>();
 
-    const normalizzaPath = useCallback((path: string): string => {
-        const LOCALES = ['it', 'en'];
+    const normalizePath = useCallback((path: string): string => {
         const segments = path.split('/').filter(Boolean);
-
-        if (segments.length && LOCALES.includes(segments[0])) {
-            segments.shift();
-        }
 
         return '/' + segments.join('/');
     }, []);
 
     const routes = {
         app: {
-            home: () => localeRoute('home'),
-            examplePage: () => localeRoute('example.page'),
-            login: () => localeRoute('login'),
-            logout: () => localeRoute('logout'),
-            register: () => localeRoute('register'),
-            user: () => localeRoute('user.show'),
+            home: () => route('home'),
+            examplePage: () => route('example.page'),
+            login: () => route('login'),
+            logout: () => route('logout'),
+            register: () => route('register'),
+            user: () => route('user.show'),
         },
         admin: {
-            dashboard: () => localeRoute('admin.dashboard'),
-            users: () => localeRoute('admin.users'),
-            user: (id: number) => localeRoute('admin.user.show', {id}),
-            roles: () => localeRoute('admin.roles'),
-            role: (id: number) => localeRoute('admin.role.show', {id}),
+            dashboard: () => route('admin.dashboard'),
+            users: () => route('admin.users'),
+            user: (id: number) => route('admin.user.show', {id}),
+            roles: () => route('admin.roles'),
+            role: (id: number) => route('admin.role.show', {id}),
         },
     }
 
     const isActive = (to: string): boolean => {
-        const currentPath = normalizzaPath(url);
-        const targetPath = normalizzaPath(
+        const currentPath = normalizePath(url);
+        const targetPath = normalizePath(
             new URL(to.split('?')[0], window.location.origin).pathname
         );
 
@@ -48,8 +42,8 @@ export const useRoutes = () => {
 
         // If targetPath is a root ('/' or '/admin'), do not do partial matching
         const roots = [
-            normalizzaPath(routes.app.home().replace(window.location.origin, '')),
-            normalizzaPath(routes.admin.dashboard().replace(window.location.origin, '')),
+            normalizePath(routes.app.home().replace(window.location.origin, '')),
+            normalizePath(routes.admin.dashboard().replace(window.location.origin, '')),
         ];
         if (roots.includes(targetPath)) {
             return false;
@@ -59,60 +53,8 @@ export const useRoutes = () => {
         return currentPath.startsWith(targetPath + '/');
     };
 
-    const localeRoute = (
-        routeKey: string,
-        params: Record<string, unknown> = {}
-    ): string => {
-
-        const slugLocale = locale || defaultLocale;
-
-        if (route().has(routeKey)) {
-            if (route().t.routes[routeKey].parameters && route().t.routes[routeKey].parameters.length > 0) {
-                route().t.routes[routeKey].parameters.forEach((param: string) => {
-                    if (routerSlugs?.[param]?.[slugLocale]) {
-                        params[param] = routerSlugs[param][slugLocale];
-                    }
-                });
-            }
-        }
-
-        return locale
-            ? route(`localized.${routeKey}`, {locale, ...params})
-            : route(routeKey, params);
-    };
-
-    const changeLocale = (lang: string | null): void => {
-        const slugLocale = lang || defaultLocale;
-
-        const currentRoute = route().current();
-        const routeKey = currentRoute.replace(/^localized\./, '');
-        const currentParams = {...route().params};
-        delete currentParams.locale;
-
-        if (routerSlugs?.[routeKey]?.[slugLocale]) {
-            currentParams[routeKey] = routerSlugs[routeKey][slugLocale]
-        }
-
-        const targetRoute = lang
-            ? `localized.${routeKey}`
-            : routeKey;
-
-        const url = route(targetRoute, {
-            ...currentParams,
-            ...(lang ? {locale: lang} : {}),
-        });
-
-        router.visit(url, {
-            preserveScroll: true,
-            preserveState: true,
-        });
-    }
-
-    // expose route helpers with the correct locale handling
     return {
         isActive,
-        changeLocale,
-        localeRoute,
         ...routes,
     };
 };

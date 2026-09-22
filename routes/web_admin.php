@@ -6,18 +6,16 @@ use App\Areas\Admin\Roles\Presentation\Http\Controllers\RoleController;
 use App\Areas\Admin\Users\Presentation\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-localeRoutes(function () {
-    Route::prefix('admin')->name('admin.')->group(function () {
-        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-        Route::get('/roles', [RoleController::class, 'index'])->name('roles');
-        Route::get('/roles/{id}', [RoleController::class, 'show'])->name('role.show');
+    Route::get('/roles', [RoleController::class, 'index'])->name('roles');
+    Route::get('/roles/{id}', [RoleController::class, 'show'])->name('role.show');
 
-        Route::get('/users', [UserController::class, 'index'])->name('users');
-        Route::get('/users/{id}', [UserController::class, 'show'])->name('user.show');
+    Route::get('/users', [UserController::class, 'index'])->name('users');
+    Route::get('/users/{id}', [UserController::class, 'show'])->name('user.show');
 
-        Route::get('/{any}', [FallbackController::class, 'notFound'])->name('not.found');
-    });
+    Route::get('/{any}', [FallbackController::class, 'notFound'])->name('not.found');
 });
 
 Route::prefix('admin')->name('admin.')->group(function () {

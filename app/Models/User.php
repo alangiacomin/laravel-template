@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use App\Areas\Main\Auth\Infrastructure\Notifications\VerifyEmailCustom;
-use AlanGiacomin\LaravelCqrs\Infrastructure\Routing\LocalizedRouteGenerator;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\URL;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -50,9 +50,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function sendEmailVerificationNotification(): void
     {
-        $routes = app(LocalizedRouteGenerator::class);
-
-        $verificationUrl = $routes->signedRoute(
+        $verificationUrl = URL::temporarySignedRoute(
             'verification.verify',
             Carbon::now()->addMinutes(config('auth.verification.expire', 60)),
             [
@@ -72,6 +70,16 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isBanned(): bool
     {
         return !is_null($this->banned_at);
+    }
+
+    public function ban(): void
+    {
+        $this->forceFill(['banned_at' => now()])->save();
+    }
+
+    public function unban(): void
+    {
+        $this->forceFill(['banned_at' => null])->save();
     }
 
     /**

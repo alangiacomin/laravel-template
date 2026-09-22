@@ -29,6 +29,9 @@ development.
 
 ## Quick start
 
+During local development, `alangiacomin/laravel-cqrs` is resolved from the sibling repository
+`/home/alan/Git/laravel-cqrs` through Composer's path repository.
+
 ```bash
 composer install
 cp .env.example .env
@@ -65,6 +68,14 @@ composer test-coverage
 - `config/` configuration files
 - `database/` migrations, factories, and seeders
 - `tests/` test suite
+
+The application follows a pragmatic Laravel-native CQRS style:
+
+- read use cases query Eloquent or the query builder and return presentation DTOs;
+- write use cases are commands that persist through Eloquent and explicit model
+  behavior;
+- repositories are intentionally avoided when they only duplicate Eloquent models
+  and add no meaningful abstraction.
 
 ## Documentation
 

@@ -8,7 +8,7 @@ use App\Areas\Admin\Users\Application\Commands\BloccaUtenteCommand;
 use App\Areas\Admin\Users\Application\Commands\SbloccaUtenteCommand;
 use App\Areas\Admin\Users\Application\Data\AdminUserData;
 use App\Areas\Admin\Users\Presentation\Http\Requests\UserUpdateRequest;
-use App\Areas\Main\Auth\Domain\Repositories\IUserRepository;
+use App\Models\User;
 use App\Shared\Infrastructure\Enums\GateEnum;
 use Illuminate\Routing\Attributes\Controllers\Middleware;
 
@@ -16,38 +16,38 @@ use Illuminate\Routing\Attributes\Controllers\Middleware;
 #[Middleware('not_banned')]
 class UserController extends Controller
 {
-    #[GateAuthorize(GateEnum::USER_VIEW)]
-    public function index(IUserRepository $userRepository)
+    public function index()
     {
-        $usersWithRoles = $userRepository->allWithRoles();
+        $users = User::with('roles')->get();
 
         return inertia('Admin/Users/Users', [
-            'users' => $usersWithRoles->map(fn ($item) => AdminUserData::fromUserItem($item['user'], $item['roles'])
-            ),
+            'users' => $users->map(fn (User $user) => AdminUserData::fromModel($user)),
         ]);
     }
 
-    #[GateAuthorize(GateEnum::USER_VIEW)]
-    public function show(int $id, IUserRepository $userRepository)
+    public function show(int $id)
     {
+        $user = User::with('roles')->findOrFail($id);
+
         return inertia('Admin/Users/User', [
-            'user' => AdminUserData::fromUserItem($userRepository->get($id), $userRepository->getRoles($id)->toArray()),
+            'user' => AdminUserData::fromModel($user),
         ]);
     }
 
     #[GateAuthorize(GateEnum::USER_EDIT)]
-    public function update(int $id, UserUpdateRequest $request, IUserRepository $userRepository)
+    public function update(int $id, UserUpdateRequest $request)
     {
         $validatedData = $request->validated();
-        $userRepository->update($id, $validatedData);
+        $user = User::findOrFail($id);
+        $user->update($validatedData);
 
-        $userRepository->assignRoles($id, array_keys(array_filter($validatedData['roles'] ?? [])));
+        $user->syncRoles(array_keys(array_filter($validatedData['roles'] ?? [])));
     }
 
     #[GateAuthorize(GateEnum::USER_MANAGE)]
     public function blocca(int $id)
     {
-        $this->execute(new BloccaUtenteCommand($id));
+        dispatch_sync(new BloccaUtenteCommand($id));
 
         return $this->flashSuccess('Utente bloccato con successo');
     }
@@ -55,7 +55,7 @@ class UserController extends Controller
     #[GateAuthorize(GateEnum::USER_MANAGE)]
     public function sblocca(int $id)
     {
-        $this->execute(new SbloccaUtenteCommand($id));
+        dispatch_sync(new SbloccaUtenteCommand($id));
 
         return $this->flashSuccess('Utente sbloccato con successo');
     }

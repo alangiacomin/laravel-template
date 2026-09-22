@@ -2,36 +2,31 @@
 
 namespace App\Areas\Main\Auth\Application\Commands;
 
-use App\Areas\Main\Auth\Domain\Entities\UserItem;
+use AlanGiacomin\LaravelCqrs\App\Application\Commands\Command;
 use App\Areas\Main\Auth\Domain\Events\UserRegisteredEvent;
-use App\Areas\Main\Auth\Domain\Repositories\IUserRepository;
-use AlanGiacomin\LaravelCqrs\App\Application\Commands\SyncCommand;
+use App\Models\User;
 use App\Shared\Infrastructure\Enums\RoleEnum;
 
-class RegisterUserCommand extends SyncCommand
+class RegisterUserCommand extends Command
 {
-    private UserItem $newUser;
-
     public function __construct(
         public string $name,
         public string $email,
         public string $password,
     ) {}
 
-    public function handle(IUserRepository $repo): void
+    public function handle(): User
     {
-        $this->newUser = $repo->register(new UserItem(
-            $this->name,
-            $this->email,
-            $this->password));
+        $user = User::create([
+            'name' => $this->name,
+            'email' => $this->email,
+            'password' => $this->password,
+        ]);
 
-        $repo->assignRoles($this->newUser->id, [RoleEnum::USER]);
+        $user->assignRole(RoleEnum::USER);
 
-        event(new UserRegisteredEvent($this->newUser));
-    }
+        event(new UserRegisteredEvent($user));
 
-    public function getResponse(): UserItem
-    {
-        return $this->newUser;
+        return $user;
     }
 }

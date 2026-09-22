@@ -2,15 +2,11 @@
 
 namespace App\Areas\Main\Auth\Presentation\Http\Controllers;
 
-use AlanGiacomin\LaravelCqrs\App\Infrastructure\Attributes\GateAuthorize;
 use AlanGiacomin\LaravelCqrs\App\Presentation\Http\Controllers\Controller;
 use App\Areas\Main\Auth\Application\Commands\RegisterUserCommand;
 use App\Areas\Main\Auth\Application\Data\UserData;
-use App\Areas\Main\Auth\Domain\Repositories\IUserRepository;
-use App\Areas\Main\Auth\Infrastructure\Mappers\UserItemMapper;
 use App\Areas\Main\Auth\Presentation\Http\Requests\LoginRequest;
 use App\Areas\Main\Auth\Presentation\Http\Requests\RegisterRequest;
-use App\Shared\Infrastructure\Enums\GateEnum;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Attributes\Controllers\Middleware;
@@ -35,11 +31,10 @@ class AuthController extends Controller
 
     #[Middleware('auth')]
     #[Middleware('not_banned')]
-    #[GateAuthorize(GateEnum::USER_VIEW)]
     public function userView(): Response|ResponseFactory
     {
         return inertia('App/User/User', [
-            'user' => UserData::From(UserItemMapper::toDomain(Auth::user())),
+            'user' => UserData::fromModel(Auth::user()),
         ]);
     }
 
@@ -47,19 +42,19 @@ class AuthController extends Controller
      * Store a newly created resource in storage.
      */
     #[Middleware('guest')]
-    public function register(RegisterRequest $requestData, IUserRepository $userRepository): RedirectResponse
+    public function register(RegisterRequest $requestData): RedirectResponse
     {
-        $user = $this->execute(new RegisterUserCommand(
+        $user = dispatch_sync(new RegisterUserCommand(
             $requestData->name,
             $requestData->email,
             $requestData->password,
         ));
 
         if ($user) {
-            Auth::login(UserItemMapper::toPersistence($userRepository->get($user->id)));
+            Auth::login($user);
         }
 
-        return $this->spaRedirect($this->routeGenerator()->route('verification.notice'));
+        return $this->spaRedirect(route('verification.notice'));
     }
 
     /**
@@ -86,7 +81,7 @@ class AuthController extends Controller
 
         request()->session()->regenerate();
 
-        return $this->hardRedirect($this->routeGenerator()->route('home'));
+        return $this->hardRedirect(route('home'));
     }
 
     /**
@@ -98,7 +93,7 @@ class AuthController extends Controller
         request()->session()->invalidate();
         request()->session()->regenerateToken();
 
-        return $this->hardRedirect($this->routeGenerator()->route('home'));
+        return $this->hardRedirect(route('home'));
     }
 
     #[Middleware('auth')]
@@ -106,7 +101,7 @@ class AuthController extends Controller
     {
         $user = Auth::user();
         if ($user != null && $user->hasVerifiedEmail()) {
-            return $this->spaRedirect($this->routeGenerator()->route('home'));
+            return $this->spaRedirect(route('home'));
         }
 
         return inertia('App/Register/VerificationNotice');

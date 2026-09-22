@@ -2,7 +2,7 @@ import {FC, ReactNode, useState} from "react";
 import classNames from "classnames";
 import NavbarItem from "./NavbarItem.tsx";
 import useAuth from "../../../../hooks/useAuth.tsx";
-import {Link, usePage} from "@inertiajs/react";
+import {Link} from "@inertiajs/react";
 import {GateEnum} from "../../../../types/generated";
 import NavbarDropdown from "./NavbarDropdown.tsx";
 import NavbarDropdownItem from "./NavbarDropdownItem.tsx";
@@ -10,7 +10,6 @@ import NavbarDropdownDivider from "./NavbarDropdownDivider.tsx";
 import {useRoutes} from "../../../../hooks/useRoutes.ts";
 import useTranslations from "../../../../hooks/useTranslations.tsx";
 import useAppData from "../../../../hooks/useAppData.tsx";
-import {SharedPageProps} from "../../../page.types.ts";
 
 const Navbar: FC = (): ReactNode => {
     const [isBurgerOpen, setIsBurgerOpen] = useState(false);
@@ -18,8 +17,6 @@ const Navbar: FC = (): ReactNode => {
     const routes = useRoutes();
     const __ = useTranslations();
     const {appName} = useAppData();
-    const {props} = usePage<SharedPageProps>();
-    const currentLocale = props.locale || props.defaultLocale;
 
     const toggleBurger = () => {
         setIsBurgerOpen(!isBurgerOpen);
@@ -38,17 +35,6 @@ const Navbar: FC = (): ReactNode => {
             label: 'ExamplePage',
         },
     };
-
-    const locales = [
-        {value: 'it', label: 'Italiano'},
-        {value: 'en', label: 'English'},
-        {value: 'fr', label: 'Français'},
-    ]
-
-    const changeLocale = (e: MouseEvent, locale: string) => {
-        e.preventDefault();
-        routes.changeLocale(locale == 'it' ? null : locale);
-    }
 
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -108,19 +94,6 @@ const Navbar: FC = (): ReactNode => {
                                                     onClick={closeBurger}>{__('logout')}</NavbarDropdownItem>
                             </NavbarDropdown>
                         )}
-                        <NavbarDropdown className={'me-3'} label={(
-                            <span className={'text-white'}>
-                            <i className="bi bi-globe2"></i> {currentLocale.toUpperCase()}
-                        </span>
-                        )}>
-                            {locales.map((l, index) => (
-                                <NavbarDropdownItem key={index} to={'#'} onClick={(e) => {
-                                    changeLocale(e, l.value)
-                                }}>
-                                    {l.label} ({l.value.toUpperCase()})
-                                </NavbarDropdownItem>
-                            ))}
-                        </NavbarDropdown>
                     </ul>
                 </div>
             </div>

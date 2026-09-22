@@ -3,7 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "ziggy:generate": "php artisan ziggy:generate",
+    "prebuild": "php artisan ziggy:generate",
     "build": "vite build",
+    "predev": "php artisan ziggy:generate",
     "dev": "vite",
     "dev:debug": "vite --debug hmr"
   },

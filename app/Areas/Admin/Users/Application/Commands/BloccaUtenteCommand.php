@@ -2,26 +2,17 @@
 
 namespace App\Areas\Admin\Users\Application\Commands;
 
-use App\Areas\Main\Auth\Domain\Repositories\IUserRepository;
-use AlanGiacomin\LaravelCqrs\App\Application\Commands\SyncCommand;
-use Illuminate\Support\Carbon;
+use AlanGiacomin\LaravelCqrs\App\Application\Commands\Command;
+use App\Models\User;
 
-class BloccaUtenteCommand extends SyncCommand
+class BloccaUtenteCommand extends Command
 {
     public function __construct(
         public int $id,
     ) {}
 
-    public function handle(IUserRepository $repo): void
+    public function handle(): void
     {
-        $repo->update(
-            $this->id,
-            ['banned_at' => Carbon::now()],
-        );
-    }
-
-    public function getResponse(): null
-    {
-        return null;
+        User::findOrFail($this->id)->ban();
     }
 }

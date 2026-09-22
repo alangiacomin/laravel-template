@@ -91,15 +91,15 @@ class UserControllerTest extends TestCase
         ]);
     }
 
-    public function test_any_authenticated_user_can_blocca_a_user_due_to_missing_gate_enforcement(): void
+    public function test_user_without_permission_cannot_blocca_a_user(): void
     {
         $user = User::factory()->create();
         $other = User::factory()->create();
 
         $response = $this->actingAs($user)->patch("/admin/users/{$other->id}/blocca");
 
-        $response->assertRedirect();
-        $this->assertNotNull($other->refresh()->banned_at);
+        $response->assertForbidden();
+        $this->assertNull($other->refresh()->banned_at);
     }
 
     public function test_super_admin_can_blocca_a_user(): void

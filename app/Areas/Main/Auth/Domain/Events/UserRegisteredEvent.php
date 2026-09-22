@@ -2,11 +2,11 @@
 
 namespace App\Areas\Main\Auth\Domain\Events;
 
-use App\Areas\Main\Auth\Domain\Entities\UserItem;
+use App\Models\User;
 
 readonly class UserRegisteredEvent
 {
     public function __construct(
-        public UserItem $user,
+        public User $user,
     ) {}
 }

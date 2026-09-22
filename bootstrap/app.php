@@ -3,9 +3,6 @@
 use AlanGiacomin\LaravelCqrs\App\Infrastructure\Middleware\ApplyGateAttributes;
 use App\Infrastructure\Middleware\EnsureUserIsNotBanned;
 use App\Infrastructure\Middleware\HandleInertiaRequests;
-use App\Infrastructure\Middleware\LocalizedAuthenticate;
-use App\Infrastructure\Middleware\LocalizedEnsureEmailIsVerified;
-use App\Infrastructure\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -22,7 +19,6 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(
             append: [
-                SetLocale::class,
                 HandleInertiaRequests::class,
                 ApplyGateAttributes::class,
             ],
@@ -33,8 +29,6 @@ return Application::configure(basePath: dirname(__DIR__))
         // ]);
 
         $middleware->alias([
-            'auth' => LocalizedAuthenticate::class,
-            'verified' => LocalizedEnsureEmailIsVerified::class,
             'not_banned' => EnsureUserIsNotBanned::class,
         ]);
     })->withEvents(discover: [
@@ -67,7 +61,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     'status' => $status,
                     'reason' => $e->getMessage(),
                 ]);
-                $isAdmin = $request->routeIs('admin.*') || $request->routeIs('localized.admin.*') || str_starts_with($request->path(), 'admin');
+                $isAdmin = $request->routeIs('admin.*') || str_starts_with($request->path(), 'admin');
 
                 // dd("isAdmin: $isAdmin", $request->route()->getName(), $props);
                 // dd($request->user(), Auth::user(), $request->hasSession(), $props);

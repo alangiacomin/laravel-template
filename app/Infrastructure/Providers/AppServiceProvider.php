@@ -21,10 +21,6 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(AbilityResolver::class, GateAbilityResolver::class);
-
-        // $this->app->bind(CommandBus::class, function () {
-        //     return new CommandBus();
-        // });
     }
 
     /**

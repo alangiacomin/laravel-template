@@ -4,7 +4,6 @@ namespace App\Infrastructure\Middleware;
 
 use App\Areas\Main\Auth\Application\Data\UserData;
 use App\Areas\Main\Auth\Application\Inertia\AbilityResolver;
-use App\Areas\Main\Auth\Infrastructure\Mappers\UserItemMapper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
@@ -21,7 +20,7 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = Auth::user();
-        $userData = $user ? UserData::from(UserItemMapper::toDomain($user)) : null;
+        $userData = $user ? UserData::fromModel($user) : null;
 
         $locale = app()->getLocale();
         $defaultLocale = config('app.fallback_locale');
