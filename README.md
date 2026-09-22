@@ -1,36 +1,26 @@
 # Laravel Template
 
-Personal Laravel template designed to kick off new projects with a consistent technical foundation, ready for
-development.
+Template Laravel pronto per avviare nuovi progetti con una base moderna, coerente e già configurata per lo sviluppo quotidiano.
 
-## Why this template
-
-- Reduces the bootstrap time for a new project.
-- Provides a modern Laravel stack with Inertia + React + TypeScript.
-- Includes preconfigured tooling for local development, builds, and testing.
-
-## Included stack
+## Cosa include
 
 - Laravel 13
 - PHP 8.4
-- Inertia.js (server + React client)
+- Inertia + React + TypeScript
 - Vite
-- TypeScript
-- Reverb (websocket)
-- PHPUnit + Laravel Pint
-- Bun/NPM for frontend dependencies
+- Reverb (WebSocket)
+- PHPUnit e Laravel Pint
+- routing localizzato per locale (`it`, `en`)
+- struttura organizzata per aree e applicazioni
 
-## Requirements
+## Requisiti
 
 - PHP `^8.4`
 - Composer
-- Bun (recommended) or NPM
-- Local database (e.g. SQLite, MySQL, or PostgreSQL)
+- Bun (consigliato) oppure npm
+- database locale (SQLite, MySQL o PostgreSQL)
 
-## Quick start
-
-During local development, `alangiacomin/laravel-cqrs` is resolved from the sibling repository
-`/home/alan/Git/laravel-cqrs` through Composer's path repository.
+## Avvio rapido
 
 ```bash
 composer install
@@ -42,50 +32,29 @@ bun run build
 php artisan serve
 ```
 
-## Useful commands
+Se vuoi avviare tutto l'ambiente di sviluppo in parallelo:
 
 ```bash
-# full development environment (server, queue, reverb, vite)
 composer run dev
-
-# frontend only
-bun run dev
-bun run build
-
-# test
-composer test
-composer test-coverage
-
-# code style
-./vendor/bin/pint
 ```
 
-## Project structure (high-level)
+## Documentazione
 
-- `app/` application logic
-- `routes/` route definitions
-- `resources/` frontend (React/TS, views, and assets)
-- `config/` configuration files
-- `database/` migrations, factories, and seeders
-- `tests/` test suite
+- Setup completo: [docs/setup.md](docs/setup.md)
+- Sviluppo e convenzioni: [docs/development.md](docs/development.md)
 
-The application follows a pragmatic Laravel-native CQRS style:
+## Nota importante
 
-- read use cases query Eloquent or the query builder and return presentation DTOs;
-- write use cases are commands that persist through Eloquent and explicit model
-  behavior;
-- repositories are intentionally avoided when they only duplicate Eloquent models
-  and add no meaningful abstraction.
+Questo template usa route localizzate per locale. Le URL non sono statiche ma dipendono dal prefisso del locale e da `config/routes.php`.
 
-## Documentation
+Esempio:
 
-- Full setup: [`docs/setup.md`](docs/setup.md)
-- Development workflow: [`docs/development.md`](docs/development.md)
+- `/it/accedi`
+- `/en/login`
+- `/it/admin/ruoli`
 
-## Contributing
+Per i dettagli completi, consulta la documentazione in `docs/`.
 
-If this template is used by a team, you can add a `CONTRIBUTING.md` file with PR/branching rules.
+## Licenza
 
-## License
-
-This project is released under the [MIT](https://opensource.org/licenses/MIT) license.
+Questo progetto è distribuito con licenza [MIT](https://opensource.org/licenses/MIT).
