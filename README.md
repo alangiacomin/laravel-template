@@ -42,6 +42,7 @@ composer run dev
 
 - Setup completo: [docs/setup.md](docs/setup.md)
 - Sviluppo e convenzioni: [docs/development.md](docs/development.md)
+- Documentazione per agenti AI: [AGENTS.md](AGENTS.md) e [docs/ai/](docs/ai/)
 
 ## Nota importante
 
