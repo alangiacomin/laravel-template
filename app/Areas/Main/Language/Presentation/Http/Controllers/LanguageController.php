@@ -29,12 +29,11 @@ class LanguageController extends Controller
             $path = parse_url($referer, PHP_URL_PATH);
 
             if (is_string($path)) {
-                $probe = Request::create($path, 'GET');
+                $probe = Request::create($path);
 
                 try {
                     $currentRoute = app('router')->getRoutes()->match($probe);
                 } catch (NotFoundHttpException) {
-                    $currentRoute = null;
                 }
             }
         }
