@@ -31,6 +31,10 @@ const Navbar: FC = (): ReactNode => {
             path: routes.app.home(),
             label: __('home'),
         },
+        comics: {
+            path: routes.app.comics(),
+            label: __('comics'),
+        },
         examplePage: {
             path: routes.app.examplePage(),
             label: 'ExamplePage',

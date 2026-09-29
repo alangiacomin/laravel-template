@@ -1,0 +1,41 @@
+erDiagram
+    TESTATA ||--o{ SERIE : "può contenere"
+    ALBO ||--o{ ALBO_SERIE : "appare in"
+    SERIE ||--o{ ALBO_SERIE : "organizza"
+
+    TESTATA {
+        bigint id PK
+        string titolo
+        datetime created_at
+        datetime updated_at
+        datetime deleted_at "facoltativo/null"
+    }
+
+    SERIE {
+        bigint id PK
+        bigint testata_id FK
+        string titolo
+        datetime created_at
+        datetime updated_at
+        datetime deleted_at "facoltativo/null"
+    }
+
+    ALBO {
+        bigint id PK
+        string titolo
+        datetime created_at
+        datetime updated_at
+        datetime deleted_at "facoltativo/null"
+    }
+
+    ALBO_SERIE {
+        bigint id PK
+        bigint albo_id FK
+        bigint serie_id FK
+        unsigned_integer numero
+        unsigned_integer numero_gruppo "facoltativo/null"
+        date data_pubblicazione "facoltativo/null"
+        datetime created_at
+        datetime updated_at
+        datetime deleted_at "facoltativo/null"
+    }

@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'title' => 'Catalogo fumetti',
+    'subtitle' => 'Esplora gli albi e le loro pubblicazioni in un unico catalogo.',
+    'search' => 'Cerca un fumetto, una testata o una serie',
+    'search_placeholder' => 'Per esempio: Diabolik, Il re del terrore...',
+    'filters' => 'Filtra il catalogo',
+    'testata' => 'Testata',
+    'serie' => 'Serie',
+    'year' => 'Anno di pubblicazione',
+    'all_testate' => 'Tutte le testate',
+    'all_series' => 'Tutte le serie',
+    'all_years' => 'Tutti gli anni',
+    'apply_filters' => 'Cerca fumetti',
+    'clear_filters' => 'Azzera ricerca e filtri',
+    'results' => ':count fumetti trovati',
+    'no_results_title' => 'Nessun fumetto trovato',
+    'no_results' => 'Prova a modificare la ricerca o ad azzerare i filtri.',
+    'publication' => 'Pubblicazione',
+    'issue_number' => 'Numero :number',
+    'published_on' => 'Pubblicato il :date',
+    'not_dated' => 'Data non disponibile',
+    'no_publications' => 'Nessuna pubblicazione associata.',
+    'previous' => 'Precedente',
+    'next' => 'Successiva',
+    'page_of' => 'Pagina :current di :last',
+];

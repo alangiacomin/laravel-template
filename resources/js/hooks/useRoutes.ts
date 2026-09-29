@@ -15,6 +15,7 @@ export const useRoutes = () => {
     const routes = {
         app: {
             home: () => localizedRoute('home'),
+            comics: () => localizedRoute('comics'),
             examplePage: () => localizedRoute('example.page'),
             login: () => localizedRoute('login'),
             logout: () => localizedRoute('logout'),
@@ -27,6 +28,12 @@ export const useRoutes = () => {
             user: (id: number) => localizedRoute('admin.user.show', {id}),
             roles: () => localizedRoute('admin.roles'),
             role: (id: number) => localizedRoute('admin.role.show', {id}),
+            testate: () => localizedRoute('admin.testate'),
+            testata: (id: number) => localizedRoute('admin.testata.show', {id}),
+            serie: () => localizedRoute('admin.serie'),
+            serieItem: (id: number) => localizedRoute('admin.serie.show', {id}),
+            albi: () => localizedRoute('admin.albi'),
+            albo: (id: number) => localizedRoute('admin.albo.show', {id}),
         },
     }
 

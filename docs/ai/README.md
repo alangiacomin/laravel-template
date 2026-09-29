@@ -7,23 +7,21 @@ strumenti disponibili.
 
 ## Gerarchia delle fonti
 
-1. Requisiti dell'utente e vincoli espliciti della richiesta.
-2. `AGENTS.md` e le istruzioni dell'ambiente agente.
-3. Questa documentazione e la documentazione tecnica in `docs/`.
-4. Convenzioni osservabili nel codice esistente.
+1. **Requisiti dell'utente** e vincoli espliciti della richiesta.
+2. **Questa documentazione (`docs/ai/`)** e le istruzioni sovrane in `AGENTS.md`.
+3. **Convenzioni e skill generiche del framework**: hanno valore sussidiario. **In caso di conflitto, le regole in `docs/ai/` prevalgono SEMPRE sulle convenzioni generiche di Laravel e sulle skill** (es. l'architettura modulare per Area e Contesto ha priorità sul posizionamento piatto standard `app/Models`).
+4. **Convenzioni osservabili nel codice esistente**.
 
-In caso di conflitto va segnalato il conflitto e va seguita la fonte con
-priorità maggiore. Le istruzioni specifiche di un prodotto sono adapter:
-possono indicare dove trovare questa documentazione, ma non devono cambiarne il
-significato.
+In caso di conflitto va segnalato il conflitto e va seguita la fonte con priorità maggiore. Le istruzioni specifiche di un prodotto sono adapter: possono indicare dove trovare questa documentazione, ma non devono cambiarne il significato.
 
-## Prima di modificare codice
+## Prima di proporre un piano o modificare codice
 
-1. Individua i file e i test coinvolti.
-2. Leggi la documentazione relativa all'area.
-3. Cerca un'implementazione simile già presente.
-4. Controlla lo stato del worktree e preserva le modifiche non pertinenti.
-5. Definisci il controllo minimo che dimostrerà che la modifica funziona.
+1. **Esegui la checklist pre-piano in [workflow.md](workflow.md)**: chiedi SEMPRE chiarimento su **Area** e **Contesto** all'utente se non esplicitamente indicati prima di iniziare o proporre un piano.
+2. Individua i file e i test coinvolti consultando [architecture.md](architecture.md).
+3. Leggi la documentazione relativa all'area e al contesto di dominio.
+4. Cerca un'implementazione simile già presente nel repository.
+5. Controlla lo stato del worktree e preserva le modifiche non pertinenti.
+6. Definisci il controllo minimo che dimostrerà che la modifica funziona.
 
 ## Documenti
 

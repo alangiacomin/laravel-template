@@ -2,6 +2,7 @@
 
 use App\Areas\Main\ExamplePage\Presentation\Http\Controllers\ExamplePageController;
 use App\Areas\Main\FallbackController;
+use App\Areas\Main\Fumetti\Presentation\Http\Controllers\ComicCatalogController;
 use App\Areas\Main\Language\Presentation\Http\Controllers\LanguageController;
 use App\Infrastructure\Routing\LocalizedRoute;
 use Illuminate\Support\Facades\Route;
@@ -14,6 +15,7 @@ foreach (config('app.locales', []) as $locale) {
         require __DIR__.'/web_admin.php';
 
         Route::get('/', [FallbackController::class, 'app'])->name('home');
+        Route::get('/'.$localizedRoutes['comics'], [ComicCatalogController::class, 'index'])->name('comics');
         Route::get('/'.$localizedRoutes['example.page'], [ExamplePageController::class, 'index'])
             ->name('example.page');
         Route::post('/language', [LanguageController::class, 'update'])->name('language.update');

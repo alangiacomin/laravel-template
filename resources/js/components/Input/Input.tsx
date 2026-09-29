@@ -4,7 +4,7 @@ import classnames from "classnames";
 import FieldError from "../Form/FieldError.tsx";
 import {useFormContext} from "../Form/useForm.tsx";
 
-interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "name" | "value" | "onChange"> {
+interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "name"> {
     name: string;
     label?: string;
     icon?: string | null;
@@ -100,8 +100,8 @@ const Input: FC<InputProps> = ({
                         type={type}
                         {...rest}
                         checked={isCheckbox ? Boolean(inputValue) : undefined}
-                        value={isCheckbox ? undefined : (inputValue ?? "")}
-                        onChange={handleChange}
+                        value={isCheckbox ? undefined : (rest.value ?? inputValue ?? "")}
+                        onChange={rest.onChange ?? handleChange}
                     />
                 </div>
 

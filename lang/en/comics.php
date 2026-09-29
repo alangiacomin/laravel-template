@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'title' => 'Comic catalog',
+    'subtitle' => 'Explore issues and their publications in one unified catalog.',
+    'search' => 'Search for a comic, title or series',
+    'search_placeholder' => 'For example: Diabolik, King of Terror...',
+    'filters' => 'Filter the catalog',
+    'testata' => 'Title',
+    'serie' => 'Series',
+    'year' => 'Publication year',
+    'all_testate' => 'All titles',
+    'all_series' => 'All series',
+    'all_years' => 'All years',
+    'apply_filters' => 'Find comics',
+    'clear_filters' => 'Clear search and filters',
+    'results' => ':count comics found',
+    'no_results_title' => 'No comics found',
+    'no_results' => 'Try changing your search or clearing the filters.',
+    'publication' => 'Publication',
+    'issue_number' => 'Issue :number',
+    'published_on' => 'Published on :date',
+    'not_dated' => 'Date unavailable',
+    'no_publications' => 'No publication associated.',
+    'previous' => 'Previous',
+    'next' => 'Next',
+    'page_of' => 'Page :current of :last',
+];
