@@ -72,7 +72,7 @@ bun run lint       # controllo
 bun run lint:fix   # applica le correzioni sicure
 ```
 
-In PhpStorm, Biome è attivo in modalità automatica (Settings → Languages & Frameworks → Biome), con gli hint inline anche sulle dipendenze degli hook (`useExhaustiveDependencies`).
+In PhpStorm installa il plugin **Biome** dal Marketplace (Settings → Plugins) e attivalo in Settings → Languages & Frameworks → Biome in modalità automatica: avrai gli hint inline anche sulle dipendenze degli hook (`useExhaustiveDependencies`).
 
 ## Convenzioni pratiche
 
