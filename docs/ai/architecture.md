@@ -112,19 +112,17 @@ determinati da `.env` (`APP_LOCALE`, `APP_FALLBACK_LOCALE`) in
 `config/app.php`. Non esiste alcun prefisso di locale nelle URL né alcuna
 gestione di sessione dedicata alla lingua.
 
-I segmenti traducibili delle URL sono definiti in un unico array piatto in
-`config/routes.php`. Le route web vengono registrate direttamente (senza
-alcun gruppo o prefisso) in `routes/web.php` e nei file specializzati
-`routes/web_auth.php` / `routes/web_admin.php`.
+Le route web vengono registrate direttamente, senza gruppo locale, nei file
+`routes/web.php`, `routes/web_auth.php` e `routes/web_admin.php`.
 
 Per una nuova pagina:
 
-- aggiungi la chiave logica in `config/routes.php`;
-- usa il valore configurato per costruire il path;
-- assegna il nome route logico direttamente, senza prefissi.
+- aggiungi la route nel file corretto per area / ambito;
+- assegna il nome route logico direttamente;
+- usa `route()` / `to_route()` per costruire URL e link;
+- non inserire path hardcoded o prefissi di locale in controller o componenti.
 
-Non inserire path localizzati hardcoded in controller o componenti: usa
-sempre `route()` / `to_route()`.
+L'unico set di traduzioni presenti nell'applicazione è `lang/it/`.
 
 ## Frontend e traduzioni
 

@@ -86,17 +86,9 @@ composer run dev
 
 ## 7) Verifica iniziale
 
-Apri nel browser l'URL mostrato da `php artisan serve` (di solito `http://127.0.0.1:8000`) e verifica che la homepage del locale predefinito sia raggiungibile.
+Apri nel browser l'URL mostrato da `php artisan serve` (di solito `http://127.0.0.1:8000`) e verifica che la homepage sia raggiungibile.
 
-Il template supporta più locale, con il default definito in `config/app.php`:
-
-- `it`
-- `en`
-
-Di solito le homepage sono disponibili come:
-
-- `/it`
-- `/en`
+Il template usa un locale singolo (default `it`), definito in `config/app.php`, e non aggiunge prefissi di lingua alle URL.
 
 ## Risoluzione rapida dei problemi
 
@@ -105,56 +97,32 @@ Di solito le homepage sono disponibili come:
 - problemi di cache/configurazione: `php artisan optimize:clear`
 - problemi di database: controlla `.env` e poi `php artisan migrate`
 
-## Come funziona il routing localizzato
+## Come funzionano le route nel template
 
-Le route sono configurate in `config/routes.php` e sono prefissate dal locale attivo. Il prefisso dipende dalle lingue supportate in `config/app.php`.
+Le route sono registrate direttamente nei file di routing Laravel:
 
-Esempio di configurazione:
+- `routes/web.php`: frontend principale e fallback
+- `routes/web_auth.php`: autenticazione
+- `routes/web_admin.php`: amministrazione
 
-```php
-return [
-    'localized' => [
-        'it' => [
-            'login' => 'accedi',
-            'register' => 'registrati',
-            'example.page' => 'pagina-di-esempio',
-        ],
-        'en' => [
-            'login' => 'login',
-            'register' => 'register',
-            'example.page' => 'example-page',
-        ],
-    ],
-];
-```
-
-Le route vere vengono poi registrate in `routes/web.php` e `routes/web_auth.php` usando il valore locale:
+Esempio:
 
 ```php
-foreach (config('app.locales', []) as $locale) {
-    Route::prefix($locale)->name($locale.'.')->group(function () use ($locale): void {
-        $localizedRoutes = config("routes.localized.$locale");
+Route::get('/example.page', [ExamplePageController::class, 'index'])
+    ->name('example.page');
 
-        Route::get('/'.$localizedRoutes['example.page'], [ExamplePageController::class, 'index'])
-            ->name('example.page');
-    });
-}
+Route::get('/admin.roles', [RoleController::class, 'index'])
+    ->name('admin.roles');
 ```
 
-Questa convenzione produce URL come:
-
-- `/it/pagina-di-esempio`
-- `/en/example-page`
-
-Per creare una nuova route localizzata, basta aggiungere la chiave nel file `config/routes.php` per ogni locale e poi registrare la rotta nel file giusto dentro `routes/`.
+Non esiste un file `config/routes.php` e non vengono usati prefissi per locale. Per generare URL nel frontend si usano i nomi route con `route('...')` o `route('admin.roles')` in Ziggy.
 
 ## File principali da conoscere
 
 - `routes/web.php`: route del frontend principale
 - `routes/web_auth.php`: route di autenticazione
 - `routes/web_admin.php`: route di admin
-- `config/routes.php`: definizione delle URL localizzate
-- `config/app.php`: locali supportati e locale di fallback
+- `config/app.php`: locale attivo e fallback
 - `lang/`: file di traduzione
 
 Questi file sono i punti di partenza per aggiungere pagine nuove o nuove funzionalità al template.

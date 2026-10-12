@@ -46,13 +46,13 @@ composer run dev
 
 ## Nota importante
 
-Questo template usa route localizzate per locale. Le URL non sono statiche ma dipendono dal prefisso del locale e da `config/routes.php`.
+Questo template usa una sola lingua di base (`it`), definita in `config/app.php`, e route non prefissate per locale. Le URL sono quindi stabili e vengono costruite con i nomi delle route Laravel/Ziggy, senza un file `config/routes.php`.
 
-Esempio:
+Esempi:
 
-- `/it/accedi`
-- `/en/login`
-- `/it/admin/ruoli`
+- `/`
+- `/login`
+- `/admin.roles`
 
 Per i dettagli completi, consulta la documentazione in `docs/`.
 

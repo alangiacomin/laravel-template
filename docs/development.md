@@ -83,58 +83,32 @@ In PhpStorm installa il plugin **Biome** dal Marketplace (Settings → Plugins) 
 
 ## Come aggiungere una nuova pagina
 
-Il template usa una struttura orientata a locale e aree. Per creare una nuova pagina, solitamente fai questi passaggi:
+Il template usa una struttura a aree e route PHP esplicite. Per creare una nuova pagina, in genere si seguono questi passaggi:
 
-1. aggiungi la route localizzata in `config/routes.php`
-2. registra la rotta nel file `routes/` corretto
-3. crea il controller e la view / componente frontend necessari
+1. scegli la route file corretto (`routes/web.php`, `routes/web_auth.php` o `routes/web_admin.php`)
+2. registra la rotta con un nome logico chiaro e un path stabile
+3. crea il controller e il componente frontend necessari
 4. aggiungi eventuali test
 
-### Esempio di route localizzata
-
-In `config/routes.php`:
+### Esempio di route
 
 ```php
-'it' => [
-    'example.page' => 'pagina-di-esempio',
-],
-'en' => [
-    'example.page' => 'example-page',
-],
-```
-
-Poi in `routes/web.php`:
-
-```php
-Route::get('/'.$localizedRoutes['example.page'], [ExamplePageController::class, 'index'])
+Route::get('/example.page', [ExamplePageController::class, 'index'])
     ->name('example.page');
 ```
 
-Di conseguenza, con i locale attivi, l'URL sarà:
+Nel frontend, la URL viene costruita con `route('example.page')` senza alcun prefisso di locale.
 
-- `/it/pagina-di-esempio`
-- `/en/example-page`
+## Gestione del locale
 
-Il nome logico della route diventa invece qualcosa del tipo:
-
-- `it.example.page`
-- `en.example.page`
-
-L'approccio è così coerente per tutte le pagine pubbliche, admin e autenticazione.
-
-## Gestione dei locale
-
-Il template supporta `it` e `en` come locale dichiarati in `config/app.php`.
-
-La homepage di ogni locale è gestita tramite routing prefissato; in pratica:
+Il template usa un locale singolo, con default definito in `config/app.php`:
 
 ```php
-Route::prefix($locale)->name($locale.'.')->group(function () {
-    // rotte del locale corrente
-});
+'locale' => env('APP_LOCALE', 'it'),
+'fallback_locale' => env('APP_FALLBACK_LOCALE', 'it'),
 ```
 
-Questa logica rende semplice costruire URL coerenti tramite nome route e locale senza duplicare manualmente i path.
+Questo significa che non esistono URL con prefisso `/it/` o `/en/`; il contenuto visibile è invece gestito tramite i file di traduzione in `lang/it/` e il shared prop `translations` di Inertia.
 
 ## Quando aggiungere una nuova area
 
