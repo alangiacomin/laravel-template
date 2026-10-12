@@ -1,28 +1,25 @@
-import {FC, ReactNode} from "react";
-import {Link} from "@inertiajs/react";
-import {NOOP} from "../../../../constants.ts";
+import { Link } from "@inertiajs/react";
+import type { FC, ReactNode } from "react";
+import { NOOP } from "../../../../constants.ts";
 
 type NavbarDropdownItemProps = {
-    to: string;
-    children: ReactNode;
-    onClick?: (event: MouseEvent) => void;
-}
+  to: string;
+  children: ReactNode;
+  onClick?: (event: MouseEvent) => void;
+};
 
 const NavbarDropdownItem: FC<NavbarDropdownItemProps> = ({
-                                                             to,
-                                                             children,
-                                                             onClick = NOOP
-                                                         }: NavbarDropdownItemProps): ReactNode => {
-    return (
-        <li>
-            <Link
-                className={`dropdown-item`}
-                onClick={onClick}
-                href={to}
-            >
-                {children}
-            </Link>
-        </li>);
+  to,
+  children,
+  onClick = NOOP,
+}: NavbarDropdownItemProps): ReactNode => {
+  return (
+    <li>
+      <Link className={`dropdown-item`} onClick={onClick} href={to}>
+        {children}
+      </Link>
+    </li>
+  );
 };
 
 export default NavbarDropdownItem;

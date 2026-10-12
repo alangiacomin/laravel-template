@@ -1,16 +1,14 @@
-import {FC, ReactNode} from "react"
-import AuthProvider from "./AuthProvider"
-import ToastProvider from "./ToastProvider"
-import {ProviderProps} from "./Provider.types.tsx";
+import type { FC, ReactNode } from "react";
+import AuthProvider from "./AuthProvider";
+import type { ProviderProps } from "./Provider.types.tsx";
+import ToastProvider from "./ToastProvider";
 
-const MainProvider: FC<ProviderProps> = ({children}): ReactNode => {
-    return (
-        <AuthProvider>
-            <ToastProvider>
-                {children}
-            </ToastProvider>
-        </AuthProvider>
-    )
-}
+const MainProvider: FC<ProviderProps> = ({ children }): ReactNode => {
+  return (
+    <AuthProvider>
+      <ToastProvider>{children}</ToastProvider>
+    </AuthProvider>
+  );
+};
 
-export default MainProvider
+export default MainProvider;

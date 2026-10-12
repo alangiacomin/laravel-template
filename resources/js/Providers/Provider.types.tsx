@@ -1,11 +1,11 @@
-import {ReactNode} from "react";
-import {UserData} from "../types/generated";
+import type { ReactNode } from "react";
+import type { UserData } from "../types/generated";
 
 export type ProviderProps = {
-    children: ReactNode;
-}
+  children: ReactNode;
+};
 
 export type IMainContext = {
-    user: UserData | null;
-    setUser: (u: UserData | null) => void;
-}
+  user: UserData | null;
+  setUser: (u: UserData | null) => void;
+};

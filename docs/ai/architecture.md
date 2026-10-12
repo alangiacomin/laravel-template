@@ -6,6 +6,7 @@
 - Frontend: Inertia, React, TypeScript e Vite.
 - Test: PHPUnit tramite `composer test`.
 - Qualità PHP: Laravel Pint e PHPStan tramite `composer lint`.
+- Qualità frontend: Biome tramite `bun run lint` (`bun run lint:fix` per le correzioni).
 - Realtime: Laravel Reverb.
 
 ## Organizzazione del backend
@@ -41,7 +42,7 @@ I model Eloquent e le relative migration devono seguire la struttura modulare cl
 
 #### Esempio completo: Creazione entità `Todo` in Area `Main`, Contesto `TodoList`
 
-**Model**: [app/Areas/Main/TodoList/Infrastructure/Persistence/Eloquent/Models/Todo.php](app/Areas/Main/TodoList/Infrastructure/Persistence/Eloquent/Models/Todo.php)
+**Model**: app/Areas/Main/TodoList/Infrastructure/Persistence/Eloquent/Models/Todo.php
 ```php
 <?php
 
@@ -104,29 +105,34 @@ return new class extends Migration
 - Usa Spatie Data per contratti espliciti di input/output condivisi o trasformati, annotandoli con `#[TypeScript]` quando devono generare tipi frontend. Le regole di validazione HTTP restano nei Request;
 - Rigenera `resources/js/types/generated/index.ts` con `php artisan typescript:transform` e importa i tipi generati nei componenti, invece di ridefinire localmente le stesse strutture.
 
-## Routing localizzato
+## Routing
 
-I locali supportati sono definiti in `config/app.php` e attualmente sono `it` ed
-`en`. I segmenti traducibili delle URL sono definiti in
-`config/routes.php`. Le route web vengono registrate dentro il gruppo con
-prefisso locale in `routes/web.php` o nel file specializzato corretto.
+L'applicazione è a lingua unica: italiano (IT), con fallback anch'esso IT,
+determinati da `.env` (`APP_LOCALE`, `APP_FALLBACK_LOCALE`) in
+`config/app.php`. Non esiste alcun prefisso di locale nelle URL né alcuna
+gestione di sessione dedicata alla lingua.
+
+I segmenti traducibili delle URL sono definiti in un unico array piatto in
+`config/routes.php`. Le route web vengono registrate direttamente (senza
+alcun gruppo o prefisso) in `routes/web.php` e nei file specializzati
+`routes/web_auth.php` / `routes/web_admin.php`.
 
 Per una nuova pagina:
 
-- aggiungi la stessa chiave logica a tutti i locali;
+- aggiungi la chiave logica in `config/routes.php`;
 - usa il valore configurato per costruire il path;
-- assegna il nome route logico nel gruppo locale;
-- considera che il nome effettivo include il prefisso (`it.`, `en.`);
-- verifica sia URL sia route generate.
+- assegna il nome route logico direttamente, senza prefissi.
 
-Non inserire path localizzati hardcoded in controller o componenti.
+Non inserire path localizzati hardcoded in controller o componenti: usa
+sempre `route()` / `to_route()`.
 
 ## Frontend e traduzioni
 
 Le pagine Inertia devono seguire la struttura già presente in `resources/`.
 Prima di creare un componente cerca componenti e tipi riutilizzabili.
 Qualsiasi testo visibile all'utente deve passare dal sistema di traduzione
-appropriato e avere le chiavi per `it` ed `en`, quando applicabile.
+appropriato, con le chiavi definite in `lang/it/`, l'unico set di traduzioni
+presente nell'applicazione.
 
 ## Database e configurazione
 

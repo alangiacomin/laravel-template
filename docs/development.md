@@ -65,7 +65,14 @@ Formattazione PHP:
 ./vendor/bin/pint
 ```
 
-Il frontend ha configurazione ESLint pronta in `eslint.config.js`; puoi aggiungere script dedicati se vuoi standardizzare i comandi di linting nel tuo workflow.
+Lint, formattazione e import del frontend (JS/TS/React) sono gestiti da [Biome](https://biomejs.dev) tramite `biome.json`:
+
+```bash
+bun run lint       # controllo
+bun run lint:fix   # applica le correzioni sicure
+```
+
+In PhpStorm, Biome è attivo in modalità automatica (Settings → Languages & Frameworks → Biome), con gli hint inline anche sulle dipendenze degli hook (`useExhaustiveDependencies`).
 
 ## Convenzioni pratiche
 

@@ -1,12 +1,13 @@
-import {FC, ReactNode} from "react";
+import type { FC, ReactNode } from "react";
 
 type FieldErrorProps = {
-    error: string;
+  error: string;
 };
 
-const FieldError: FC<FieldErrorProps> = ({error}: FieldErrorProps): ReactNode =>
-    (<div className={"small text-danger"}>
-        {error}
-    </div>);
+const FieldError: FC<FieldErrorProps> = ({
+  error,
+}: FieldErrorProps): ReactNode => (
+  <div className={"small text-danger"}>{error}</div>
+);
 
 export default FieldError;

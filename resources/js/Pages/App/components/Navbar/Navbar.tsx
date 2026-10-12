@@ -1,112 +1,132 @@
-import {FC, ReactNode, useState} from "react";
+import { Link } from "@inertiajs/react";
 import classNames from "classnames";
-import NavbarItem from "./NavbarItem.tsx";
-import useAuth from "../../../../hooks/useAuth.tsx";
-import {Link} from "@inertiajs/react";
-import {GateEnum} from "../../../../types/generated";
-import NavbarDropdown from "./NavbarDropdown.tsx";
-import NavbarDropdownItem from "./NavbarDropdownItem.tsx";
-import NavbarDropdownDivider from "./NavbarDropdownDivider.tsx";
-import {useRoutes} from "../../../../hooks/useRoutes.ts";
-import useTranslations from "../../../../hooks/useTranslations.tsx";
+import { type FC, type ReactNode, useState } from "react";
 import useAppData from "../../../../hooks/useAppData.tsx";
-import LanguageSelector from "../LanguageSelector/LanguageSelector.tsx";
+import useAuth from "../../../../hooks/useAuth.tsx";
+import { useRoutes } from "../../../../hooks/useRoutes.ts";
+import useTranslations from "../../../../hooks/useTranslations.tsx";
+import { GateEnum } from "../../../../types/generated";
+import NavbarDropdown from "./NavbarDropdown.tsx";
+import NavbarDropdownDivider from "./NavbarDropdownDivider.tsx";
+import NavbarDropdownItem from "./NavbarDropdownItem.tsx";
+import NavbarItem from "./NavbarItem.tsx";
 
 const Navbar: FC = (): ReactNode => {
-    const [isBurgerOpen, setIsBurgerOpen] = useState(false);
-    const user = useAuth();
-    const routes = useRoutes();
-    const __ = useTranslations();
-    const {appName} = useAppData();
+  const [isBurgerOpen, setIsBurgerOpen] = useState(false);
+  const user = useAuth();
+  const routes = useRoutes();
+  const __ = useTranslations();
+  const { appName } = useAppData();
 
-    const toggleBurger = () => {
-        setIsBurgerOpen(!isBurgerOpen);
-    };
-    const closeBurger = () => {
-        setIsBurgerOpen(false);
-    }
+  const toggleBurger = () => {
+    setIsBurgerOpen(!isBurgerOpen);
+  };
+  const closeBurger = () => {
+    setIsBurgerOpen(false);
+  };
 
-    const navConfig: { [key: string]: { path: string, label: string, permission?: GateEnum } } = {
-        home: {
-            path: routes.app.home(),
-            label: __('home'),
-        },
-        comics: {
-            path: routes.app.comics(),
-            label: __('comics'),
-        },
-        examplePage: {
-            path: routes.app.examplePage(),
-            label: 'ExamplePage',
-        },
-    };
+  const navConfig: {
+    [key: string]: { path: string; label: string; permission?: GateEnum };
+  } = {
+    home: {
+      path: routes.app.home(),
+      label: __("home"),
+    },
+    examplePage: {
+      path: routes.app.examplePage(),
+      label: "ExamplePage",
+    },
+  };
 
-    return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div className="container">
-                <Link className="navbar-brand fw-bold text-uppercase" href={navConfig.home.path}>{appName}</Link>
-                <button className="navbar-toggler" type="button" onClick={toggleBurger}>
-                    <span className="navbar-toggler-icon"></span>
-                </button>
-                <div className={classNames("navbar-collapse", {"collapse": !isBurgerOpen})} id="navbarSupportedContent">
-                    <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                        {Object.entries(navConfig).map(([key, n]) => {
-                            if (!n.permission || (user && user.can(n.permission))) {
-                                return (
-                                    <NavbarItem key={key} to={n.path} onClick={closeBurger}>
-                                        {n.label}
-                                    </NavbarItem>);
-                            }
-                            return null;
-                        })}
-                    </ul>
-                    <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li className="nav-item d-flex align-items-center me-lg-2 my-2 my-lg-0">
-                            <LanguageSelector/>
-                        </li>
-                        {!user && (
-                            <>
-                                <li className="nav-item">
-                                    <Link className="nav-link px-3"
-                                          href={routes.app.register()}
-                                          onClick={closeBurger}
-                                    >
-                                        {__('register')}
-                                    </Link>
-                                </li>
-                                <li className="nav-item">
-                                    <Link className="btn btn-primary"
-                                          href={routes.app.login()}
-                                          onClick={closeBurger}
-                                    >
-                                        {__('login')}
-                                    </Link>
-                                </li>
-                            </>
-                        )}
-                        {user && (
-                            <NavbarDropdown label={(
-                                <>
-                                    {/*<img src={user.avatar} alt={user.name} width="32" height="32"*/}
-                                    {/*     className="rounded-circle"/>*/}
-                                    <span className="ms-2 text-white">{user.name}</span>
-                                </>
-                            )}>
-                                <NavbarDropdownItem to={routes.app.user()}
-                                                    onClick={closeBurger}>{__('user')}</NavbarDropdownItem>
-                                <NavbarDropdownItem
-                                    to={routes.admin.dashboard()}
-                                    onClick={closeBurger}>{__('admin.admin_panel')}</NavbarDropdownItem>
-                                <NavbarDropdownDivider/>
-                                <NavbarDropdownItem to={routes.app.logout()}
-                                                    onClick={closeBurger}>{__('logout')}</NavbarDropdownItem>
-                            </NavbarDropdown>
-                        )}
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    );
-}
+  return (
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div className="container">
+        <Link
+          className="navbar-brand fw-bold text-uppercase"
+          href={navConfig.home.path}
+        >
+          {appName}
+        </Link>
+        <button className="navbar-toggler" type="button" onClick={toggleBurger}>
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div
+          className={classNames("navbar-collapse", { collapse: !isBurgerOpen })}
+          id="navbarSupportedContent"
+        >
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            {Object.entries(navConfig).map(([key, n]) => {
+              if (!n.permission || user?.can(n.permission)) {
+                return (
+                  <NavbarItem key={key} to={n.path} onClick={closeBurger}>
+                    {n.label}
+                  </NavbarItem>
+                );
+              }
+              return null;
+            })}
+          </ul>
+          <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+            {!user && (
+              <>
+                <li className="nav-item">
+                  <Link
+                    className="nav-link px-3"
+                    href={routes.app.register()}
+                    onClick={closeBurger}
+                  >
+                    {__("register")}
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link
+                    className="btn btn-primary"
+                    href={routes.app.login()}
+                    onClick={closeBurger}
+                  >
+                    {__("login")}
+                  </Link>
+                </li>
+              </>
+            )}
+            {user && (
+              <NavbarDropdown
+                label={
+                  <>
+                    {/*<img src={user.avatar} alt={user.name} width="32" height="32"*/}
+                    {/*     className="rounded-circle"/>*/}
+                    <span className="ms-2 text-white">{user.name}</span>
+                  </>
+                }
+              >
+                <NavbarDropdownItem
+                  to={routes.app.user()}
+                  onClick={closeBurger}
+                >
+                  {__("user")}
+                </NavbarDropdownItem>
+                {user.can(GateEnum.ADMIN_ACCESS) && (
+                  <NavbarDropdownItem
+                    to={routes.admin.dashboard()}
+                    onClick={closeBurger}
+                  >
+                    {__("admin.admin_panel")}
+                  </NavbarDropdownItem>
+                )}
+                <NavbarDropdownDivider />
+                <NavbarDropdownItem
+                  to={routes.app.logout()}
+                  onClick={closeBurger}
+                >
+                  {__("logout")}
+                </NavbarDropdownItem>
+              </NavbarDropdown>
+            )}
+          </ul>
+        </div>
+      </div>
+    </nav>
+  );
+};
 
 export default Navbar;

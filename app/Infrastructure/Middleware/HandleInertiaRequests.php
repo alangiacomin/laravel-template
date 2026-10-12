@@ -23,14 +23,11 @@ class HandleInertiaRequests extends Middleware
         $userData = $user ? UserData::fromModel($user) : null;
 
         $locale = app()->getLocale();
-        $defaultLocale = config('app.fallback_locale');
 
         return [
             ...parent::share($request),
             //
-            'locales' => config('app.locales'),
             'locale' => $locale,
-            'defaultLocale' => $defaultLocale,
             'translations' => $this->getTranslations($locale),
             'auth' => [
                 'user' => $userData,

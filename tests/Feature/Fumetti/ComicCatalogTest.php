@@ -13,17 +13,15 @@ class ComicCatalogTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_catalog_is_public_and_localized(): void
+    public function test_catalog_is_public(): void
     {
-        $this->get('/it/fumetti')
+        $this->get('/fumetti')
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('App/Comics/Comics', false)
                 ->where('comics.total', 0)
                 ->has('testate', 0)
                 ->has('serie', 0));
-
-        $this->get('/en/comics')->assertOk();
     }
 
     public function test_search_and_filters_find_comics_by_editorial_metadata_without_duplicate_issues(): void
@@ -49,7 +47,7 @@ class ComicCatalogTest extends TestCase
             'data_pubblicazione' => '2023-02-01',
         ]);
 
-        $this->get('/it/fumetti?q=Diabolik&testata_id='.$testata->id.'&serie_id='.$serie->id.'&year=2024')
+        $this->get('/fumetti?q=Diabolik&testata_id='.$testata->id.'&serie_id='.$serie->id.'&year=2024')
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->where('filters.q', 'Diabolik')
@@ -64,13 +62,13 @@ class ComicCatalogTest extends TestCase
                 ->where('comics.data.0.pubblicazioni.0.serie', 'Inedita')
                 ->where('comics.data.0.pubblicazioni.0.dataPubblicazione', '2024-05-10'));
 
-        $this->get('/it/fumetti?q=Il+re+del+terrore')
+        $this->get('/fumetti?q=Il+re+del+terrore')
             ->assertInertia(fn (Assert $page) => $page
                 ->where('comics.total', 1)
                 ->where('comics.data.0.id', $albo->id)
                 ->has('comics.data.0.pubblicazioni', 2));
 
-        $this->get('/it/fumetti?year=2023')
+        $this->get('/fumetti?year=2023')
             ->assertInertia(fn (Assert $page) => $page
                 ->where('comics.total', 1)
                 ->where('comics.data.0.id', $altroAlbo->id));
@@ -80,7 +78,7 @@ class ComicCatalogTest extends TestCase
     {
         Albo::factory()->count(19)->create();
 
-        $this->get('/it/fumetti')
+        $this->get('/fumetti')
             ->assertInertia(fn (Assert $page) => $page
                 ->where('comics.total', 19)
                 ->where('comics.current_page', 1)

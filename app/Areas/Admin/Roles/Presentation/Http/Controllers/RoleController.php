@@ -17,6 +17,7 @@ use Spatie\Permission\Models\Role as SpatieRole;
 #[Middleware('not_banned')]
 class RoleController extends Controller
 {
+    #[GateAuthorize(GateEnum::ROLE_VIEW)]
     public function index()
     {
         return inertia('Admin/Roles/Roles', [
@@ -24,6 +25,7 @@ class RoleController extends Controller
         ]);
     }
 
+    #[GateAuthorize(GateEnum::ROLE_VIEW)]
     public function show(int $id)
     {
         return inertia('Admin/Roles/Role', [

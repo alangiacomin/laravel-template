@@ -1,19 +1,18 @@
-
 .login {
-    /*display: flex;*/
-    /*justify-content: center;*/
-    margin-top: 150px;
+  /*display: flex;*/
+  /*justify-content: center;*/
+  margin-top: 150px;
 
-    & form {
-        max-width: 460px;
+  & form {
+    max-width: 460px;
+  }
+
+  & .submit-button {
+    display: flex;
+    justify-content: center;
+
+    & button {
+      width: 100%;
     }
-
-    & .submit-button {
-        display: flex;
-        justify-content: center;
-
-        & button {
-            width: 100%;
-        }
-    }
+  }
 }

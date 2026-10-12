@@ -23,7 +23,7 @@ class RoleControllerTest extends TestCase
 
     public function test_guest_cannot_view_roles_list(): void
     {
-        $response = $this->get('/it/admin/ruoli');
+        $response = $this->get('/admin/ruoli');
 
         $response->assertRedirect();
         $this->assertGuest();
@@ -32,10 +32,19 @@ class RoleControllerTest extends TestCase
     public function test_authenticated_user_can_view_roles_list(): void
     {
         $user = User::factory()->create();
+        $user->assignRole(RoleEnum::ADMIN->value);
 
-        $response = $this->actingAs($user)->get('/it/admin/ruoli');
+        $response = $this->actingAs($user)->get('/admin/ruoli');
 
         $response->assertOk();
+    }
+
+    public function test_user_without_role_view_permission_cannot_view_roles_list(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole(RoleEnum::USER->value);
+
+        $this->actingAs($user)->get('/admin/ruoli')->assertForbidden();
     }
 
     public function test_banned_user_cannot_view_roles_list(): void
@@ -44,7 +53,7 @@ class RoleControllerTest extends TestCase
             'banned_at' => now(),
         ]);
 
-        $response = $this->actingAs($user)->get('/it/admin/ruoli');
+        $response = $this->actingAs($user)->get('/admin/ruoli');
 
         $response->assertForbidden();
     }
@@ -52,9 +61,10 @@ class RoleControllerTest extends TestCase
     public function test_authenticated_user_can_view_a_single_role(): void
     {
         $user = User::factory()->create();
+        $user->assignRole(RoleEnum::ADMIN->value);
         $role = Role::where('name', RoleEnum::USER->value)->first();
 
-        $response = $this->actingAs($user)->get("/it/admin/ruoli/{$role->id}");
+        $response = $this->actingAs($user)->get("/admin/ruoli/{$role->id}");
 
         $response->assertOk();
     }
@@ -64,7 +74,7 @@ class RoleControllerTest extends TestCase
         $user = User::factory()->create();
         $role = Role::where('name', RoleEnum::EDITOR->value)->first();
 
-        $response = $this->actingAs($user)->patch("/it/admin/ruoli/{$role->id}/aggiorna", [
+        $response = $this->actingAs($user)->patch("/admin/ruoli/{$role->id}/aggiorna", [
             'permissions' => [PermissionEnum::TODOS_DELETE->value => true],
         ]);
 
@@ -81,7 +91,7 @@ class RoleControllerTest extends TestCase
 
         $role = Role::where('name', RoleEnum::EDITOR->value)->first();
 
-        $response = $this->actingAs($admin)->patch("/it/admin/ruoli/{$role->id}/aggiorna", [
+        $response = $this->actingAs($admin)->patch("/admin/ruoli/{$role->id}/aggiorna", [
             'permissions' => [
                 PermissionEnum::TODOS_CREATE->value => true,
                 PermissionEnum::TODOS_READ->value => true,
@@ -103,11 +113,59 @@ class RoleControllerTest extends TestCase
 
         $role = Role::where('name', RoleEnum::USER->value)->first();
 
-        $response = $this->actingAs($superAdmin)->patch("/it/admin/ruoli/{$role->id}/aggiorna", [
+        $response = $this->actingAs($superAdmin)->patch("/admin/ruoli/{$role->id}/aggiorna", [
             'permissions' => [PermissionEnum::USER_READ->value => true],
         ]);
 
         $response->assertRedirect();
         $this->assertTrue($role->fresh()->hasPermissionTo(PermissionEnum::USER_READ->value));
+    }
+
+    public function test_update_rejects_unknown_permissions(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole(RoleEnum::ADMIN->value);
+        $role = Role::where('name', RoleEnum::EDITOR->value)->first();
+
+        $this->actingAs($admin)->patch("/admin/ruoli/{$role->id}/aggiorna", [
+            'permissions' => ['permesso_inesistente' => true],
+        ])->assertSessionHasErrors('permissions');
+    }
+
+    public function test_update_rejects_malformed_permissions_without_server_error(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole(RoleEnum::ADMIN->value);
+        $role = Role::where('name', RoleEnum::EDITOR->value)->first();
+
+        $this->actingAs($admin)->patch("/admin/ruoli/{$role->id}/aggiorna", [
+            'permissions' => 'user_read',
+        ])->assertSessionHasErrors('permissions');
+    }
+
+    public function test_non_super_admin_cannot_update_super_admin_role(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole(RoleEnum::ADMIN->value);
+        $role = Role::where('name', RoleEnum::SUPER_ADMIN->value)->first();
+
+        $this->actingAs($admin)->patch("/admin/ruoli/{$role->id}/aggiorna", [
+            'permissions' => [PermissionEnum::USER_READ->value => true],
+        ])->assertSessionHasErrors('permissions');
+
+        $this->assertFalse($role->fresh()->hasPermissionTo(PermissionEnum::USER_READ->value));
+    }
+
+    public function test_non_super_admin_cannot_update_a_role_they_hold(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole(RoleEnum::ADMIN->value);
+        $role = Role::where('name', RoleEnum::ADMIN->value)->first();
+
+        $this->actingAs($admin)->patch("/admin/ruoli/{$role->id}/aggiorna", [
+            'permissions' => [PermissionEnum::USER_DELETE->value => true],
+        ])->assertSessionHasErrors('permissions');
+
+        $this->assertFalse($role->fresh()->hasPermissionTo(PermissionEnum::USER_DELETE->value));
     }
 }

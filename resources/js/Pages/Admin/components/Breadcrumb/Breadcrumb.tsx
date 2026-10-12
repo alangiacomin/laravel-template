@@ -1,34 +1,42 @@
-import {FC, ReactNode} from "react";
-import {Link} from "@inertiajs/react";
+import { Link } from "@inertiajs/react";
 import classNames from "classnames";
+import type { FC, ReactNode } from "react";
 import useTranslations from "../../../../hooks/useTranslations.tsx";
 
 export type BreadcrumbElement = {
-    name: string,
-    href: string,
-}
+  name: string;
+  href: string;
+};
 
 type BreadcrumbProps = {
-    elements: BreadcrumbElement[],
-}
+  elements: BreadcrumbElement[];
+};
 
-const Breadcrumb: FC<BreadcrumbProps> = ({elements}: BreadcrumbProps): ReactNode => {
-    const __ = useTranslations();
-    return (
-        <nav aria-label={__('global.breadcrumb')}>
-            <ol className="breadcrumb">
-                {elements.map((element, index: number) => {
-                    const isLast = index === elements.length - 1;
-                    return (
-                        <li className={classNames("breadcrumb-item", {"active": isLast})}
-                            key={`breadcrumb_${element.name}`}>
-                            {isLast ? element.name : <Link href={element.href}>{element.name}</Link>}
-                        </li>
-                    );
-                })}
-            </ol>
-        </nav>
-    )
-}
+const Breadcrumb: FC<BreadcrumbProps> = ({
+  elements,
+}: BreadcrumbProps): ReactNode => {
+  const __ = useTranslations();
+  return (
+    <nav aria-label={__("global.breadcrumb")}>
+      <ol className="breadcrumb">
+        {elements.map((element, index: number) => {
+          const isLast = index === elements.length - 1;
+          return (
+            <li
+              className={classNames("breadcrumb-item", { active: isLast })}
+              key={`breadcrumb_${element.name}`}
+            >
+              {isLast ? (
+                element.name
+              ) : (
+                <Link href={element.href}>{element.name}</Link>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
+  );
+};
 
 export default Breadcrumb;

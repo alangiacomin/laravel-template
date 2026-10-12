@@ -21,5 +21,7 @@ enum GateEnum: string
     case TODOS_ASSIGN = 'todos_assign';
     case TODOS_MANAGE = 'todos_manage';
 
+    case FUMETTI_EDIT = 'fumetti_edit';
+
     case ADMIN_ACCESS = 'admin_access';
 }

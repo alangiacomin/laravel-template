@@ -16,6 +16,7 @@ use Illuminate\Routing\Attributes\Controllers\Middleware;
 #[Middleware('not_banned')]
 class UserController extends Controller
 {
+    #[GateAuthorize(GateEnum::USER_VIEW)]
     public function index()
     {
         $users = User::with('roles')->get();
@@ -25,6 +26,7 @@ class UserController extends Controller
         ]);
     }
 
+    #[GateAuthorize(GateEnum::USER_VIEW)]
     public function show(int $id)
     {
         $user = User::with('roles')->findOrFail($id);

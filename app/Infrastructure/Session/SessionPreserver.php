@@ -10,7 +10,6 @@ class SessionPreserver
      * @var list<string>
      */
     private const PRESERVED_KEYS = [
-        'locale',
     ];
 
     /**

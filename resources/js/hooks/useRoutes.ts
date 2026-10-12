@@ -1,68 +1,63 @@
-import {usePage} from '@inertiajs/react';
-import {SharedPageProps} from "../Pages/page.types.ts";
-import {useCallback} from "react";
-import {localizedRoute} from "../localizedRoute.ts";
+import { usePage } from "@inertiajs/react";
+import { useCallback } from "react";
+import type { SharedPageProps } from "../Pages/page.types.ts";
 
 export const useRoutes = () => {
-    const {url} = usePage<SharedPageProps>();
+  const { url } = usePage<SharedPageProps>();
 
-    const normalizePath = useCallback((path: string): string => {
-        const segments = path.split('/').filter(Boolean);
+  const normalizePath = useCallback((path: string): string => {
+    const segments = path.split("/").filter(Boolean);
 
-        return '/' + segments.join('/');
-    }, []);
+    return `/${segments.join("/")}`;
+  }, []);
 
-    const routes = {
-        app: {
-            home: () => localizedRoute('home'),
-            comics: () => localizedRoute('comics'),
-            examplePage: () => localizedRoute('example.page'),
-            login: () => localizedRoute('login'),
-            logout: () => localizedRoute('logout'),
-            register: () => localizedRoute('register'),
-            user: () => localizedRoute('user.show'),
-        },
-        admin: {
-            dashboard: () => localizedRoute('admin.dashboard'),
-            users: () => localizedRoute('admin.users'),
-            user: (id: number) => localizedRoute('admin.user.show', {id}),
-            roles: () => localizedRoute('admin.roles'),
-            role: (id: number) => localizedRoute('admin.role.show', {id}),
-            testate: () => localizedRoute('admin.testate'),
-            testata: (id: number) => localizedRoute('admin.testata.show', {id}),
-            serie: () => localizedRoute('admin.serie'),
-            serieItem: (id: number) => localizedRoute('admin.serie.show', {id}),
-            albi: () => localizedRoute('admin.albi'),
-            albo: (id: number) => localizedRoute('admin.albo.show', {id}),
-        },
+  const routes = {
+    app: {
+      home: () => route("home"),
+      comics: () => route("comics"),
+      examplePage: () => route("example.page"),
+      login: () => route("login"),
+      logout: () => route("logout"),
+      register: () => route("register"),
+      user: () => route("user.show"),
+    },
+    admin: {
+      dashboard: () => route("admin.dashboard"),
+      users: () => route("admin.users"),
+      user: (id: number) => route("admin.user.show", { id }),
+      roles: () => route("admin.roles"),
+      role: (id: number) => route("admin.role.show", { id }),
+    },
+  };
+
+  const isActive = (to: string): boolean => {
+    const currentPath = normalizePath(url);
+    const targetPath = normalizePath(
+      new URL(to.split("?")[0], window.location.origin).pathname,
+    );
+
+    // Exact match
+    if (currentPath === targetPath) {
+      return true;
     }
 
-    const isActive = (to: string): boolean => {
-        const currentPath = normalizePath(url);
-        const targetPath = normalizePath(
-            new URL(to.split('?')[0], window.location.origin).pathname
-        );
+    // If targetPath is a root ('/' or '/admin'), do not do partial matching
+    const roots = [
+      normalizePath(routes.app.home().replace(window.location.origin, "")),
+      normalizePath(
+        routes.admin.dashboard().replace(window.location.origin, ""),
+      ),
+    ];
+    if (roots.includes(targetPath)) {
+      return false;
+    }
 
-        // Exact match
-        if (currentPath === targetPath) {
-            return true;
-        }
+    // Partial match: currentPath starts with targetPath
+    return currentPath.startsWith(`${targetPath}/`);
+  };
 
-        // If targetPath is a root ('/' or '/admin'), do not do partial matching
-        const roots = [
-            normalizePath(routes.app.home().replace(window.location.origin, '')),
-            normalizePath(routes.admin.dashboard().replace(window.location.origin, '')),
-        ];
-        if (roots.includes(targetPath)) {
-            return false;
-        }
-
-        // Partial match: currentPath starts with targetPath
-        return currentPath.startsWith(targetPath + '/');
-    };
-
-    return {
-        isActive,
-        ...routes,
-    };
+  return {
+    isActive,
+    ...routes,
+  };
 };

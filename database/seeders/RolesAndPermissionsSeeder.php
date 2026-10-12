@@ -27,21 +27,21 @@ class RolesAndPermissionsSeeder extends Seeder
         $roles = [
             RoleEnum::SUPER_ADMIN->value => [],
             RoleEnum::ADMIN->value => [
+                PermissionEnum::USER_READ,
                 PermissionEnum::ROLE_CREATE,
                 PermissionEnum::ROLE_READ,
                 PermissionEnum::ROLE_UPDATE,
                 PermissionEnum::ROLE_DELETE,
+                PermissionEnum::FUMETTI_UPDATE,
             ],
             RoleEnum::EDITOR->value => [
                 PermissionEnum::TODOS_CREATE,
                 PermissionEnum::TODOS_READ,
                 PermissionEnum::TODOS_UPDATE,
                 PermissionEnum::TODOS_DELETE,
+                PermissionEnum::FUMETTI_UPDATE,
             ],
-            RoleEnum::USER->value => [
-                PermissionEnum::TODOS_READ,
-                PermissionEnum::USER_READ,
-            ],
+            RoleEnum::USER->value => [],
         ];
 
         foreach ($roles as $roleName => $rolePermissions) {

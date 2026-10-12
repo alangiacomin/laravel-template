@@ -41,7 +41,7 @@ Quando si propone un piano:
 Scegli ed esegui i controlli pertinenti in base ai file modificati:
 
 - **PHP/backend**: `composer test` (PHPUnit) e `composer lint` (Laravel Pint e PHPStan).
-- **Frontend**: `bun run build` o `npm run build`.
+- **Frontend**: `bun run lint` (Biome) e `bun run build`.
 - **Routing**: controlla entrambe le lingue (`it`, `en`) e i nomi route.
 - **Migration/configurazione**: esegui i test pertinenti verificando il funzionamento delle migration su SQLite/database di test.
 

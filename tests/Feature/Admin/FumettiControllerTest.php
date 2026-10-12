@@ -7,6 +7,8 @@ use App\Areas\Main\Fumetti\Infrastructure\Persistence\Eloquent\Models\Pubblicazi
 use App\Areas\Main\Fumetti\Infrastructure\Persistence\Eloquent\Models\Serie;
 use App\Areas\Main\Fumetti\Infrastructure\Persistence\Eloquent\Models\Testata;
 use App\Models\User;
+use App\Shared\Infrastructure\Enums\RoleEnum;
+use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
@@ -17,12 +19,14 @@ class FumettiControllerTest extends TestCase
 
     public function test_guest_cannot_view_fumetti_admin(): void
     {
-        $this->get('/it/admin/testate')->assertRedirect();
+        $this->get('/admin/testate')->assertRedirect();
     }
 
     public function test_series_are_ordered_by_publication_then_title(): void
     {
+        $this->seed(RolesAndPermissionsSeeder::class);
         $user = User::factory()->create();
+        $user->assignRole(RoleEnum::EDITOR->value);
         $zeta = Testata::factory()->create(['titolo' => 'Zeta']);
         $alfa = Testata::factory()->create(['titolo' => 'Alfa']);
         Serie::factory()->create(['testata_id' => $zeta->id, 'titolo' => 'Alfa']);
@@ -30,7 +34,7 @@ class FumettiControllerTest extends TestCase
         Serie::factory()->create(['testata_id' => $alfa->id, 'titolo' => 'Alfa']);
 
         $this->actingAs($user)
-            ->get('/it/admin/serie')
+            ->get('/admin/serie')
             ->assertInertia(fn (Assert $page) => $page
                 ->where('serie.0.testata.titolo', 'Alfa')
                 ->where('serie.0.titolo', 'Alfa')
@@ -40,19 +44,43 @@ class FumettiControllerTest extends TestCase
                 ->where('serie.2.titolo', 'Alfa'));
     }
 
+    public function test_user_without_fumetti_permission_cannot_write(): void
+    {
+        $this->seed(RolesAndPermissionsSeeder::class);
+        $user = User::factory()->create();
+        $user->assignRole(RoleEnum::USER->value);
+
+        $this->actingAs($user)->post('/admin/testate', ['titolo' => 'Diabolik'])->assertForbidden();
+
+        $this->assertDatabaseMissing('testate', ['titolo' => 'Diabolik']);
+    }
+
+    public function test_editor_can_create_testata(): void
+    {
+        $this->seed(RolesAndPermissionsSeeder::class);
+        $editor = User::factory()->create();
+        $editor->assignRole(RoleEnum::EDITOR->value);
+
+        $this->actingAs($editor)->post('/admin/testate', ['titolo' => 'Diabolik'])->assertRedirect();
+
+        $this->assertDatabaseHas('testate', ['titolo' => 'Diabolik']);
+    }
+
     public function test_authenticated_user_can_manage_fumetti_and_associations(): void
     {
+        $this->seed(RolesAndPermissionsSeeder::class);
         $user = User::factory()->create();
+        $user->assignRole(RoleEnum::EDITOR->value);
         $testata = Testata::factory()->create();
         $serie = Serie::factory()->create(['testata_id' => $testata->id]);
         $albo = Albo::factory()->create();
 
-        $this->actingAs($user)->get('/it/admin/testate')->assertOk();
-        $this->actingAs($user)->post('/it/admin/testate', ['titolo' => 'Diabolik'])->assertRedirect();
-        $this->actingAs($user)->post('/it/admin/albi', [
+        $this->actingAs($user)->get('/admin/testate')->assertOk();
+        $this->actingAs($user)->post('/admin/testate', ['titolo' => 'Diabolik'])->assertRedirect();
+        $this->actingAs($user)->post('/admin/albi', [
             'titolo' => 'Albo senza serie',
         ])->assertSessionHasErrors('serie');
-        $this->actingAs($user)->post('/it/admin/albi', [
+        $this->actingAs($user)->post('/admin/albi', [
             'titolo' => 'Nuovo albo',
             'serie' => [[
                 'serie_id' => $serie->id,
@@ -61,7 +89,7 @@ class FumettiControllerTest extends TestCase
                 'data_pubblicazione' => null,
             ]],
         ])->assertRedirect();
-        $this->actingAs($user)->patch("/it/admin/albi/{$albo->id}/aggiorna", [
+        $this->actingAs($user)->patch("/admin/albi/{$albo->id}/aggiorna", [
             'titolo' => $albo->titolo,
             'serie' => [[
                 'serie_id' => $serie->id,
@@ -79,7 +107,9 @@ class FumettiControllerTest extends TestCase
 
     public function test_fumetti_pages_return_explicit_typed_data_shapes(): void
     {
+        $this->seed(RolesAndPermissionsSeeder::class);
         $user = User::factory()->create();
+        $user->assignRole(RoleEnum::EDITOR->value);
         $testata = Testata::factory()->create(['titolo' => 'Diabolik']);
         $serie = Serie::factory()->create([
             'testata_id' => $testata->id,
@@ -108,7 +138,7 @@ class FumettiControllerTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get('/it/admin/testate')
+            ->get('/admin/testate')
             ->assertInertia(fn (Assert $page) => $page
                 ->component('Admin/Fumetti/Testate', false)
                 ->has('testate.0', fn (Assert $item) => $item
@@ -119,14 +149,14 @@ class FumettiControllerTest extends TestCase
                     ->where('serie.0.titolo', 'Inedita')));
 
         $this->actingAs($user)
-            ->get('/it/admin/serie')
+            ->get('/admin/serie')
             ->assertInertia(fn (Assert $page) => $page
                 ->component('Admin/Fumetti/Serie', false)
                 ->where('serie.0.testata.id', $testata->id)
                 ->where('serie.0.testata.titolo', 'Diabolik'));
 
         $this->actingAs($user)
-            ->get('/it/admin/albi')
+            ->get('/admin/albi')
             ->assertInertia(fn (Assert $page) => $page
                 ->component('Admin/Fumetti/Albi', false)
                 ->where('filters.testata_id', null)
@@ -135,7 +165,7 @@ class FumettiControllerTest extends TestCase
                 ->has('albi', 2));
 
         $this->actingAs($user)
-            ->get("/it/admin/albi?testata_id={$testata->id}&serie_id={$serie->id}")
+            ->get("/admin/albi?testata_id={$testata->id}&serie_id={$serie->id}")
             ->assertInertia(fn (Assert $page) => $page
                 ->component('Admin/Fumetti/Albi', false)
                 ->where('filters.testata_id', $testata->id)
@@ -153,7 +183,7 @@ class FumettiControllerTest extends TestCase
                 ->where('albi.0.serie.0.data_pubblicazione', '2026-02-14'));
 
         $this->actingAs($user)
-            ->get("/it/admin/albi?serie_id={$altraSerie->id}")
+            ->get("/admin/albi?serie_id={$altraSerie->id}")
             ->assertInertia(fn (Assert $page) => $page
                 ->component('Admin/Fumetti/Albi', false)
                 ->where('filters.testata_id', null)
@@ -162,7 +192,7 @@ class FumettiControllerTest extends TestCase
                 ->has('albi', 2));
 
         $this->actingAs($user)
-            ->get("/it/admin/albi/{$albo->id}")
+            ->get("/admin/albi/{$albo->id}")
             ->assertInertia(fn (Assert $page) => $page
                 ->component('Admin/Fumetti/Albo', false)
                 ->where('albo.id', $albo->id)
@@ -173,7 +203,9 @@ class FumettiControllerTest extends TestCase
 
     public function test_removing_and_readding_a_series_soft_deletes_and_restores_the_association(): void
     {
+        $this->seed(RolesAndPermissionsSeeder::class);
         $user = User::factory()->create();
+        $user->assignRole(RoleEnum::EDITOR->value);
         $serie = Serie::factory()->create();
         $albo = Albo::factory()->create();
         $payload = [
@@ -187,13 +219,13 @@ class FumettiControllerTest extends TestCase
         ];
 
         $this->actingAs($user)
-            ->patch("/it/admin/albi/{$albo->id}/aggiorna", $payload)
+            ->patch("/admin/albi/{$albo->id}/aggiorna", $payload)
             ->assertRedirect();
 
         $associazione = Pubblicazioni::query()->where('albo_id', $albo->id)->firstOrFail();
 
         $this->actingAs($user)
-            ->patch("/it/admin/albi/{$albo->id}/aggiorna", [
+            ->patch("/admin/albi/{$albo->id}/aggiorna", [
                 'titolo' => $albo->titolo,
                 'serie' => [],
             ])
@@ -202,7 +234,7 @@ class FumettiControllerTest extends TestCase
         $this->assertSoftDeleted('albo_serie', ['id' => $associazione->id]);
 
         $this->actingAs($user)
-            ->patch("/it/admin/albi/{$albo->id}/aggiorna", $payload)
+            ->patch("/admin/albi/{$albo->id}/aggiorna", $payload)
             ->assertRedirect();
 
         $this->assertDatabaseHas('albo_serie', [

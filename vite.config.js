@@ -1,130 +1,117 @@
-import {defineConfig} from 'vite';
-import laravel from 'laravel-vite-plugin';
-import react from '@vitejs/plugin-react';
-import {execSync} from 'node:child_process';
-import path from 'node:path';
+import { exec } from "node:child_process";
+import path from "node:path";
+import react from "@vitejs/plugin-react";
+import laravel from "laravel-vite-plugin";
+import { defineConfig } from "vite";
 
-const ENTITY_ROOT = path.resolve('../app');
+const ENTITY_ROOT = path.resolve("../app");
 let debounceTimer = null;
 let ziggyDebounceTimer = null;
 
-function runTypescriptTransform() {
-  if (debounceTimer) {
-    clearTimeout(debounceTimer);
-  }
+// Helper asincrono e non bloccante
+function runCommand(command, description) {
+  return new Promise((resolve) => {
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        console.error(
+          `❌ Errore durante ${description}:`,
+          stderr || error.message,
+        );
+      } else if (stdout.trim()) {
+        console.log(`\n[${description}] ${stdout.trim()}`);
+      }
+      resolve();
+    });
+  });
+}
 
+function runTypescriptTransform() {
+  if (debounceTimer) clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => {
-    try {
-      execSync('php artisan typescript:transform', {
-        stdio: 'inherit',
-      });
-    } catch (error) {
-      console.error('Errore durante typescript:transform');
-    }
+    runCommand("php artisan typescript:transform", "typescript:transform");
   }, 250);
 }
 
 function runZiggyGenerate() {
-  if (ziggyDebounceTimer) {
-    clearTimeout(ziggyDebounceTimer);
-  }
-
+  if (ziggyDebounceTimer) clearTimeout(ziggyDebounceTimer);
   ziggyDebounceTimer = setTimeout(() => {
-    try {
-      execSync('php artisan ziggy:generate', {
-        stdio: 'inherit',
-      });
-    } catch (error) {
-      console.error('Errore durante ziggy:generate');
-    }
+    runCommand("php artisan ziggy:generate", "ziggy:generate");
   }, 250);
 }
 
 export default defineConfig({
+  css: {
+    transformer: "lightningcss",
+  },
   plugins: [
     react({
       babel: {
-        plugins: ['babel-plugin-react-compiler'],
+        plugins: ["babel-plugin-react-compiler"],
       },
     }),
     laravel({
       input: [
-        'resources/css/vendor.css',
-        'resources/css/app.css',
-        'resources/js/index.tsx',
+        "resources/css/vendor.css",
+        "resources/css/app.css",
+        "resources/js/index.tsx",
         // 'resources/js/app.js'
       ],
       refresh: true,
     }),
     {
-      name: 'spatie-typescript-transformer',
-
+      name: "spatie-typescript-transformer",
       buildStart() {
         runTypescriptTransform();
       },
-
       configureServer(server) {
         server.watcher.add(ENTITY_ROOT);
-
-        server.watcher.on('change', (file) => {
-          const normalized = file.replace(/\\/g, '/');
-          const isPhp = normalized.endsWith('.php');
-          if (isPhp
-            && (
-              // normalized.includes('/Domain/Entities/')
-              normalized.includes('/Application/Data/')
-              || normalized.includes('/Presentation/Http/Requests/')
-              || normalized.includes('/app/Enums/')
-            )) {
-            console.log(`File changed: ${file}`);
+        server.watcher.on("change", (file) => {
+          const normalized = file.replace(/\\/g, "/");
+          if (
+            normalized.endsWith(".php") &&
+            (normalized.includes("/Application/Data/") ||
+              normalized.includes("/Presentation/Http/Requests/") ||
+              normalized.includes("/app/Enums/"))
+          ) {
+            console.log(`File PHP modificato: ${file}`);
             runTypescriptTransform();
           }
         });
       },
     },
     {
-      name: 'ziggy-generate',
-
+      name: "ziggy-generate",
       buildStart() {
         runZiggyGenerate();
       },
-
       configureServer(server) {
-        // osserviamo direttamente la cartella routes
-        server.watcher.add(path.resolve('../routes'));
-
-        server.watcher.on('change', (file) => {
-          const normalized = file.replace(/\\/g, '/');
-
-          const isPhp = normalized.endsWith('.php');
-          const isRoutes =
-            normalized.includes('/routes/');
-
-          if (isPhp && isRoutes) {
+        server.watcher.add(path.resolve("../routes"));
+        server.watcher.on("change", (file) => {
+          const normalized = file.replace(/\\/g, "/");
+          if (normalized.endsWith(".php") && normalized.includes("/routes/")) {
             console.log(`Route modificata: ${file}`);
             runZiggyGenerate();
           }
         });
       },
-    }
-
+    },
   ],
   build: {
     rollupOptions: {
       output: {
-        chunkFileNames: 'js/[name]-[hash].js',
-        entryFileNames: 'js/[name]-[hash].js',
+        chunkFileNames: "js/[name]-[hash].js",
+        entryFileNames: "js/[name]-[hash].js",
         codeSplitting: {
           groups: [
             {
-              name: 'react-vendor',
+              name: "react-vendor",
               // minSize: 100000, // 100KB
               // maxSize: 250000, // 250KB
               test: /node_modules\/react|react-dom|@inertiajs/,
               priority: 20,
             },
             {
-              name: 'vendor',
+              name: "vendor",
               // minSize: 100000, // 100KB
               // maxSize: 250000, // 250KB
               test: /node_modules/,
@@ -141,9 +128,14 @@ export default defineConfig({
         // },
       },
     },
+    // Abilita Rolldown come bundling engine
+    rolldownOptions: {
+      // Mantiene la compatibilità con la configurazione rollup che hai già definito
+    },
+    cssMinify: "lightningcss",
     // Aggiungere una gestione migliorata delle risorse statiche
     // assetsInlineLimit: 4096, // Per caricare file di dimensioni maggiori come file esterni
-    minify: 'esbuild', // Usa Terser per una migliore compressione del codice
+    minify: "esbuild", // Usa Terser per una migliore compressione del codice
   },
   // server: {
   //   watch: {

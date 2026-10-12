@@ -3,11 +3,7 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2020",
     "useDefineForClassFields": true,
-    "lib": [
-      "ES2020",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
     /* Bundler mode */
@@ -39,8 +35,5 @@
     // Garantisce che i nomi dei file siano coerenti
     "forceConsistentCasingInFileNames": true
   },
-  "include": [
-    "./resources/js/**/*",
-    "global.d.ts"
-  ]
+  "include": ["./resources/js/**/*", "global.d.ts"]
 }

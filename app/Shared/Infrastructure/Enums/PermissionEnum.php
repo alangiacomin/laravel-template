@@ -14,6 +14,8 @@ enum PermissionEnum: string
     case TODOS_UPDATE = 'todos_update';
     case TODOS_DELETE = 'todos_delete';
 
+    case FUMETTI_UPDATE = 'fumetti_update';
+
     case ROLE_CREATE = 'role_create';
     case ROLE_READ = 'role_read';
     case ROLE_UPDATE = 'role_update';
