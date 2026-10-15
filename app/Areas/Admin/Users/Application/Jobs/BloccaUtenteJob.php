@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Areas\Admin\Users\Application\Commands;
+namespace App\Areas\Admin\Users\Application\Jobs;
 
-use AlanGiacomin\LaravelCqrs\App\Application\Commands\Command;
 use App\Models\User;
+use Illuminate\Foundation\Bus\Dispatchable;
 
-class BloccaUtenteCommand extends Command
+class BloccaUtenteJob
 {
+    use Dispatchable;
+
     public function __construct(
         public int $id,
     ) {}

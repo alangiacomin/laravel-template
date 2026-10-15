@@ -2,9 +2,8 @@
 
 namespace App\Areas\Admin\Dashboard\Presentation\Http\Controllers;
 
-use AlanGiacomin\LaravelCqrs\App\Infrastructure\Attributes\GateAuthorize;
-use AlanGiacomin\LaravelCqrs\App\Presentation\Http\Controllers\Controller;
 use App\Areas\Admin\Dashboard\Domain\Entities\DashboardStats;
+use App\Infrastructure\Http\Controllers\Controller;
 use App\Models\User;
 use App\Shared\Infrastructure\Enums\GateEnum;
 use Carbon\Carbon;
@@ -14,7 +13,7 @@ class DashboardController extends Controller
 {
     #[Middleware('auth')]
     #[Middleware('not_banned')]
-    #[GateAuthorize(GateEnum::ADMIN_ACCESS)]
+    #[Middleware('can:'.GateEnum::ADMIN_ACCESS->value)]
     public function index()
     {
         $now = Carbon::now();

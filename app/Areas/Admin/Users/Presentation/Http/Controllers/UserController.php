@@ -2,12 +2,11 @@
 
 namespace App\Areas\Admin\Users\Presentation\Http\Controllers;
 
-use AlanGiacomin\LaravelCqrs\App\Infrastructure\Attributes\GateAuthorize;
-use AlanGiacomin\LaravelCqrs\App\Presentation\Http\Controllers\Controller;
-use App\Areas\Admin\Users\Application\Commands\BloccaUtenteCommand;
-use App\Areas\Admin\Users\Application\Commands\SbloccaUtenteCommand;
 use App\Areas\Admin\Users\Application\Data\AdminUserData;
+use App\Areas\Admin\Users\Application\Jobs\BloccaUtenteJob;
+use App\Areas\Admin\Users\Application\Jobs\SbloccaUtenteJob;
 use App\Areas\Admin\Users\Presentation\Http\Requests\UserUpdateRequest;
+use App\Infrastructure\Http\Controllers\Controller;
 use App\Models\User;
 use App\Shared\Infrastructure\Enums\GateEnum;
 use Illuminate\Routing\Attributes\Controllers\Middleware;
@@ -16,7 +15,7 @@ use Illuminate\Routing\Attributes\Controllers\Middleware;
 #[Middleware('not_banned')]
 class UserController extends Controller
 {
-    #[GateAuthorize(GateEnum::USER_VIEW)]
+    #[Middleware('can:'.GateEnum::USER_VIEW->value)]
     public function index()
     {
         $users = User::with('roles')->get();
@@ -26,7 +25,7 @@ class UserController extends Controller
         ]);
     }
 
-    #[GateAuthorize(GateEnum::USER_VIEW)]
+    #[Middleware('can:'.GateEnum::USER_VIEW->value)]
     public function show(int $id)
     {
         $user = User::with('roles')->findOrFail($id);
@@ -36,7 +35,7 @@ class UserController extends Controller
         ]);
     }
 
-    #[GateAuthorize(GateEnum::USER_EDIT)]
+    #[Middleware('can:'.GateEnum::USER_EDIT->value)]
     public function update(int $id, UserUpdateRequest $request)
     {
         $validatedData = $request->validated();
@@ -46,18 +45,18 @@ class UserController extends Controller
         $user->syncRoles(array_keys(array_filter($validatedData['roles'] ?? [])));
     }
 
-    #[GateAuthorize(GateEnum::USER_MANAGE)]
+    #[Middleware('can:'.GateEnum::USER_MANAGE->value)]
     public function blocca(int $id)
     {
-        dispatch_sync(new BloccaUtenteCommand($id));
+        dispatch_sync(new BloccaUtenteJob($id));
 
         return $this->flashSuccess(__('admin.user_blocked'));
     }
 
-    #[GateAuthorize(GateEnum::USER_MANAGE)]
+    #[Middleware('can:'.GateEnum::USER_MANAGE->value)]
     public function sblocca(int $id)
     {
-        dispatch_sync(new SbloccaUtenteCommand($id));
+        dispatch_sync(new SbloccaUtenteJob($id));
 
         return $this->flashSuccess(__('admin.user_unblocked'));
     }

@@ -2,7 +2,7 @@
 
 namespace App\Areas\Main;
 
-use AlanGiacomin\LaravelCqrs\App\Presentation\Http\Controllers\Controller;
+use App\Infrastructure\Http\Controllers\Controller;
 use Illuminate\Routing\Attributes\Controllers\Middleware;
 use Inertia\Response;
 use Inertia\ResponseFactory;

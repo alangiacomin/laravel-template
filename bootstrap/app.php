@@ -1,6 +1,5 @@
 <?php
 
-use AlanGiacomin\LaravelCqrs\App\Infrastructure\Middleware\ApplyGateAttributes;
 use App\Infrastructure\Middleware\EnsureUserIsNotBanned;
 use App\Infrastructure\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
@@ -20,7 +19,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(
             append: [
                 HandleInertiaRequests::class,
-                ApplyGateAttributes::class,
             ],
             prepend: [
             ]);

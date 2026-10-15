@@ -4,10 +4,9 @@
 
 namespace App\Areas\Admin\Roles\Presentation\Http\Controllers;
 
-use AlanGiacomin\LaravelCqrs\App\Infrastructure\Attributes\GateAuthorize;
-use AlanGiacomin\LaravelCqrs\App\Presentation\Http\Controllers\Controller;
 use App\Areas\Admin\Roles\Domain\Entities\Role;
 use App\Areas\Admin\Roles\Presentation\Http\Requests\RoleUpdateRequest;
+use App\Infrastructure\Http\Controllers\Controller;
 use App\Shared\Infrastructure\Enums\GateEnum;
 use Illuminate\Routing\Attributes\Controllers\Middleware;
 use Illuminate\Support\Arr;
@@ -17,7 +16,7 @@ use Spatie\Permission\Models\Role as SpatieRole;
 #[Middleware('not_banned')]
 class RoleController extends Controller
 {
-    #[GateAuthorize(GateEnum::ROLE_VIEW)]
+    #[Middleware('can:'.GateEnum::ROLE_VIEW->value)]
     public function index()
     {
         return inertia('Admin/Roles/Roles', [
@@ -25,7 +24,7 @@ class RoleController extends Controller
         ]);
     }
 
-    #[GateAuthorize(GateEnum::ROLE_VIEW)]
+    #[Middleware('can:'.GateEnum::ROLE_VIEW->value)]
     public function show(int $id)
     {
         return inertia('Admin/Roles/Role', [
@@ -33,7 +32,7 @@ class RoleController extends Controller
         ]);
     }
 
-    #[GateAuthorize(GateEnum::ROLE_EDIT)]
+    #[Middleware('can:'.GateEnum::ROLE_EDIT->value)]
     public function update(int $id, RoleUpdateRequest $request)
     {
         $validatedData = $request->validated();

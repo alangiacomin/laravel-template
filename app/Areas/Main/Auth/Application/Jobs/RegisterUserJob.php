@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Areas\Main\Auth\Application\Commands;
+namespace App\Areas\Main\Auth\Application\Jobs;
 
-use AlanGiacomin\LaravelCqrs\App\Application\Commands\Command;
 use App\Areas\Main\Auth\Domain\Events\UserRegisteredEvent;
 use App\Models\User;
 use App\Shared\Infrastructure\Enums\RoleEnum;
+use Illuminate\Foundation\Bus\Dispatchable;
 
-class RegisterUserCommand extends Command
+class RegisterUserJob
 {
+    use Dispatchable;
+
     public function __construct(
         public string $name,
         public string $email,

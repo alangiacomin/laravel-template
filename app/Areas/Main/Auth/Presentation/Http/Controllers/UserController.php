@@ -2,8 +2,8 @@
 
 namespace App\Areas\Main\Auth\Presentation\Http\Controllers;
 
-use AlanGiacomin\LaravelCqrs\App\Presentation\Http\Controllers\Controller;
 use App\Areas\Main\Auth\Presentation\Http\Requests\UserUpdateRequest;
+use App\Infrastructure\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Routing\Attributes\Controllers\Middleware;
 

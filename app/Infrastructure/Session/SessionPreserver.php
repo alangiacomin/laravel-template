@@ -9,17 +9,17 @@ class SessionPreserver
     /**
      * @var list<string>
      */
-    private const PRESERVED_KEYS = [
-    ];
+    private array $preservedKeys = [];
 
     /**
      * Invalidates the current session while preserving application session values.
      */
     public function invalidate(Request $request): void
     {
+        /** @var array<string, mixed> $values */
         $values = [];
 
-        foreach (self::PRESERVED_KEYS as $key) {
+        foreach ($this->preservedKeys as $key) {
             if ($request->session()->has($key)) {
                 $values[$key] = $request->session()->get($key);
             }

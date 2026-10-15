@@ -2,7 +2,7 @@
 
 namespace App\Areas\Main\Auth\Presentation\Http\Controllers;
 
-use AlanGiacomin\LaravelCqrs\App\Presentation\Http\Controllers\Controller;
+use App\Infrastructure\Http\Controllers\Controller;
 
 class BroadcastController extends Controller
 {

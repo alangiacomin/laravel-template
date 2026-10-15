@@ -2,11 +2,11 @@
 
 namespace App\Areas\Main\Auth\Presentation\Http\Controllers;
 
-use AlanGiacomin\LaravelCqrs\App\Presentation\Http\Controllers\Controller;
-use App\Areas\Main\Auth\Application\Commands\RegisterUserCommand;
 use App\Areas\Main\Auth\Application\Data\UserData;
+use App\Areas\Main\Auth\Application\Jobs\RegisterUserJob;
 use App\Areas\Main\Auth\Presentation\Http\Requests\LoginRequest;
 use App\Areas\Main\Auth\Presentation\Http\Requests\RegisterRequest;
+use App\Infrastructure\Http\Controllers\Controller;
 use App\Infrastructure\Session\SessionPreserver;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\RedirectResponse;
@@ -46,7 +46,7 @@ class AuthController extends Controller
     #[Middleware('guest')]
     public function register(RegisterRequest $requestData): RedirectResponse
     {
-        $user = dispatch_sync(new RegisterUserCommand(
+        $user = dispatch_sync(new RegisterUserJob(
             $requestData->name,
             $requestData->email,
             $requestData->password,

@@ -15,8 +15,6 @@ Questa pagina raccoglie le istruzioni minime per iniziare a usare il template in
 composer install
 ```
 
-Se il progetto dipende da un repository esterno in path (per esempio `alangiacomin/laravel-cqrs`), assicurati che sia presente nella posizione attesa dal `composer.json` prima di eseguire l'installazione.
-
 ## 2) Configurare l'ambiente
 
 ```bash

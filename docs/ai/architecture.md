@@ -99,9 +99,10 @@ return new class extends Migration
 
 ### Flussi applicativi CRUD
 
-- I controller validano tramite Request, invocano i command per le scritture e compongono la risposta HTTP/Inertia;
-- I command applicativi contengono le mutazioni usando Eloquent, senza delegarle ad action e senza introdurre repository quando non servono;
+- I controller validano tramite Request, invocano i job per le scritture (`dispatch_sync(new XJob(...))`) e compongono la risposta HTTP/Inertia;
+- I job applicativi (`Application/Jobs/*Job`, classi con `Dispatchable`, creati senza queue) contengono le mutazioni usando Eloquent, senza delegarle ad action e senza introdurre repository quando non servono;
 - Le letture possono usare query Eloquent native, mantenute in classi applicative dedicate quando la loro composizione appesantisce il controller;
+- I controller estendono `App\Infrastructure\Http\Controllers\Controller` (helper `flashSuccess`, `spaRedirect`, `hardRedirect`); l'autorizzazione tramite Gate si dichiara con `#[Middleware('can:'.GateEnum::X->value)]`;
 - Usa Spatie Data per contratti espliciti di input/output condivisi o trasformati, annotandoli con `#[TypeScript]` quando devono generare tipi frontend. Le regole di validazione HTTP restano nei Request;
 - Rigenera `resources/js/types/generated/index.ts` con `php artisan typescript:transform` e importa i tipi generati nei componenti, invece di ridefinire localmente le stesse strutture.
 
