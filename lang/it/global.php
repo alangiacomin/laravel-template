@@ -13,7 +13,6 @@ return [
     'back' => 'Indietro',
     'user' => 'Profilo',
     'home' => 'Home',
-    'comics' => 'Fumetti',
     'language' => 'Lingua',
     'toggle_navigation' => 'Apri o chiudi la navigazione',
     'breadcrumb' => 'Percorso di navigazione',

@@ -32,14 +32,12 @@ class RolesAndPermissionsSeeder extends Seeder
                 PermissionEnum::ROLE_READ,
                 PermissionEnum::ROLE_UPDATE,
                 PermissionEnum::ROLE_DELETE,
-                PermissionEnum::FUMETTI_UPDATE,
             ],
             RoleEnum::EDITOR->value => [
                 PermissionEnum::TODOS_CREATE,
                 PermissionEnum::TODOS_READ,
                 PermissionEnum::TODOS_UPDATE,
                 PermissionEnum::TODOS_DELETE,
-                PermissionEnum::FUMETTI_UPDATE,
             ],
             RoleEnum::USER->value => [],
         ];

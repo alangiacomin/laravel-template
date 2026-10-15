@@ -9,7 +9,7 @@ Se non sono esplicitamente indicati nella richiesta dell'utente:
 - È **tassativamente vietato** assumere un'area o un contesto di default.
 - È **obbligatorio** chiedere chiarimento all'utente (utilizzando lo strumento `ask_question` o una domanda diretta bloccante) specificando:
   1. L'**Area di azione** (es. `Main`, `Admin`, ecc.).
-  2. Il **Contesto / modulo di dominio** (es. `TodoList`, `Fumetti`, `Auth`, ecc.).
+  2. Il **Contesto / modulo di dominio** (es. `TodoList`, `Users`, `Auth`, ecc.).
 
 ### B. Verifica delle Regole di Progetto
 - Consultare [`docs/ai/architecture.md`](architecture.md) per identificare i namespace, i percorsi e le convenzioni esatte.

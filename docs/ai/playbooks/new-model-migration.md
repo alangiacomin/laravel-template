@@ -4,7 +4,7 @@ Questo playbook descrive la procedura operativa per creare una nuova entità/mod
 
 ## Precondizioni
 
-1. **Area e Contesto identificati**: prima di operare, l'agente deve conoscere con certezza l'Area (`Main`, `Admin`, ecc.) e il Contesto (`TodoList`, `Fumetti`, ecc.). Se non specificati, **deve richiederli all'utente** prima di procedere.
+1. **Area e Contesto identificati**: prima di operare, l'agente deve conoscere con certezza l'Area (`Main`, `Admin`, ecc.) e il Contesto (`TodoList`, `Users`, ecc.). Se non specificati, **deve richiederli all'utente** prima di procedere.
 2. **Nome del Model**: deve corrispondere al nome dell'entità specificato (es. `Todo`).
 
 ## Procedura

@@ -14,7 +14,6 @@ export const useRoutes = () => {
   const routes = {
     app: {
       home: () => route("home"),
-      comics: () => route("comics"),
       examplePage: () => route("example.page"),
       login: () => route("login"),
       logout: () => route("logout"),

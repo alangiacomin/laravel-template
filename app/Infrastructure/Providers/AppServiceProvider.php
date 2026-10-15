@@ -109,10 +109,6 @@ class AppServiceProvider extends ServiceProvider
             PermissionEnum::TODOS_DELETE,
         ]));
 
-        Gate::define(GateEnum::FUMETTI_EDIT, fn (User $user) => $user->can([
-            PermissionEnum::FUMETTI_UPDATE,
-        ]));
-
         Gate::define(GateEnum::ADMIN_ACCESS, fn (User $user) => Gate::any([
             GateEnum::USER_VIEW,
             GateEnum::ROLE_VIEW,

@@ -23,7 +23,6 @@ export enum GateEnum {
   TODOS_COMPLETE = "todos_complete",
   TODOS_ASSIGN = "todos_assign",
   TODOS_MANAGE = "todos_manage",
-  FUMETTI_EDIT = "fumetti_edit",
   ADMIN_ACCESS = "admin_access",
 }
 export type LoginRequest = {
@@ -40,7 +39,6 @@ export enum PermissionEnum {
   TODOS_READ = "todos_read",
   TODOS_UPDATE = "todos_update",
   TODOS_DELETE = "todos_delete",
-  FUMETTI_UPDATE = "fumetti_update",
   ROLE_CREATE = "role_create",
   ROLE_READ = "role_read",
   ROLE_UPDATE = "role_update",
