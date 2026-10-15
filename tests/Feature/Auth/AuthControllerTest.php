@@ -22,14 +22,14 @@ class AuthControllerTest extends TestCase
 
     public function test_login_view_can_be_rendered(): void
     {
-        $response = $this->get('/accedi');
+        $response = $this->get(route('login'));
 
         $response->assertOk();
     }
 
     public function test_register_view_can_be_rendered(): void
     {
-        $response = $this->get('/registrati');
+        $response = $this->get(route('register'));
 
         $response->assertOk();
     }
@@ -40,7 +40,7 @@ class AuthControllerTest extends TestCase
             'password' => Hash::make('password'),
         ]);
 
-        $response = $this->post('/accedi', [
+        $response = $this->post(route('login'), [
             'email' => $user->email,
             'password' => 'password',
         ]);
@@ -55,7 +55,7 @@ class AuthControllerTest extends TestCase
             'password' => Hash::make('password'),
         ]);
 
-        $response = $this->post('/accedi', [
+        $response = $this->post(route('login'), [
             'email' => $user->email,
             'password' => 'wrong-password',
         ]);
@@ -71,7 +71,7 @@ class AuthControllerTest extends TestCase
             'banned_at' => now(),
         ]);
 
-        $response = $this->post('/accedi', [
+        $response = $this->post(route('login'), [
             'email' => $user->email,
             'password' => 'password',
         ]);
@@ -82,7 +82,7 @@ class AuthControllerTest extends TestCase
 
     public function test_login_requires_valid_data(): void
     {
-        $response = $this->post('/accedi', [
+        $response = $this->post(route('login'), [
             'email' => 'not-an-email',
             'password' => '',
         ]);
@@ -94,7 +94,7 @@ class AuthControllerTest extends TestCase
     {
         Notification::fake();
 
-        $response = $this->post('/registrati', [
+        $response = $this->post(route('register'), [
             'name' => 'Mario Rossi',
             'email' => 'mario.rossi@example.com',
             'password' => 'password123',
@@ -115,7 +115,7 @@ class AuthControllerTest extends TestCase
 
     public function test_registration_requires_valid_data(): void
     {
-        $response = $this->post('/registrati', [
+        $response = $this->post(route('register'), [
             'name' => '',
             'email' => 'not-an-email',
             'password' => 'short',
@@ -132,7 +132,7 @@ class AuthControllerTest extends TestCase
 
         $existing = User::factory()->create();
 
-        $response = $this->post('/registrati', [
+        $response = $this->post(route('register'), [
             'name' => 'Mario Rossi',
             'email' => $existing->email,
             'password' => 'password123',
@@ -146,7 +146,7 @@ class AuthControllerTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->get('/esci');
+        $response = $this->actingAs($user)->get(route('logout'));
 
         $response->assertRedirect();
         $this->assertGuest();
@@ -154,7 +154,7 @@ class AuthControllerTest extends TestCase
 
     public function test_guest_cannot_view_user_page(): void
     {
-        $response = $this->get('/utente');
+        $response = $this->get(route('user.show'));
 
         $response->assertRedirect();
         $this->assertGuest();
@@ -164,7 +164,7 @@ class AuthControllerTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->get('/utente');
+        $response = $this->actingAs($user)->get(route('user.show'));
 
         $response->assertOk();
     }
@@ -175,14 +175,14 @@ class AuthControllerTest extends TestCase
             'banned_at' => now(),
         ]);
 
-        $response = $this->actingAs($user)->get('/utente');
+        $response = $this->actingAs($user)->get(route('user.show'));
 
         $response->assertForbidden();
     }
 
     public function test_guest_is_redirected_from_verification_notice(): void
     {
-        $response = $this->get('/verifica-email');
+        $response = $this->get(route('verification.notice'));
 
         $response->assertRedirect();
         $this->assertGuest();
@@ -194,7 +194,7 @@ class AuthControllerTest extends TestCase
             'email_verified_at' => now(),
         ]);
 
-        $response = $this->actingAs($user)->get('/verifica-email');
+        $response = $this->actingAs($user)->get(route('verification.notice'));
 
         $response->assertRedirect();
     }
@@ -203,7 +203,7 @@ class AuthControllerTest extends TestCase
     {
         $user = User::factory()->unverified()->create();
 
-        $response = $this->actingAs($user)->get('/verifica-email');
+        $response = $this->actingAs($user)->get(route('verification.notice'));
 
         $response->assertOk();
     }
@@ -212,7 +212,7 @@ class AuthControllerTest extends TestCase
     {
         $user = User::factory()->create(['name' => 'Old Name']);
 
-        $response = $this->patch("/utente/{$user->id}/aggiorna", [
+        $response = $this->patch(route('user.update', ['id' => $user->id]), [
             'name' => 'New Name',
         ]);
 
@@ -227,7 +227,7 @@ class AuthControllerTest extends TestCase
     {
         $user = User::factory()->create(['name' => 'Old Name']);
 
-        $response = $this->actingAs($user)->patch("/utente/{$user->id}/aggiorna", [
+        $response = $this->actingAs($user)->patch(route('user.update', ['id' => $user->id]), [
             'name' => 'New Name',
         ]);
 
@@ -242,7 +242,7 @@ class AuthControllerTest extends TestCase
     {
         $user = User::factory()->create(['name' => 'Old Name']);
 
-        $response = $this->actingAs($user)->patch("/utente/{$user->id}/aggiorna", [
+        $response = $this->actingAs($user)->patch(route('user.update', ['id' => $user->id]), [
             'name' => '',
         ]);
 
@@ -260,7 +260,7 @@ class AuthControllerTest extends TestCase
             'banned_at' => now(),
         ]);
 
-        $response = $this->actingAs($user)->patch("/utente/{$user->id}/aggiorna", [
+        $response = $this->actingAs($user)->patch(route('user.update', ['id' => $user->id]), [
             'name' => 'New Name',
         ]);
 

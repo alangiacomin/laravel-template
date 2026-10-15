@@ -1,5 +1,5 @@
 import { Link } from "@inertiajs/react";
-import type { FC, ReactNode } from "react";
+import type { FC, MouseEvent, ReactNode } from "react";
 import { NOOP } from "../../../../constants.ts";
 
 type NavbarDropdownItemProps = {

@@ -15,4 +15,4 @@ Route::get('/verification.verify', [AuthController::class, 'emailVerification'])
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
-Route::patch('/user.update', [UserController::class, 'update'])->name('user.update');
+Route::patch('/user.update/{id}', [UserController::class, 'update'])->name('user.update');

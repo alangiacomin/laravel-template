@@ -22,7 +22,7 @@ class UserControllerTest extends TestCase
 
     public function test_guest_cannot_view_users_list(): void
     {
-        $response = $this->get('/admin/utenti');
+        $response = $this->get(route('admin.users'));
 
         $response->assertRedirect();
         $this->assertGuest();
@@ -33,7 +33,7 @@ class UserControllerTest extends TestCase
         $user = User::factory()->create();
         $user->assignRole(RoleEnum::SUPER_ADMIN->value);
 
-        $response = $this->actingAs($user)->get('/admin/utenti');
+        $response = $this->actingAs($user)->get(route('admin.users'));
 
         $response->assertOk();
     }
@@ -43,7 +43,7 @@ class UserControllerTest extends TestCase
         $user = User::factory()->create();
         $user->assignRole(RoleEnum::USER->value);
 
-        $this->actingAs($user)->get('/admin/utenti')->assertForbidden();
+        $this->actingAs($user)->get(route('admin.users'))->assertForbidden();
     }
 
     public function test_banned_user_cannot_view_users_list(): void
@@ -52,7 +52,7 @@ class UserControllerTest extends TestCase
             'banned_at' => now(),
         ]);
 
-        $response = $this->actingAs($user)->get('/admin/utenti');
+        $response = $this->actingAs($user)->get(route('admin.users'));
 
         $response->assertForbidden();
     }
@@ -63,7 +63,7 @@ class UserControllerTest extends TestCase
         $user->assignRole(RoleEnum::SUPER_ADMIN->value);
         $other = User::factory()->create();
 
-        $response = $this->actingAs($user)->get("/admin/utenti/{$other->id}");
+        $response = $this->actingAs($user)->get(route('admin.user.show', ['id' => $other->id]));
 
         $response->assertOk();
     }
@@ -73,7 +73,7 @@ class UserControllerTest extends TestCase
         $user = User::factory()->create();
         $other = User::factory()->create(['name' => 'Old Name']);
 
-        $response = $this->actingAs($user)->patch("/admin/utenti/{$other->id}/aggiorna", [
+        $response = $this->actingAs($user)->patch(route('admin.user.update', ['id' => $other->id]), [
             'name' => 'New Name',
         ]);
 
@@ -91,7 +91,7 @@ class UserControllerTest extends TestCase
 
         $other = User::factory()->create(['name' => 'Old Name']);
 
-        $response = $this->actingAs($admin)->patch("/admin/utenti/{$other->id}/aggiorna", [
+        $response = $this->actingAs($admin)->patch(route('admin.user.update', ['id' => $other->id]), [
             'name' => 'New Name',
         ]);
 
@@ -107,7 +107,7 @@ class UserControllerTest extends TestCase
         $user = User::factory()->create();
         $other = User::factory()->create();
 
-        $response = $this->actingAs($user)->patch("/admin/utenti/{$other->id}/blocca");
+        $response = $this->actingAs($user)->patch(route('admin.user.blocca', ['id' => $other->id]));
 
         $response->assertForbidden();
         $this->assertNull($other->refresh()->banned_at);
@@ -120,7 +120,7 @@ class UserControllerTest extends TestCase
 
         $other = User::factory()->create();
 
-        $response = $this->actingAs($admin)->patch("/admin/utenti/{$other->id}/blocca");
+        $response = $this->actingAs($admin)->patch(route('admin.user.blocca', ['id' => $other->id]));
 
         $response->assertRedirect();
         $this->assertNotNull($other->refresh()->banned_at);
@@ -135,7 +135,7 @@ class UserControllerTest extends TestCase
             'banned_at' => now(),
         ]);
 
-        $response = $this->actingAs($admin)->patch("/admin/utenti/{$other->id}/sblocca");
+        $response = $this->actingAs($admin)->patch(route('admin.user.sblocca', ['id' => $other->id]));
 
         $response->assertRedirect();
         $this->assertNull($other->refresh()->banned_at);
@@ -146,14 +146,14 @@ class UserControllerTest extends TestCase
         $admin = User::factory()->create();
         $admin->assignRole(RoleEnum::ADMIN->value);
 
-        $this->actingAs($admin)->get('/admin/utenti')->assertOk();
+        $this->actingAs($admin)->get(route('admin.users'))->assertOk();
     }
 
     public function test_update_rejects_unknown_roles(): void
     {
         $other = User::factory()->create();
 
-        $this->actingAs($this->userEditor())->patch("/admin/utenti/{$other->id}/aggiorna", [
+        $this->actingAs($this->userEditor())->patch(route('admin.user.update', ['id' => $other->id]), [
             'name' => 'Nome',
             'roles' => ['inesistente' => true],
         ])->assertSessionHasErrors('roles');
@@ -165,7 +165,7 @@ class UserControllerTest extends TestCase
     {
         $other = User::factory()->create();
 
-        $this->actingAs($this->userEditor())->patch("/admin/utenti/{$other->id}/aggiorna", [
+        $this->actingAs($this->userEditor())->patch(route('admin.user.update', ['id' => $other->id]), [
             'name' => 'Nome',
             'roles' => 'admin',
         ])->assertSessionHasErrors('roles');
@@ -175,7 +175,7 @@ class UserControllerTest extends TestCase
     {
         $other = User::factory()->create();
 
-        $this->actingAs($this->userEditor())->patch("/admin/utenti/{$other->id}/aggiorna", [
+        $this->actingAs($this->userEditor())->patch(route('admin.user.update', ['id' => $other->id]), [
             'name' => 'Nome',
             'roles' => [RoleEnum::SUPER_ADMIN->value => true],
         ])->assertSessionHasErrors('roles');
@@ -187,7 +187,7 @@ class UserControllerTest extends TestCase
     {
         $other = User::factory()->create();
 
-        $this->actingAs($this->userEditor())->patch("/admin/utenti/{$other->id}/aggiorna", [
+        $this->actingAs($this->userEditor())->patch(route('admin.user.update', ['id' => $other->id]), [
             'name' => 'Nome',
             'roles' => [RoleEnum::ADMIN->value => true],
         ])->assertSessionHasErrors('roles');
@@ -200,7 +200,7 @@ class UserControllerTest extends TestCase
         $other = User::factory()->create();
         $other->assignRole(RoleEnum::ADMIN->value);
 
-        $this->actingAs($this->userEditor())->patch("/admin/utenti/{$other->id}/aggiorna", [
+        $this->actingAs($this->userEditor())->patch(route('admin.user.update', ['id' => $other->id]), [
             'name' => 'Nome',
             'roles' => [RoleEnum::ADMIN->value => false],
         ])->assertSessionHasErrors('roles');
@@ -212,7 +212,7 @@ class UserControllerTest extends TestCase
     {
         $actor = $this->userEditor();
 
-        $this->actingAs($actor)->patch("/admin/utenti/{$actor->id}/aggiorna", [
+        $this->actingAs($actor)->patch(route('admin.user.update', ['id' => $actor->id]), [
             'name' => 'Nome',
             'roles' => [RoleEnum::EDITOR->value => true],
         ])->assertSessionHasErrors('roles');
@@ -224,7 +224,7 @@ class UserControllerTest extends TestCase
     {
         $other = User::factory()->create();
 
-        $this->actingAs($this->userEditor())->patch("/admin/utenti/{$other->id}/aggiorna", [
+        $this->actingAs($this->userEditor())->patch(route('admin.user.update', ['id' => $other->id]), [
             'name' => 'Nome',
             'roles' => [RoleEnum::EDITOR->value => true],
         ])->assertSessionHasNoErrors();
@@ -238,7 +238,7 @@ class UserControllerTest extends TestCase
         $superAdmin->assignRole(RoleEnum::SUPER_ADMIN->value);
         $other = User::factory()->create();
 
-        $this->actingAs($superAdmin)->patch("/admin/utenti/{$other->id}/aggiorna", [
+        $this->actingAs($superAdmin)->patch(route('admin.user.update', ['id' => $other->id]), [
             'name' => 'Nome',
             'roles' => [RoleEnum::ADMIN->value => true],
         ])->assertSessionHasNoErrors();

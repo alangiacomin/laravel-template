@@ -57,6 +57,15 @@ Con copertura:
 composer test-coverage
 ```
 
+Test del frontend ([Vitest](https://vitest.dev) + Testing Library, file `*.test.ts(x)` accanto al codice):
+
+```bash
+bun run test         # esecuzione singola
+bun run test:watch   # watch
+bun run typecheck    # tsc
+bun run check        # typecheck + lint + test
+```
+
 ## Qualità del codice
 
 Formattazione PHP:

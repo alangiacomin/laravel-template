@@ -1,5 +1,5 @@
 import type { FC, ReactNode } from "react";
-import EnvVars from "../../hooks/useAppData.tsx";
+import useAppData from "../../hooks/useAppData.tsx";
 
 type BuiltInBrowserComponentProps = {
   title?: string;
@@ -7,7 +7,8 @@ type BuiltInBrowserComponentProps = {
 const BuiltInBrowserComponent: FC<BuiltInBrowserComponentProps> = ({
   title,
 }: BuiltInBrowserComponentProps): ReactNode => {
-  const titleTokens = [EnvVars.appName, title];
+  const { appName } = useAppData();
+  const titleTokens = [appName, title];
   return <title>{titleTokens.filter((x) => x).join(" - ")}</title>;
 };
 
