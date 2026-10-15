@@ -1,11 +1,11 @@
 # Playbook
 
-I playbook sono procedure riutilizzabili per attività frequenti. Descrivono
-obiettivi, punti da controllare e verifiche; non assumono l'esistenza di un
-particolare agente o tool.
+Procedure riutilizzabili per attività frequenti: precondizioni, passi con percorsi completi, verifica. Seguili alla lettera e adattali ai nomi richiesti.
 
-- [Aggiungere una pagina localizzata](new-localized-page.md)
-- [Aggiungere un Model Eloquent e Migration](new-model-migration.md)
+| Playbook | Quando |
+| --- | --- |
+| [new-page.md](new-page.md) | Nuova pagina (route + controller + React + lang + test) |
+| [new-model-migration.md](new-model-migration.md) | Nuovo model Eloquent e migration |
+| [new-crud-job.md](new-crud-job.md) | Nuova scrittura (create/update/delete/azione) via Request + Job |
 
-Nuovi playbook devono includere precondizioni, file/superfici coinvolti,
-verifica e criteri per aggiornare la documentazione.
+Un nuovo playbook deve avere: precondizioni, file coinvolti, passi con snippet, comandi di verifica e quando aggiornare la documentazione.

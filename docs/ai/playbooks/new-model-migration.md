@@ -9,14 +9,14 @@ Questo playbook descrive la procedura operativa per creare una nuova entità/mod
 
 ## Procedura
 
-1. **Crea la Migration**:
+1. **Crea la Migration** (`php artisan make:migration create_{model_snake}_table --create={model_snake} --no-interaction`):
    - File: `database/migrations/<timestamp>_create_{model_snake}_table.php`
    - Tabella: al **singolare** in `snake_case` (es. `Schema::create('todo', ...)`).
    - Includi le colonne obbligatorie e opzionali richieste.
    - Non inserire `$table->softDeletes()` a meno di esplicita richiesta.
    - Assicurati che `down()` esegua `Schema::dropIfExists('{model_snake}');`.
 
-2. **Crea la directory e la classe Model**:
+2. **Crea la directory e la classe Model** (`php artisan make:model {Model} --no-interaction` crea in `app/Models`: **sposta il file** nel percorso sotto e correggi il namespace, oppure crealo direttamente lì):
    - Directory: `app/Areas/{Area}/{Context}/Infrastructure/Persistence/Eloquent/Models/`
    - File: `{Model}.php`
    - Namespace: `App\Areas\{Area}\{Context}\Infrastructure\Persistence\Eloquent\Models`
@@ -33,11 +33,10 @@ Questo playbook descrive la procedura operativa per creare una nuova entità/mod
 
 ## Verifica
 
-1. Esegui la formattazione e l'analisi statica:
-   ```bash
-   composer lint
-   ```
-2. Esegui la suite di test pertinente:
-   ```bash
-   composer test
-   ```
+```bash
+vendor/bin/pint --dirty --format agent
+composer lint                                 # Pint + PHPStan
+php artisan test --compact --filter={Model}   # test che usano RefreshDatabase (esegue le migration)
+```
+
+Se il model alimenta una pagina, continua con [new-crud-job.md](new-crud-job.md) o [new-page.md](new-page.md).

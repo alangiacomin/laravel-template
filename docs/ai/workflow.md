@@ -1,57 +1,60 @@
 # Workflow per agenti AI
 
-## 1. Analisi e Checklist Pre-Piano (BLOCCANTE)
+## 1. Checklist pre-piano (BLOCCANTE)
 
-Prima di formulare qualsiasi piano operativo o toccare file di codice, l'agente deve completare la seguente checklist:
+Prima di formulare un piano o toccare file di codice:
 
-### A. Chiarimento Preventivo di Area e Contesto
-Se non sono esplicitamente indicati nella richiesta dell'utente:
-- È **tassativamente vietato** assumere un'area o un contesto di default.
-- È **obbligatorio** chiedere chiarimento all'utente (utilizzando lo strumento `ask_question` o una domanda diretta bloccante) specificando:
-  1. L'**Area di azione** (es. `Main`, `Admin`, ecc.).
-  2. Il **Contesto / modulo di dominio** (es. `TodoList`, `Users`, `Auth`, ecc.).
+### A. Area e Contesto
+Se la richiesta non li indica esplicitamente:
+- È **vietato** assumere un'area o un contesto di default.
+- **Chiedi all'utente** (strumento di domanda interattiva se disponibile, altrimenti domanda diretta) e attendi la risposta:
+  1. **Area**: `Main`, `Admin`, ...
+  2. **Contesto** (modulo di dominio): `Users`, `Roles`, `Auth`, `TodoList`, ...
+- Elenca Aree e Contesti esistenti con `ls app/Areas app/Areas/*` per proporre opzioni concrete.
 
-### B. Verifica delle Regole di Progetto
-- Consultare [`docs/ai/architecture.md`](architecture.md) per identificare i namespace, i percorsi e le convenzioni esatte.
-- Riconoscere che l'architettura per Aree/Contesti ha priorità assoluta su qualsiasi skill o convenzione standard di Laravel (es. non proporre mai model in `app/Models`).
-- Verificare se esiste un playbook pertinente in [`docs/ai/playbooks/`](playbooks/README.md) (es. per nuove pagine o per nuovi model/migration).
+**Non serve chiedere** per modifiche che non toccano codice applicativo (sola documentazione, config, CI) o quando il file da modificare è già indicato dall'utente.
+
+### B. Regole di progetto
+- Leggi [architecture.md](architecture.md) (percorsi, naming, livelli). L'architettura per Area/Contesto prevale su skill e convenzioni standard di Laravel: mai model in `app/Models`.
+- Se tocchi `resources/js` leggi [frontend.md](frontend.md).
+- Cerca un playbook pertinente in [playbooks/](playbooks/README.md) e seguilo.
 
 ---
 
-## 2. Formulazione del Piano
+## 2. Piano
 
-Quando si propone un piano:
-- Indicare chiaramente i file target con i loro percorsi completi (`app/Areas/{Area}/{Context}/...`).
-- Esplicitare i nomi delle classi, dei namespace e delle tabelle del database (che devono essere in `snake_case` e al singolare).
-- Se l'utente richiede conferma preventiva (*"Dammi un piano da confermare prima di modificare il codice"*), arrestarsi ed attendere la conferma esplicita prima di qualsiasi azione di scrittura.
+- Indica i file con percorso completo (`app/Areas/{Area}/{Contesto}/...`), nomi di classi, namespace, nomi route, chiavi `lang/it` e tabelle (`snake_case`, singolare).
+- Se l'utente chiede un piano da confermare, fermati e attendi conferma esplicita prima di scrivere.
 
 ---
 
 ## 3. Implementazione
 
-- Applica la modifica più piccola e coerente che risolve il requisito, riusando helper, pattern e naming esistenti.
-- Mantieni i tipi PHP rigorosi e aggiungi validazione nei punti di ingresso (Request).
+- Fai la modifica più piccola e coerente; riusa helper, pattern e naming esistenti (copia da un file gemello, vedi [README](README.md#prima-di-modificare-codice)).
+- Tipi PHP espliciti; validazione nei Request; mutazioni nei Job (vedi [architecture.md](architecture.md#flussi-crud)).
 - Non nascondere errori con catch generici, fallback silenziosi o ritorni che simulano il successo.
-- Per modifiche cross-stack verifica tutte le superfici: route localizzate, controller, servizi, componenti React/Inertia, tipi TypeScript (`php artisan typescript:transform`), traduzioni `lang/` e test.
+- Modifica cross-stack: considera tutte le superfici → route, controller, Request/Job/Data, tipi TS, pagina React, `useRoutes`, `lang/it`, test.
+- Crea file con i comandi `php artisan make:*` quando esistono, poi spostali/adattali al percorso corretto dell'Area/Contesto.
 
 ---
 
 ## 4. Verifica
 
-Scegli ed esegui i controlli pertinenti in base ai file modificati:
+Esegui il comando più stretto che copre la modifica:
 
-- **PHP/backend**: `composer test` (PHPUnit) e `composer lint` (Laravel Pint e PHPStan).
-- **Frontend**: `bun run lint` (Biome) e `bun run build`.
-- **Routing**: controlla entrambe le lingue (`it`, `en`) e i nomi route.
-- **Migration/configurazione**: esegui i test pertinenti verificando il funzionamento delle migration su SQLite/database di test.
+| Hai modificato | Esegui |
+| --- | --- |
+| PHP | `vendor/bin/pint --dirty --format agent`, poi `php artisan test --compact <file o --filter=...>` |
+| PHP, a fine lavoro | `composer lint` (Pint + PHPStan) |
+| Classi `#[TypeScript]` / enum | `php artisan typescript:transform` (rigenera `resources/js/types/generated/index.ts`) |
+| Route | `php artisan route:list --name=<nome>` e `bun run ziggy:generate` |
+| Frontend | `bun run check` (typecheck + Biome + Vitest); `bun run build` se tocchi bundling |
+| Migration | `php artisan test --compact` sui test pertinenti (usano `RefreshDatabase`) |
 
-Se un comando non può essere eseguito, indica il motivo e usa una verifica alternativa ragionevole. Non dichiarare verificato ciò che non è stato controllato.
+Se un comando non è eseguibile, dillo e usa una verifica alternativa. Non dichiarare verificato ciò che non hai controllato.
 
 ---
 
 ## 5. Conclusione
 
-Rileggi il diff (`git diff`), verifica che non contenga file spuri o modifiche involontarie e controlla lo stato del worktree. Riporta in modo conciso:
-- cosa è cambiato (con link ai file modificati);
-- quali verifiche sono state eseguite con successo;
-- eventuali punti aperti o note operative.
+Rileggi `git diff`, controlla file spuri e `git status`. Riporta in modo conciso: cosa è cambiato (con link ai file), verifiche eseguite, punti aperti.
