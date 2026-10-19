@@ -22,9 +22,6 @@ return Application::configure(basePath: dirname(__DIR__))
             ],
             prepend: [
             ]);
-        // $middleware->preventRequestForgery(except: [
-        //     'todos',
-        // ]);
 
         $middleware->alias([
             'not_banned' => EnsureUserIsNotBanned::class,

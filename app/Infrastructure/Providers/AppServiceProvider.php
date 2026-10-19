@@ -95,24 +95,9 @@ class AppServiceProvider extends ServiceProvider
             PermissionEnum::ROLE_DELETE,
         ]));
 
-        Gate::define(GateEnum::TODOS_VIEW, fn (User $user) => $user->can([
-            PermissionEnum::TODOS_READ,
-        ]));
-        Gate::define(GateEnum::TODOS_EDIT, fn (User $user) => $user->can([
-            PermissionEnum::TODOS_READ,
-            PermissionEnum::TODOS_UPDATE,
-        ]));
-        Gate::define(GateEnum::TODOS_MANAGE, fn (User $user) => $user->can([
-            PermissionEnum::TODOS_CREATE,
-            PermissionEnum::TODOS_READ,
-            PermissionEnum::TODOS_UPDATE,
-            PermissionEnum::TODOS_DELETE,
-        ]));
-
         Gate::define(GateEnum::ADMIN_ACCESS, fn (User $user) => Gate::any([
             GateEnum::USER_VIEW,
             GateEnum::ROLE_VIEW,
-            GateEnum::TODOS_VIEW,
         ]));
     }
 }

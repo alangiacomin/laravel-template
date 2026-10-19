@@ -1,33 +1,38 @@
 # Documentazione per agenti AI
 
-Vendor-neutral: valida per Claude Code, GitHub Copilot, Junie, Gemini e altri. Le regole vincolanti sono in `AGENTS.md`; qui c'è il dettaglio operativo.
+Questa documentazione descrive come un agente AI deve orientarsi e operare nel
+template Laravel. È **vendor-neutral**: le regole valgono per GitHub Copilot,
+Junie, Claude Code, Gemini e altri agenti, indipendentemente dal modello o dagli
+strumenti disponibili.
 
 ## Gerarchia delle fonti
 
-1. Richiesta e vincoli espliciti dell'utente.
-2. `AGENTS.md` e questa cartella (`docs/ai/`).
-3. Convenzioni e skill generiche di Laravel: solo sussidiarie. **In caso di conflitto vince `docs/ai/`** (es. i model NON vanno in `app/Models`).
-4. Convenzioni osservabili nel codice esistente.
+1. **Requisiti dell'utente** e vincoli espliciti della richiesta.
+2. **Questa documentazione (`docs/ai/`)** e le istruzioni sovrane in `AGENTS.md`.
+3. **Convenzioni e skill generiche del framework**: hanno valore sussidiario. **In caso di conflitto, le regole in `docs/ai/` prevalgono SEMPRE sulle convenzioni generiche di Laravel e sulle skill** (es. l'architettura modulare per Area e Contesto ha priorità sul posizionamento piatto standard `app/Models`).
+4. **Convenzioni osservabili nel codice esistente**.
 
-Se due fonti sono in conflitto, segnala il conflitto e segui quella con priorità maggiore.
+In caso di conflitto va segnalato il conflitto e va seguita la fonte con priorità maggiore. Le istruzioni specifiche di un prodotto sono adapter: possono indicare dove trovare questa documentazione, ma non devono cambiarne il significato.
 
-## Cosa leggere e quando
+## Prima di proporre un piano o modificare codice
 
-| Documento | Leggilo quando |
-| --- | --- |
-| [workflow.md](workflow.md) | **Sempre**, prima di proporre un piano o toccare file (chiedi Area e Contesto) |
-| [architecture.md](architecture.md) | Tocchi PHP: percorsi, naming, livelli, routing, model, tipi TS, traduzioni |
-| [frontend.md](frontend.md) | Tocchi `resources/js`: pagine, hook, form, test frontend |
-| [playbooks/](playbooks/README.md) | Il compito coincide con un playbook (nuova pagina, nuovo model, nuova scrittura CRUD) |
-| [adapters.md](adapters.md) | Devi collegare un nuovo strumento/IDE a queste regole |
+1. **Esegui la checklist pre-piano in [workflow.md](workflow.md)**: chiedi SEMPRE chiarimento su **Area** e **Contesto** all'utente se non esplicitamente indicati prima di iniziare o proporre un piano.
+2. Individua i file e i test coinvolti consultando [architecture.md](architecture.md).
+3. Leggi la documentazione relativa all'area e al contesto di dominio.
+4. Cerca un'implementazione simile già presente nel repository.
+5. Controlla lo stato del worktree e preserva le modifiche non pertinenti.
+6. Definisci il controllo minimo che dimostrerà che la modifica funziona.
 
-## Prima di modificare codice
+## Documenti
 
-1. Esegui la checklist in [workflow.md](workflow.md).
-2. Cerca nel repo un'implementazione simile e copiane struttura e naming. Riferimenti pronti: contesto backend `app/Areas/Admin/Users`, pagina semplice `resources/js/Pages/App/ExamplePage`, pagina con form `resources/js/Pages/Admin/Users/User.tsx`, test `tests/Feature/Admin/UserControllerTest.php`.
-3. Controlla `git status` e preserva le modifiche non pertinenti.
-4. Decidi in anticipo quale comando dimostra che la modifica funziona (tabella in [workflow.md](workflow.md#4-verifica)).
+- [Architettura e invarianti](architecture.md)
+- [Workflow per agenti](workflow.md)
+- [Playbook disponibili](playbooks/README.md)
+- [Compatibilità tra agenti](adapters.md)
 
-## Manutenzione
+## Principio di manutenzione
 
-Se il codice smentisce una regola, verifica il codice, poi correggi la doc o l'implementazione: non lasciare ambiguità. Documenta decisioni, confini e comandi, non ogni dettaglio del codice.
+La documentazione per l'AI deve spiegare decisioni, confini e verifiche, non
+replicare ogni dettaglio del codice. Quando una regola viene smentita dal
+repository, prima si verifica il codice e poi si aggiorna la documentazione
+oppure si corregge l'implementazione: non si lascia ambiguità.

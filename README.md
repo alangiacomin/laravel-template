@@ -1,39 +1,65 @@
 # Laravel Template
 
-Laravel 13 · PHP 8.4 · Inertia + React + TypeScript · Vite · Reverb · PHPUnit · Pint · Biome.
+Template Laravel pronto per avviare nuovi progetti con una base moderna, coerente e già configurata per lo sviluppo quotidiano.
+
+## Cosa include
+
+- Laravel 13
+- PHP 8.4
+- Inertia + React + TypeScript
+- Vite
+- Reverb (WebSocket)
+- PHPUnit e Laravel Pint
+- routing localizzato per locale (`it`, `en`)
+- struttura organizzata per aree e applicazioni
+
+## Requisiti
+
+- PHP `^8.4`
+- Composer
+- Bun (consigliato) oppure npm
+- database locale (SQLite, MySQL o PostgreSQL)
 
 ## Avvio rapido
 
-Requisiti: PHP `^8.4`, Composer, Bun, un database (SQLite, MySQL o PostgreSQL).
-
 ```bash
 composer install
-cp .env.example .env        # poi imposta DB_*
+cp .env.example .env
 php artisan key:generate
 php artisan migrate
 bun install
-composer run dev            # server, queue, Reverb e Vite insieme
+bun run build
+php artisan serve
 ```
 
-## Comandi utili
+Se vuoi avviare tutto l'ambiente di sviluppo in parallelo:
 
-| Cosa | Comando |
-| --- | --- |
-| Ambiente di sviluppo | `composer run dev` |
-| Test backend | `composer test` |
-| Pint + PHPStan | `composer lint` |
-| Typecheck + Biome + Vitest | `bun run check` |
-| Correggi lint frontend | `bun run lint:fix` |
-| Genera tipi TS da PHP | `php artisan typescript:transform` |
-| Build frontend | `bun run build` |
-| Cache/config strani | `php artisan optimize:clear` |
+```bash
+composer run dev
+```
 
-Dettagli e "dove metto le cose": [docs/development.md](docs/development.md).
+## Documentazione
 
-## Per agenti AI
+Indice completo: [docs/README.md](docs/README.md)
 
-[AGENTS.md](AGENTS.md) e [docs/ai/](docs/ai/README.md).
+- Setup completo: [docs/dev/setup.md](docs/dev/setup.md)
+- Sviluppo e convenzioni: [docs/dev/development.md](docs/dev/development.md)
+- Inertia.js: [docs/dev/inertia.md](docs/dev/inertia.md)
+- Documentazione per agenti AI: [AGENTS.md](AGENTS.md) e [docs/ai/](docs/ai/)
+- Documentazione dell'app: [docs/app/](docs/app/README.md)
+
+## Nota importante
+
+Questo template usa una sola lingua di base (`it`), definita in `config/app.php`, e route non prefissate per locale. Le URL sono quindi stabili e vengono costruite con i nomi delle route Laravel/Ziggy, senza un file `config/routes.php`.
+
+Esempi:
+
+- `/`
+- `/login`
+- `/admin.roles`
+
+Per i dettagli completi, consulta la documentazione in `docs/`.
 
 ## Licenza
 
-[MIT](https://opensource.org/licenses/MIT)
+Questo progetto è distribuito con licenza [MIT](https://opensource.org/licenses/MIT).
