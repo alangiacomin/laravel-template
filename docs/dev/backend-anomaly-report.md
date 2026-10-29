@@ -54,7 +54,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 ### P0 — Gravità alta
 
 - [ ] #1 `UserRegisteredEvent` senza listener (mail di verifica non inviata) `[alta]`
-- [ ] #2 IDOR su `PATCH /profilo/{id}` `[alta]`
+- [x] #2 IDOR su `PATCH /profilo/{id}` `[alta]`
 - [x] #3 Logout via GET `[alta]`
 - [x] #4 Nessun rate limiting sul login ed enumerazione account `[alta]`
 - [ ] #5 Seeder con super-admin prevedibile senza guardia sull'ambiente `[alta]`
@@ -100,7 +100,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: nessun controllo `id == Auth::id()`.
 - **Impatto**: qualsiasi utente autenticato può cambiare il `name` di qualsiasi altro utente.
 - **Fix suggerito**: usare l'utente autenticato (route `/profilo` senza `{id}`, aggiornando il frontend) oppure `abort_unless($id === Auth::id(), 403)`. Test dedicato sull'IDOR.
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — scelta (confermata dall'utente) route senza id: `PATCH /profilo` (nome `user.update` invariato) e `UserController::update` aggiorna sempre `$request->user()`; `EditProfileModal.tsx` chiama `route("user.update")` senza id. Test: i 4 test esistenti aggiornati alla nuova route e aggiunto `test_user_cannot_update_another_users_profile` (il vecchio URL `/profilo/{id}` non modifica nessun utente: cade nella catch-all). Restano fuori: Job e risposta/flash in `update` (vedi #12) e `whereNumber` sulle altre route (vedi #18).
 
 #### #3 Logout via GET
 

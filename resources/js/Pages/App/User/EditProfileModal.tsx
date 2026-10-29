@@ -30,12 +30,12 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
   const __ = useTranslations();
 
   const saveEdits = useCallback(() => {
-    patch(route("user.update", { id: user.id }), {
+    patch(route("user.update"), {
       onSuccess: () => {
         onClose();
       },
     });
-  }, [patch, user.id, onClose]);
+  }, [patch, onClose]);
 
   const onSubmit = () => {
     saveEdits();

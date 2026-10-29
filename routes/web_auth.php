@@ -15,4 +15,4 @@ Route::post('/accedi', [AuthController::class, 'login']);
 Route::post('/registrati', [AuthController::class, 'register']);
 Route::post('/esci', [AuthController::class, 'logout'])->name('logout');
 
-Route::patch('/profilo/{id}', [UserController::class, 'update'])->name('user.update');
+Route::patch('/profilo', [UserController::class, 'update'])->name('user.update');

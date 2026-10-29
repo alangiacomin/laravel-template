@@ -339,7 +339,7 @@ class AuthControllerTest extends TestCase
     {
         $user = User::factory()->create(['name' => 'Old Name']);
 
-        $response = $this->patch(route('user.update', ['id' => $user->id]), [
+        $response = $this->patch(route('user.update'), [
             'name' => 'New Name',
         ]);
 
@@ -354,7 +354,7 @@ class AuthControllerTest extends TestCase
     {
         $user = User::factory()->create(['name' => 'Old Name']);
 
-        $response = $this->actingAs($user)->patch(route('user.update', ['id' => $user->id]), [
+        $response = $this->actingAs($user)->patch(route('user.update'), [
             'name' => 'New Name',
         ]);
 
@@ -365,11 +365,34 @@ class AuthControllerTest extends TestCase
         ]);
     }
 
+    public function test_user_cannot_update_another_users_profile(): void
+    {
+        $user = User::factory()->create(['name' => 'User Name']);
+        $otherUser = User::factory()->create(['name' => 'Other Name']);
+
+        $this->actingAs($user)->patch(route('user.update'), [
+            'name' => 'New Name',
+        ])->assertOk();
+
+        $this->actingAs($user)->patch('/profilo/'.$otherUser->id, [
+            'name' => 'Hacked Name',
+        ]);
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'name' => 'New Name',
+        ]);
+        $this->assertDatabaseHas('users', [
+            'id' => $otherUser->id,
+            'name' => 'Other Name',
+        ]);
+    }
+
     public function test_update_profile_requires_a_valid_name(): void
     {
         $user = User::factory()->create(['name' => 'Old Name']);
 
-        $response = $this->actingAs($user)->patch(route('user.update', ['id' => $user->id]), [
+        $response = $this->actingAs($user)->patch(route('user.update'), [
             'name' => '',
         ]);
 
@@ -387,7 +410,7 @@ class AuthControllerTest extends TestCase
             'banned_at' => now(),
         ]);
 
-        $response = $this->actingAs($user)->patch(route('user.update', ['id' => $user->id]), [
+        $response = $this->actingAs($user)->patch(route('user.update'), [
             'name' => 'New Name',
         ]);
 
