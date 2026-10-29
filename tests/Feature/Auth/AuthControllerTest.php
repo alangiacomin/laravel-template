@@ -64,6 +64,103 @@ class AuthControllerTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_unknown_email_returns_the_same_error_as_incorrect_password(): void
+    {
+        $user = User::factory()->create([
+            'password' => Hash::make('password'),
+        ]);
+
+        $this->post(route('login'), [
+            'email' => $user->email,
+            'password' => 'wrong-password',
+        ])->assertSessionHasErrors(['email' => __('auth.failed')]);
+
+        $this->post(route('login'), [
+            'email' => 'unknown@example.com',
+            'password' => 'wrong-password',
+        ])->assertSessionHasErrors(['email' => __('auth.failed')]);
+
+        $this->assertGuest();
+    }
+
+    public function test_login_is_blocked_after_too_many_failed_attempts(): void
+    {
+        $user = User::factory()->create([
+            'password' => Hash::make('password'),
+        ]);
+
+        for ($i = 0; $i < 5; $i++) {
+            $this->post(route('login'), [
+                'email' => $user->email,
+                'password' => 'wrong-password',
+            ])->assertSessionHasErrors(['email' => __('auth.failed')]);
+        }
+
+        $response = $this->post(route('login'), [
+            'email' => $user->email,
+            'password' => 'password',
+        ]);
+
+        $response->assertSessionHasErrors('email');
+        $this->assertStringContainsString(
+            'Troppi tentativi',
+            session('errors')->first('email'),
+        );
+        $this->assertGuest();
+    }
+
+    public function test_successful_login_resets_the_failed_attempts_counter(): void
+    {
+        $user = User::factory()->create([
+            'password' => Hash::make('password'),
+        ]);
+
+        for ($i = 0; $i < 4; $i++) {
+            $this->post(route('login'), [
+                'email' => $user->email,
+                'password' => 'wrong-password',
+            ]);
+        }
+
+        $this->post(route('login'), [
+            'email' => $user->email,
+            'password' => 'password',
+        ]);
+        $this->assertAuthenticatedAs($user);
+
+        $this->get(route('logout'));
+        $this->assertGuest();
+
+        for ($i = 0; $i < 4; $i++) {
+            $this->post(route('login'), [
+                'email' => $user->email,
+                'password' => 'wrong-password',
+            ])->assertSessionHasErrors(['email' => __('auth.failed')]);
+        }
+    }
+
+    public function test_login_throttle_key_is_case_insensitive(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'mario@example.com',
+            'password' => Hash::make('password'),
+        ]);
+
+        foreach (['mario@example.com', 'MARIO@example.com', 'Mario@Example.com', 'mario@EXAMPLE.com', 'MARIO@EXAMPLE.COM'] as $email) {
+            $this->post(route('login'), [
+                'email' => $email,
+                'password' => 'wrong-password',
+            ]);
+        }
+
+        $this->post(route('login'), [
+            'email' => 'mario@example.com',
+            'password' => 'password',
+        ])->assertSessionHasErrors('email');
+
+        $this->assertGuest();
+    }
+
     public function test_a_banned_user_cannot_login(): void
     {
         $user = User::factory()->create([
@@ -111,6 +208,27 @@ class AuthControllerTest extends TestCase
 
         $this->assertAuthenticatedAs($user);
         $this->assertTrue($user->hasRole('user'));
+    }
+
+    public function test_registration_is_throttled_per_ip(): void
+    {
+        for ($i = 0; $i < 10; $i++) {
+            $this->post(route('register'), [
+                'name' => '',
+                'email' => 'not-an-email',
+                'password' => 'short',
+                'password_confirmation' => 'mismatch',
+            ])->assertSessionHasErrors();
+        }
+
+        $this->post(route('register'), [
+            'name' => 'Mario Rossi',
+            'email' => 'mario.rossi@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+        ])->assertStatus(429);
+
+        $this->assertDatabaseMissing('users', ['email' => 'mario.rossi@example.com']);
     }
 
     public function test_registration_requires_valid_data(): void

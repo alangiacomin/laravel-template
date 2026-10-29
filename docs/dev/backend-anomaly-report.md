@@ -56,7 +56,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - [ ] #1 `UserRegisteredEvent` senza listener (mail di verifica non inviata) `[alta]`
 - [ ] #2 IDOR su `PATCH /profilo/{id}` `[alta]`
 - [ ] #3 Logout via GET `[alta]`
-- [ ] #4 Nessun rate limiting sul login ed enumerazione account `[alta]`
+- [x] #4 Nessun rate limiting sul login ed enumerazione account `[alta]`
 - [ ] #5 Seeder con super-admin prevedibile senza guardia sull'ambiente `[alta]`
 - [ ] #6 Blocco utenti senza guardie sul target `[alta]`
 - [ ] #7 Gestore eccezioni che espone dettagli al client `[alta]`
@@ -116,7 +116,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: nessun `throttle`; `LoginRequest` usa `exists:users,email`. `LoginRequest` è inoltre una `Spatie\Data`, non una FormRequest, quindi non passa dal flusso standard di validazione.
 - **Impatto**: enumerazione degli account e brute force.
 - **Fix suggerito**: `throttle` su login e registrazione (`RateLimiter`); sostituire `exists:users,email` con un messaggio generico di credenziali errate.
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — rimosso `exists:users,email` da `LoginRequest` (email sconosciuta e password errata danno lo stesso `auth.failed`); `AuthController::login` usa `RateLimiter` (5 tentativi falliti per email+IP, chiave case-insensitive, messaggio `auth.throttle`, contatore azzerato al login riuscito); `POST /registrati` ha `throttle:register` (10/minuto per IP, limiter definito in `AppServiceProvider`). Test aggiunti in `AuthControllerTest`. Restano fuori: `unique:users,email` in registrazione (mitigato solo dal throttle), il 429 che passa dall'handler di `bootstrap/app.php` (vedi #7) e l'ordine ban/`Auth::attempt` in `login` (vedi #8).
 
 #### #5 Seeder con super-admin prevedibile
 

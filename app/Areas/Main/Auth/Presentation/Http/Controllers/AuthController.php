@@ -13,12 +13,16 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Attributes\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Inertia\Response;
 use Inertia\ResponseFactory;
 
 class AuthController extends Controller
 {
+    private const int LOGIN_MAX_ATTEMPTS = 5;
+
     #[Middleware('guest')]
     public function loginView(): Response|ResponseFactory
     {
@@ -44,6 +48,7 @@ class AuthController extends Controller
      * Store a newly created resource in storage.
      */
     #[Middleware('guest')]
+    #[Middleware('throttle:register')]
     public function register(RegisterRequest $requestData): RedirectResponse
     {
         $user = dispatch_sync(new RegisterUserJob(
@@ -65,11 +70,25 @@ class AuthController extends Controller
     #[Middleware('guest')]
     public function login(LoginRequest $request)
     {
+        $throttleKey = Str::transliterate(Str::lower($request->email).'|'.request()->ip());
+
+        if (RateLimiter::tooManyAttempts($throttleKey, self::LOGIN_MAX_ATTEMPTS)) {
+            throw ValidationException::withMessages([
+                'email' => __('auth.throttle', [
+                    'seconds' => RateLimiter::availableIn($throttleKey),
+                ]),
+            ]);
+        }
+
         if (!Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->remember)) {
+            RateLimiter::hit($throttleKey);
+
             throw ValidationException::withMessages([
                 'email' => __('auth.failed'),
             ]);
         }
+
+        RateLimiter::clear($throttleKey);
 
         $user = Auth::user();
 

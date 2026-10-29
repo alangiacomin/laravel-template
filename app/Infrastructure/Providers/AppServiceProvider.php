@@ -8,9 +8,12 @@ use App\Models\User;
 use App\Shared\Infrastructure\Enums\GateEnum;
 use App\Shared\Infrastructure\Enums\PermissionEnum;
 use App\Shared\Infrastructure\Enums\RoleEnum;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Context;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -29,6 +32,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // JsonResource::withoutWrapping();
+
+        RateLimiter::for('register', fn (Request $request) => Limit::perMinute(10)->by((string) $request->ip()));
 
         Queue::before(function ($event) {
             if ($locale = Context::get('locale')) {
