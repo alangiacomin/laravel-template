@@ -128,7 +128,7 @@ class AuthControllerTest extends TestCase
         ]);
         $this->assertAuthenticatedAs($user);
 
-        $this->get(route('logout'));
+        $this->post(route('logout'));
         $this->assertGuest();
 
         for ($i = 0; $i < 4; $i++) {
@@ -264,10 +264,19 @@ class AuthControllerTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->get(route('logout'));
+        $response = $this->actingAs($user)->post(route('logout'));
 
         $response->assertRedirect();
         $this->assertGuest();
+    }
+
+    public function test_logout_is_not_reachable_via_get(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->get('/esci');
+
+        $this->assertAuthenticatedAs($user);
     }
 
     public function test_guest_cannot_view_user_page(): void

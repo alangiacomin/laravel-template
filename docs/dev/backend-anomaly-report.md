@@ -55,7 +55,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 
 - [ ] #1 `UserRegisteredEvent` senza listener (mail di verifica non inviata) `[alta]`
 - [ ] #2 IDOR su `PATCH /profilo/{id}` `[alta]`
-- [ ] #3 Logout via GET `[alta]`
+- [x] #3 Logout via GET `[alta]`
 - [x] #4 Nessun rate limiting sul login ed enumerazione account `[alta]`
 - [ ] #5 Seeder con super-admin prevedibile senza guardia sull'ambiente `[alta]`
 - [ ] #6 Blocco utenti senza guardie sul target `[alta]`
@@ -108,7 +108,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: il logout è raggiungibile via GET.
 - **Impatto**: vulnerabile a logout forzato cross-site (CSRF) e a prefetch.
 - **Fix suggerito**: passare a `POST` e aggiornare il frontend. Richiede conferma se cambia il nome/percorso della route.
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — `/esci` (nome `logout`, invariati) ora è `POST`; `Navbar` (via `NavbarDropdownItem`, nuovo prop `method`) e `Header` admin usano `<Link method="post" as="button">`. Test: logout via `POST` aggiornato e aggiunto `test_logout_is_not_reachable_via_get` (il GET su `/esci` non disconnette più: cade nella catch-all `/{any}`). Resta fuori: il logout non passa da `not_banned` (vedi #15).
 
 #### #4 Nessun rate limiting sul login ed enumerazione account
 

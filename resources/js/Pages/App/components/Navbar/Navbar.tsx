@@ -116,6 +116,7 @@ const Navbar: FC = (): ReactNode => {
                 <NavbarDropdownDivider />
                 <NavbarDropdownItem
                   to={routes.app.logout()}
+                  method="post"
                   onClick={closeBurger}
                 >
                   {__("logout")}
