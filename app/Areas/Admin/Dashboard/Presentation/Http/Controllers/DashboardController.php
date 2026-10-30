@@ -2,39 +2,23 @@
 
 namespace App\Areas\Admin\Dashboard\Presentation\Http\Controllers;
 
-use App\Areas\Admin\Dashboard\Domain\Entities\DashboardStats;
+use App\Areas\Admin\Dashboard\Application\Queries\GetDashboardStatsQuery;
 use App\Infrastructure\Http\Controllers\Controller;
-use App\Models\User;
 use App\Shared\Infrastructure\Enums\GateEnum;
 use Carbon\Carbon;
 use Illuminate\Routing\Attributes\Controllers\Middleware;
+use Inertia\Response;
+use Inertia\ResponseFactory;
 
 class DashboardController extends Controller
 {
     #[Middleware('auth')]
     #[Middleware('verified')]
     #[Middleware('can:'.GateEnum::ADMIN_ACCESS->value)]
-    public function index()
+    public function index(GetDashboardStatsQuery $query): Response|ResponseFactory
     {
-        $now = Carbon::now();
-        $startOfMonth = $now->copy()->startOfMonth();
-        $endOfMonth = $now->copy()->endOfMonth();
-        $startOfLastMonth = $now->copy()->subMonth()->startOfMonth();
-        $endOfLastMonth = $now->copy()->subMonth()->endOfMonth();
-
         return inertia('Admin/Dashboard/Dashboard', [
-            'dashboard' => new DashboardStats(
-                users_total_count: User::count(),
-                users_total_count_unverified: User::whereNull('email_verified_at')->count(),
-                users_month_count: User::whereBetween('created_at', [$startOfMonth, $endOfMonth])->count(),
-                users_month_count_unverified: User::whereBetween('created_at', [$startOfMonth, $endOfMonth])
-                    ->whereNull('email_verified_at')
-                    ->count(),
-                users_last_month_count: User::whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])->count(),
-                users_last_month_count_unverified: User::whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])
-                    ->whereNull('email_verified_at')
-                    ->count(),
-            ),
+            'dashboard' => $query->handle(Carbon::now()),
         ]);
     }
 }

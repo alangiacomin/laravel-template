@@ -61,9 +61,9 @@ const User: FC = (): ReactNode => {
     });
   }, [form, routes.admin, user.id]);
 
-  const onBlocca = useCallback(() => {
+  const onBlock = useCallback(() => {
     inertiaRouter.patch(
-      route("admin.user.blocca", { id: user.id }),
+      route("admin.user.block", { id: user.id }),
       {},
       {
         onSuccess: (page: PageWithFlash<string>) => {
@@ -75,9 +75,9 @@ const User: FC = (): ReactNode => {
     );
   }, [inertiaRouter, toast, user.id]);
 
-  const onSblocca = useCallback(() => {
+  const onUnblock = useCallback(() => {
     inertiaRouter.patch(
-      route("admin.user.sblocca", { id: user.id }),
+      route("admin.user.unblock", { id: user.id }),
       {},
       {
         onSuccess: (page: PageWithFlash<string>) => {
@@ -109,12 +109,12 @@ const User: FC = (): ReactNode => {
         <div className="border-top pt-3 mt-5 d-flex align-items-center">
           <div className="d-flex gap-2">
             {canManage && !user.isBanned && (
-              <Button className={"btn-outline-danger"} onClick={onBlocca}>
+              <Button className={"btn-outline-danger"} onClick={onBlock}>
                 {__("admin.ban")}
               </Button>
             )}
             {canManage && user.isBanned && (
-              <Button className={"btn-outline-success"} onClick={onSblocca}>
+              <Button className={"btn-outline-success"} onClick={onUnblock}>
                 {__("admin.unban")}
               </Button>
             )}

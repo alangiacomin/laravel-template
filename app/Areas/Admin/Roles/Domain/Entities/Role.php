@@ -12,6 +12,7 @@ class Role extends Data
     public function __construct(
         public int $id,
         public string $name,
+        /** @var list<string> */
         #[TypeScriptType('string[]')]
         public array $permissions = [],
     ) {}

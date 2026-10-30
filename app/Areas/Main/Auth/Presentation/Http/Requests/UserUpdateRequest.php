@@ -11,6 +11,9 @@ class UserUpdateRequest extends FormRequest
         return $this->user()?->can('update', $this->user()) ?? false;
     }
 
+    /**
+     * @return array<string, array<int, mixed>|string>
+     */
     public function rules(): array
     {
         return [

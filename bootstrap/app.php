@@ -21,8 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 EnsureUserIsNotBanned::class,
                 HandleInertiaRequests::class,
             ],
-            prepend: [
-            ]);
+        );
 
         $middleware->redirectGuestsTo(fn () => route('login'));
     })

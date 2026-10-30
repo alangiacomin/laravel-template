@@ -2,7 +2,6 @@
 
 namespace App\Areas\Main\Auth\Presentation\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[TypeScript]
@@ -15,7 +14,7 @@ class EditUserRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, ValidationRule|array|string>
+     * @return array<string, array<int, mixed>|string>
      */
     public function rules(): array
     {

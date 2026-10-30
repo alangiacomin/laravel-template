@@ -7,7 +7,7 @@ use App\Shared\Infrastructure\Enums\RoleEnum;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class BloccaUtenteJob
+class BlockUserJob
 {
     use Dispatchable;
 

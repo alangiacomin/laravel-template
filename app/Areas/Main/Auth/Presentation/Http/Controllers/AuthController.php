@@ -19,6 +19,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Inertia\Response;
 use Inertia\ResponseFactory;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class AuthController extends Controller
 {
@@ -70,7 +71,7 @@ class AuthController extends Controller
      * Gestisce il tentativo di login.
      */
     #[Middleware('guest')]
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): SymfonyResponse
     {
         $throttleKey = Str::transliterate(Str::lower($request->email).'|'.request()->ip());
 
@@ -110,7 +111,7 @@ class AuthController extends Controller
     /**
      * Logout
      */
-    public function logout(Request $request)
+    public function logout(Request $request): SymfonyResponse
     {
         Auth::logout();
         app(SessionPreserver::class)->invalidate($request);
@@ -119,7 +120,7 @@ class AuthController extends Controller
     }
 
     #[Middleware('auth')]
-    public function verificationNoticeView()
+    public function verificationNoticeView(): RedirectResponse|Response|ResponseFactory
     {
         $user = Auth::user();
         if ($user != null && $user->hasVerifiedEmail()) {
@@ -131,7 +132,7 @@ class AuthController extends Controller
 
     #[Middleware('auth')]
     #[Middleware('signed')]
-    public function emailVerification(EmailVerificationRequest $request)
+    public function emailVerification(EmailVerificationRequest $request): RedirectResponse
     {
         $request->fulfill();
 

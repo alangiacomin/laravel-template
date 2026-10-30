@@ -8,14 +8,24 @@ import { type AdminUserData, GateEnum } from "../../../types/generated";
 import Page from "../../Admin/components/Page/Page.tsx";
 import CheckIcon from "../icons/CheckIcon.tsx";
 
+type PaginationLink = {
+  url: string | null;
+  label: string;
+  active: boolean;
+};
+
 type UsersPageProps = {
-  users: AdminUserData[];
+  users: {
+    data: AdminUserData[];
+    links: PaginationLink[];
+    last_page: number;
+  };
 };
 
 const Users: FC = (): ReactNode => {
   const __ = useTranslations();
   const routes = useRoutes();
-  const { users } = usePage<UsersPageProps>().props;
+  const { users: usersPage } = usePage<UsersPageProps>().props;
   const currentUser = useAuth();
 
   return (
@@ -41,7 +51,7 @@ const Users: FC = (): ReactNode => {
             </tr>
           </thead>
           <tbody className="table-group-divider">
-            {users?.map((user: AdminUserData) => (
+            {usersPage.data.map((user: AdminUserData) => (
               <tr
                 key={user.id}
                 className={classNames([{ "fw-lighter": user.isBanned }])}
@@ -116,6 +126,29 @@ const Users: FC = (): ReactNode => {
           </tbody>
         </table>
       </div>
+      {usersPage.last_page > 1 && (
+        <nav aria-label={__("admin.pagination")}>
+          <ul className="pagination justify-content-center">
+            {usersPage.links.map((link: PaginationLink) => (
+              <li
+                key={link.label}
+                className={classNames("page-item", {
+                  active: link.active,
+                  disabled: !link.url,
+                })}
+              >
+                <Link
+                  className="page-link"
+                  href={link.url ?? "#"}
+                  preserveScroll
+                >
+                  {link.label.replace("&laquo;", "«").replace("&raquo;", "»")}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
     </Page>
   );
 };

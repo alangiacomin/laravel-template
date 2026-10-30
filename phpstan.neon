@@ -7,10 +7,7 @@ parameters:
         - bootstrap
         - config
         - database
-        - lang
-        - public
-        - resources
         - routes
         - tests
 
-    level: 5
+    level: 6

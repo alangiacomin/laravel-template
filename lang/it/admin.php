@@ -3,6 +3,7 @@
 return [
     'admin_panel' => 'Admin',
     'user_list' => 'Elenco utenti',
+    'pagination' => 'Navigazione tra le pagine',
     'user_list_subtitle' => 'Elenco completo degli utenti registrati',
     'users' => 'Utenti',
     'user_management' => 'Gestione utenti',

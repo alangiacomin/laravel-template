@@ -38,6 +38,30 @@ class UserControllerTest extends TestCase
         $response->assertOk();
     }
 
+    public function test_users_list_is_paginated(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole(RoleEnum::SUPER_ADMIN->value);
+        User::factory()->count(19)->create();
+
+        $this->actingAs($admin)->get(route('admin.users'))
+            ->assertInertia(fn ($page) => $page
+                ->component('Admin/Users/Users')
+                ->has('users.data', 15)
+                ->where('users.last_page', 2));
+
+        $this->actingAs($admin)->get(route('admin.users', ['page' => 2]))
+            ->assertInertia(fn ($page) => $page->has('users.data', 5));
+    }
+
+    public function test_user_route_with_non_numeric_id_is_not_found(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole(RoleEnum::SUPER_ADMIN->value);
+
+        $this->actingAs($admin)->get('/admin/utenti/abc')->assertNotFound();
+    }
+
     public function test_user_without_user_view_permission_cannot_view_users_list(): void
     {
         $user = User::factory()->create();
@@ -103,82 +127,82 @@ class UserControllerTest extends TestCase
         ]);
     }
 
-    public function test_user_without_permission_cannot_blocca_a_user(): void
+    public function test_user_without_permission_cannot_block_a_user(): void
     {
         $user = User::factory()->create();
         $other = User::factory()->create();
 
-        $response = $this->actingAs($user)->patch(route('admin.user.blocca', ['id' => $other->id]));
+        $response = $this->actingAs($user)->patch(route('admin.user.block', ['id' => $other->id]));
 
         $response->assertForbidden();
         $this->assertNull($other->refresh()->banned_at);
     }
 
-    public function test_super_admin_can_blocca_a_user(): void
+    public function test_super_admin_can_block_a_user(): void
     {
         $admin = User::factory()->create();
         $admin->assignRole(RoleEnum::SUPER_ADMIN->value);
 
         $other = User::factory()->create();
 
-        $response = $this->actingAs($admin)->patch(route('admin.user.blocca', ['id' => $other->id]));
+        $response = $this->actingAs($admin)->patch(route('admin.user.block', ['id' => $other->id]));
 
         $response->assertRedirect();
         $this->assertNotNull($other->refresh()->banned_at);
     }
 
-    public function test_admin_can_blocca_a_normal_user(): void
+    public function test_admin_can_block_a_normal_user(): void
     {
         $admin = $this->userManagerAdmin();
         $other = User::factory()->create();
 
-        $this->actingAs($admin)->patch(route('admin.user.blocca', ['id' => $other->id]))->assertRedirect();
+        $this->actingAs($admin)->patch(route('admin.user.block', ['id' => $other->id]))->assertRedirect();
 
         $this->assertNotNull($other->refresh()->banned_at);
     }
 
-    public function test_admin_can_blocca_another_admin(): void
+    public function test_admin_can_block_another_admin(): void
     {
         $admin = $this->userManagerAdmin();
         $other = User::factory()->create();
         $other->assignRole(RoleEnum::ADMIN->value);
 
-        $this->actingAs($admin)->patch(route('admin.user.blocca', ['id' => $other->id]))->assertRedirect();
+        $this->actingAs($admin)->patch(route('admin.user.block', ['id' => $other->id]))->assertRedirect();
 
         $this->assertNotNull($other->refresh()->banned_at);
     }
 
-    public function test_admin_cannot_blocca_themselves(): void
+    public function test_admin_cannot_block_themselves(): void
     {
         $admin = $this->userManagerAdmin();
 
-        $this->actingAs($admin)->patch(route('admin.user.blocca', ['id' => $admin->id]))->assertForbidden();
+        $this->actingAs($admin)->patch(route('admin.user.block', ['id' => $admin->id]))->assertForbidden();
 
         $this->assertNull($admin->refresh()->banned_at);
     }
 
-    public function test_super_admin_cannot_blocca_themselves(): void
+    public function test_super_admin_cannot_block_themselves(): void
     {
         $superAdmin = User::factory()->create();
         $superAdmin->assignRole(RoleEnum::SUPER_ADMIN->value);
 
-        $this->actingAs($superAdmin)->patch(route('admin.user.blocca', ['id' => $superAdmin->id]))->assertForbidden();
+        $this->actingAs($superAdmin)->patch(route('admin.user.block', ['id' => $superAdmin->id]))->assertForbidden();
 
         $this->assertNull($superAdmin->refresh()->banned_at);
     }
 
-    public function test_admin_cannot_blocca_a_super_admin(): void
+    public function test_admin_cannot_block_a_super_admin(): void
     {
         $admin = $this->userManagerAdmin();
         $superAdmin = User::factory()->create();
         $superAdmin->assignRole(RoleEnum::SUPER_ADMIN->value);
 
-        $this->actingAs($admin)->patch(route('admin.user.blocca', ['id' => $superAdmin->id]))->assertForbidden();
+        $this->actingAs($admin)->patch(route('admin.user.block', ['id' => $superAdmin->id]))->assertForbidden();
 
         $this->assertNull($superAdmin->refresh()->banned_at);
     }
 
-    public function test_super_admin_can_sblocca_a_user(): void
+    public function test_super_admin_can_unblock_a_user(): void
     {
         $admin = User::factory()->create();
         $admin->assignRole(RoleEnum::SUPER_ADMIN->value);
@@ -187,7 +211,7 @@ class UserControllerTest extends TestCase
             'banned_at' => now(),
         ]);
 
-        $response = $this->actingAs($admin)->patch(route('admin.user.sblocca', ['id' => $other->id]));
+        $response = $this->actingAs($admin)->patch(route('admin.user.unblock', ['id' => $other->id]));
 
         $response->assertRedirect();
         $this->assertNull($other->refresh()->banned_at);

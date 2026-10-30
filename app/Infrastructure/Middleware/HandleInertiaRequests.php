@@ -6,6 +6,7 @@ use App\Areas\Main\Auth\Application\Data\UserData;
 use App\Areas\Main\Auth\Application\Inertia\AbilityResolver;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -19,20 +20,21 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $user = Auth::user();
-        $userData = $user ? UserData::fromModel($user) : null;
-
         $locale = app()->getLocale();
 
         return [
             ...parent::share($request),
-            //
             'locale' => $locale,
-            'translations' => $this->getTranslations($locale),
-            'auth' => [
-                'user' => $userData,
-                'capabilities' => app(AbilityResolver::class)->forUser($userData),
-            ],
+            'translations' => fn () => $this->getTranslations($locale),
+            'auth' => function () {
+                $user = Auth::user();
+                $userData = $user ? UserData::fromModel($user) : null;
+
+                return [
+                    'user' => $userData,
+                    'capabilities' => app(AbilityResolver::class)->forUser($userData),
+                ];
+            },
             'flash' => [
                 'success' => fn () => $request->hasSession() ? $request->session()->get('success') : null,
                 'error' => fn () => $request->hasSession() ? $request->session()->get('error') : null,
@@ -41,23 +43,27 @@ class HandleInertiaRequests extends Middleware
     }
 
     /**
-     * Carica tutte le traduzioni per la locale corrente
+     * Carica tutte le traduzioni per la locale corrente, in cache finché i file non cambiano.
+     *
+     * @return array<string, array<string, mixed>>
      */
     private function getTranslations(string $locale): array
     {
-        $langPath = lang_path($locale);
+        $files = glob(lang_path($locale).'/*.php') ?: [];
 
-        if (!is_dir($langPath)) {
-            return [];
-        }
+        $version = md5(implode('|', array_map(
+            fn (string $file) => $file.':'.filemtime($file),
+            $files,
+        )));
 
-        $translations = [];
+        return Cache::remember("inertia.translations.$locale.$version", now()->addDay(), function () use ($files) {
+            $translations = [];
 
-        foreach (glob("$langPath/*.php") as $file) {
-            $key = basename($file, '.php');
-            $translations[$key] = require $file;
-        }
+            foreach ($files as $file) {
+                $translations[basename($file, '.php')] = require $file;
+            }
 
-        return $translations;
+            return $translations;
+        });
     }
 }

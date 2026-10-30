@@ -12,9 +12,7 @@ use App\Shared\Infrastructure\Enums\PermissionEnum;
 use App\Shared\Infrastructure\Enums\RoleEnum;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Context;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Permission\Models\Role;
@@ -34,34 +32,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // JsonResource::withoutWrapping();
-
         RateLimiter::for('register', fn (Request $request) => Limit::perMinute(10)->by((string) $request->ip()));
-
-        Queue::before(function ($event) {
-            if ($locale = Context::get('locale')) {
-                app()->setLocale($locale);
-            }
-        });
-        //
-        //
-        // Queue::before(
-        //     function (/* JobProcessing $event */) {
-        //         DB::beginTransaction();
-        //         // $event->connectionName
-        //         // $event->job
-        //         // $event->job->payload()
-        //     }
-        // );
-        //
-        // Queue::after(
-        //     function (/* JobProcessed $event */) {
-        //         DB::commit();
-        //         // $event->connectionName
-        //         // $event->job
-        //         // $event->job->payload()
-        //     }
-        // );
 
         Gate::before(
             function (User $user) {

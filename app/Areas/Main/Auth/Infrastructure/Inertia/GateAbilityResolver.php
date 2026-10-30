@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Gate;
 
 class GateAbilityResolver implements AbilityResolver
 {
+    /**
+     * @return list<string>
+     */
     public function forUser(?UserData $user): array
     {
         if (!$user) {

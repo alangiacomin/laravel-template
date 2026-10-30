@@ -11,7 +11,7 @@ Route::get('/registrati', [AuthController::class, 'registerView'])->name('regist
 
 Route::get('/profilo', [AuthController::class, 'userView'])->name('user.show');
 Route::get('/verifica-email', [AuthController::class, 'verificationNoticeView'])->name('verification.notice');
-Route::get('/verifica-email/conferma/{id}/{hash}', [AuthController::class, 'emailVerification'])->name('verification.verify');
+Route::get('/verifica-email/conferma/{id}/{hash}', [AuthController::class, 'emailVerification'])->whereNumber('id')->name('verification.verify');
 
 Route::get('/password-dimenticata', [PasswordResetController::class, 'forgotPasswordView'])->name('password.request');
 Route::get('/reimposta-password/{token}', [PasswordResetController::class, 'resetPasswordView'])->name('password.reset');

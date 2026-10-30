@@ -6,5 +6,8 @@ use App\Areas\Main\Auth\Application\Data\UserData;
 
 interface AbilityResolver
 {
+    /**
+     * @return list<string>
+     */
     public function forUser(?UserData $user): array;
 }

@@ -75,12 +75,12 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 
 ### P2 — Gravità bassa / manutenzione
 
-- [ ] #17 Performance (traduzioni Inertia, paginazione, query dashboard) `[bassa]`
-- [ ] #18 Routing (catch-all, `whereNumber`, gruppo admin) `[bassa]`
-- [ ] #19 Residui di codice `[bassa]`
-- [ ] #20 `BroadcastController` nel livello Presentation `[bassa]`
-- [ ] #21 Lingua mista IT/EN nel codice `[bassa]`
-- [ ] #22 Copertura test e livello PHPStan `[bassa]`
+- [x] #17 Performance (traduzioni Inertia, paginazione, query dashboard) `[bassa]`
+- [x] #18 Routing (catch-all, `whereNumber`, gruppo admin) `[bassa]`
+- [x] #19 Residui di codice `[bassa]`
+- [x] #20 `BroadcastController` nel livello Presentation `[bassa]`
+- [x] #21 Lingua mista IT/EN nel codice `[bassa]`
+- [x] #22 Copertura test e livello PHPStan `[bassa]`
 
 ## Dettaglio dei punti
 
@@ -224,7 +224,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: `HandleInertiaRequests` carica con `glob` + `require` tutte le traduzioni di `lang/it` a ogni richiesta, senza cache né lazy; `UserData`/capabilities sono condivisi anche nelle richieste parziali. `index` fa `User::with('roles')->get()` senza paginazione. `DashboardController` esegue 6 `count()` separate e contiene logica di date.
 - **Impatto**: sprechi di risorse che crescono con i dati.
 - **Fix suggerito**: cache/lazy delle traduzioni; paginazione utenti/ruoli; riunire le query della dashboard (spostando la logica in un Job/query dedicata).
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — traduzioni Inertia in cache (chiave con mtime dei file di `lang/it`) e `translations`/`auth` lazy (closure, valutate solo quando servono); lista utenti admin paginata (`paginate(15)`, controlli pagina in `Users.tsx`, chiave `admin.pagination`); statistiche dashboard in `GetDashboardStatsQuery` con una sola query aggregata. Test: paginazione, statistiche dashboard, traduzioni su richieste ripetute. Ruoli non paginati (pochi). Non verificato: `bun run lint/build` (bun/node assenti nell'ambiente).
 
 #### #18 Routing
 
@@ -232,7 +232,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: `/` è mappata su `FallbackController::app` (nome fuorviante); la catch-all `/{any}` e `/admin/{any}` copre un solo segmento; route PATCH `/profilo/{id}` e `/admin/.../{id}` senza `whereNumber`; `require` dei file route in mezzo a `web.php`; nessun gruppo con middleware/prefix per l'area admin (la protezione è solo negli attributi dei controller: dimenticarne uno = route pubblica).
 - **Impatto**: fragilità e rischio di esposizione accidentale.
 - **Fix suggerito**: `whereNumber('id')`; raggruppare le route admin con `Route::middleware(['auth', 'not_banned', 'can:admin.access'])->prefix('admin')`; sistemare nomi e catch-all.
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — route admin in gruppo `prefix('admin')` con `auth`, `verified`, `can:admin_access` (i `can:` per capability restano sui controller); `whereNumber('id')` su admin e `verification.verify`; catch-all `/admin/{any}` multi-segmento e `Route::fallback` per il resto; `/` ora `HomeController::index` (nuovo, `Main/Home`), `FallbackController` solo `notFound`. La catch-all admin resta fuori dal gruppo (un ospite su `/admin/x` ottiene 404, non il login). Test in `RoutingTest` e `UserControllerTest`.
 
 #### #19 Residui di codice
 
@@ -240,7 +240,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: `Queue::before` con `Context::get('locale')` (app a lingua unica), blocchi `DB::beginTransaction` commentati e `JsonResource::withoutWrapping` in `AppServiceProvider`; `use Event;` e `$listen` vuoto in `EventServiceProvider`; `/** @noinspection */` e `dd` commentati; docblock `@method static ...` su `User` (incl. `register()` inesistente) usato come workaround di PHPStan.
 - **Impatto**: rumore e confusione.
 - **Fix suggerito**: pulizia dei residui; sostituire il docblock con annotazioni corrette.
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — rimossi `Queue::before`/`Context`, blocchi `DB::beginTransaction` e `withoutWrapping` commentati, `EventServiceProvider` (inutilizzato) e il riferimento in `bootstrap/providers.php`, `prepend: []`, `@noinspection`; docblock `@method` di `User` sostituito da `@use HasFactory<UserFactory>`.
 
 #### #20 `BroadcastController` nel livello Presentation
 
@@ -248,7 +248,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: è un authorizer di canale (`join`) collocato tra i controller HTTP di `Presentation`.
 - **Impatto**: collocazione architetturale incoerente.
 - **Fix suggerito**: spostare in `Infrastructure/Broadcasting` aggiornando `routes/channels.php`.
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — `BroadcastController` sostituito da `Main/Auth/Infrastructure/Broadcasting/UserChannel` (tipizzato), `routes/channels.php` aggiornato. Test in `RoutingTest`.
 
 #### #21 Lingua mista IT/EN nel codice
 
@@ -256,7 +256,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: nomi italiani e inglesi mescolati.
 - **Impatto**: convenzioni non uniformi.
 - **Fix suggerito**: decidere con l'utente la convenzione e rinominare di conseguenza. **Richiede conferma.**
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — convenzione (confermata): identificatori in EN, URL e testi in IT. `BloccaUtenteJob`→`BlockUserJob`, `SbloccaUtenteJob`→`UnblockUserJob`, `blocca/sblocca`→`block/unblock`, route `admin.user.block/unblock` (URL invariati); frontend, ziggy e test aggiornati; regola scritta in `docs/ai/architecture.md`.
 
 #### #22 Copertura test e livello PHPStan
 
@@ -264,7 +264,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: i test non coprono registrazione + evento, IDOR del profilo, ban di sé stessi, rate limit, enumerazione login; PHPStan è a livello 5.
 - **Impatto**: i punti P0 possono regredire senza che nessun test fallisca.
 - **Fix suggerito**: aggiungere test su registrazione + eventi, IDOR profilo, guardie sul ban, throttle login, escalation ruoli (preferibilmente insieme ai singoli fix); alzare PHPStan a livello 6–8 con baseline e limitare i `paths` a `app`, `bootstrap`, `config`, `database`, `routes`, `tests`.
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — PHPStan a livello 6 (nessun errore, senza baseline né ignore) con `paths` ridotti a app, bootstrap, config, database, routes, tests; corretti return type dei controller e array shape di `rules()`, Data e `AbilityResolver`. La copertura test dei punti P0 esisteva già; aggiunti i test dei nuovi comportamenti (#17–#20). Sistemato anche `DatabaseSeederTest::test_banned_at_is_not_mass_assignable`, che usava `forceFill` e non poteva passare (ora `fill`).
 
 ## Divergenze docs ↔ codice
 

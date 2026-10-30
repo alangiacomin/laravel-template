@@ -5,7 +5,7 @@ namespace App\Areas\Admin\Users\Application\Jobs;
 use App\Models\User;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class SbloccaUtenteJob
+class UnblockUserJob
 {
     use Dispatchable;
 

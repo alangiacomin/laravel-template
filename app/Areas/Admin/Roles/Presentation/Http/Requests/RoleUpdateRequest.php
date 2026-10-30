@@ -14,6 +14,9 @@ class RoleUpdateRequest extends FormRequest
         return $this->user()?->can('update', Role::findOrFail($this->route('id'))) ?? false;
     }
 
+    /**
+     * @return array<string, array<int, mixed>|string>
+     */
     public function rules(): array
     {
         return [

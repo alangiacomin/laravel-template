@@ -15,6 +15,9 @@ class RegisterRequest extends Data
         public string $password_confirmation,
     ) {}
 
+    /**
+     * @return array<string, array<int, mixed>|string>
+     */
     public static function rules(): array
     {
         return [
