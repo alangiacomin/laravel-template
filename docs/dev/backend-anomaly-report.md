@@ -266,6 +266,19 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Fix suggerito**: aggiungere test su registrazione + eventi, IDOR profilo, guardie sul ban, throttle login, escalation ruoli (preferibilmente insieme ai singoli fix); alzare PHPStan a livello 6–8 con baseline e limitare i `paths` a `app`, `bootstrap`, `config`, `database`, `routes`, `tests`.
 - **Stato**: [x] fatto — PHPStan a livello 6 (nessun errore, senza baseline né ignore) con `paths` ridotti a app, bootstrap, config, database, routes, tests; corretti return type dei controller e array shape di `rules()`, Data e `AbilityResolver`. La copertura test dei punti P0 esisteva già; aggiunti i test dei nuovi comportamenti (#17–#20). Sistemato anche `DatabaseSeederTest::test_banned_at_is_not_mass_assignable`, che usava `forceFill` e non poteva passare (ora `fill`).
 
+## Verifica post-fix (2026-10-30)
+
+Verifica incrociata dei punti #1–#22 sui punti di contatto. Tutti i punti risultano presenti nel codice; corretto quanto segue (test: 117 passati, PHPStan livello 6 senza errori).
+
+- **#7/#4**: il flash di errore sulle richieste Inertia non-GET non espone più `getMessage()` per 404 e 5xx (fuori debug) e traduce 403 generico e 429 (`error.429_message`); testo scritto dall'applicazione invariato. `isAdmin` usa `is('admin', 'admin/*')`.
+- **#10/#12**: `UserController::update` (Admin) invoca `UpdateUserRolesJob` solo se `roles` è presente: un PATCH con solo `name` non cancella più i ruoli.
+- **#6/#11**: `UserPolicy::update` nega a un non super-admin la modifica di un super-admin (il proprio profilo resta modificabile).
+- **#18**: rimossi dai controller admin i middleware `auth`/`verified`/`can:admin_access` duplicati del gruppo in `routes/web_admin.php`.
+- **#1**: rimosso il listener frontend `utente.registrato` (evento non più emesso); rigenerati `ziggy.js`/`ziggy.d.ts`.
+- **#9**: reset password per utenti bannati confermato come scelta (già coperto da `test_banned_user_can_reset_password_but_cannot_login`).
+- **Docs**: `docs/ai/workflow.md` allineato alla lingua unica, `docs/ai/architecture.md` a PHP 8.5.
+- Non verificati: lint/build frontend (`bun` assente); restano non verificate le altre righe della tabella "Divergenze docs ↔ codice".
+
 ## Divergenze docs ↔ codice
 
 | Docs | Realtà | Cosa aggiornare in `docs/ai` |

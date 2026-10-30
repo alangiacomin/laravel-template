@@ -225,6 +225,35 @@ class UserControllerTest extends TestCase
         $this->actingAs($admin)->get(route('admin.users'))->assertOk();
     }
 
+    public function test_update_without_roles_key_keeps_target_roles(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole(RoleEnum::SUPER_ADMIN->value);
+
+        $other = User::factory()->create(['name' => 'Old Name']);
+        $other->assignRole(RoleEnum::ADMIN->value);
+
+        $this->actingAs($admin)
+            ->patch(route('admin.user.update', ['id' => $other->id]), ['name' => 'New Name'])
+            ->assertRedirect();
+
+        $this->assertSame('New Name', $other->fresh()->name);
+        $this->assertTrue($other->fresh()->hasRole(RoleEnum::ADMIN->value));
+    }
+
+    public function test_non_super_admin_cannot_rename_a_super_admin(): void
+    {
+        $actor = $this->userEditor();
+        $target = User::factory()->create(['name' => 'Old Name']);
+        $target->assignRole(RoleEnum::SUPER_ADMIN->value);
+
+        $this->actingAs($actor)
+            ->patch(route('admin.user.update', ['id' => $target->id]), ['name' => 'New Name'])
+            ->assertForbidden();
+
+        $this->assertSame('Old Name', $target->fresh()->name);
+    }
+
     public function test_update_rejects_unknown_roles(): void
     {
         $other = User::factory()->create();

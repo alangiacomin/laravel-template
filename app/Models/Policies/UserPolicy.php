@@ -4,6 +4,7 @@ namespace App\Models\Policies;
 
 use App\Models\User;
 use App\Shared\Infrastructure\Enums\PermissionEnum;
+use App\Shared\Infrastructure\Enums\RoleEnum;
 
 class UserPolicy
 {
@@ -36,8 +37,12 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
+        if ($user->id == $model->id) {
+            return true;
+        }
+
         return $user->can(PermissionEnum::USER_UPDATE)
-            || $user->id == $model->id;
+            && ($user->hasRole(RoleEnum::SUPER_ADMIN->value) || !$model->hasRole(RoleEnum::SUPER_ADMIN->value));
     }
 
     /**

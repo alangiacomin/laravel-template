@@ -14,8 +14,6 @@ use Inertia\Response;
 use Inertia\ResponseFactory;
 use Spatie\Permission\Models\Role as SpatieRole;
 
-#[Middleware('auth')]
-#[Middleware('verified')]
 class RoleController extends Controller
 {
     #[Middleware('can:'.GateEnum::ROLE_VIEW->value)]

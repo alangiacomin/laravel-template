@@ -4,6 +4,7 @@ return [
     '403_message' => 'Non hai i permessi per accedere a questa pagina.',
     '403_message_banned' => 'Il tuo account è stato sospeso. Non puoi accedere all’applicazione.',
     '404_message' => 'La pagina che stai cercando non esiste o non è disponibile.',
+    '429_message' => 'Troppi tentativi. Riprova tra qualche istante.',
     '500_message' => 'Si è verificato un errore nel server. Riprova più tardi.',
     '503_message' => 'Il servizio richiesto non è attualmente disponibile. Riprova più tardi.',
     'message' => 'Se ritieni che si tratti di un errore, contatta l\'amministratore.',

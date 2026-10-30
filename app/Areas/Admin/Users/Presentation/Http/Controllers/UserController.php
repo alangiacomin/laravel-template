@@ -17,8 +17,6 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 use Inertia\ResponseFactory;
 
-#[Middleware('auth')]
-#[Middleware('verified')]
 class UserController extends Controller
 {
     #[Middleware('can:'.GateEnum::USER_VIEW->value)]
@@ -46,7 +44,9 @@ class UserController extends Controller
     {
         $validatedData = $request->validated();
 
-        dispatch_sync(new UpdateUserRolesJob($id, (int) Auth::id(), $validatedData['roles'] ?? []));
+        if (array_key_exists('roles', $validatedData)) {
+            dispatch_sync(new UpdateUserRolesJob($id, (int) Auth::id(), $validatedData['roles']));
+        }
 
         dispatch_sync(new UpdateUserJob($id, $validatedData['name']));
 

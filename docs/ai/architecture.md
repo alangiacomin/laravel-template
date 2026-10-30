@@ -2,7 +2,7 @@
 
 ## Stack
 
-- Backend: Laravel 13 e PHP 8.4.
+- Backend: Laravel 13 e PHP 8.5.
 - Frontend: Inertia, React, TypeScript e Vite.
 - Test: PHPUnit tramite `composer test`.
 - Qualità PHP: Laravel Pint e PHPStan tramite `composer lint`.

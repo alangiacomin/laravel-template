@@ -26,11 +26,32 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo(fn () => route('login'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->renderable(function (HttpException $e, $request) {
+        /*
+         * Messaggio flash per le richieste Inertia non-GET: tiene il testo dell'eccezione solo se
+         * scritto dall'applicazione, altrimenti usa un messaggio generico tradotto.
+         */
+        $flashErrorMessage = function (HttpException $e): string {
+            $status = $e->getStatusCode();
+            $message = $e->getMessage();
+            $isFrameworkMessage = $message === '' || $message === 'This action is unauthorized.';
+
+            if ($status >= 500) {
+                return config('app.debug') && $message !== '' ? $message : __('error.500_message');
+            }
+
+            return match (true) {
+                $status === 404 => __('error.404_message'),
+                $status === 429 => __('error.429_message'),
+                $status === 403 && $isFrameworkMessage => __('error.403_message'),
+                default => $message !== '' ? $message : __('error.message'),
+            };
+        };
+
+        $exceptions->renderable(function (HttpException $e, $request) use ($flashErrorMessage) {
             $status = $e->getStatusCode();
 
             if ($request->inertia() && !$request->isMethod('GET')) {
-                return back()->with('error', $e->getMessage());
+                return back()->with('error', $flashErrorMessage($e));
             }
 
             if (in_array($status, [403, 404, 500, 503])) {
@@ -40,7 +61,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     'status' => $status,
                     'reason' => $reason,
                 ]);
-                $isAdmin = $request->routeIs('admin.*') || str_starts_with($request->path(), 'admin');
+                $isAdmin = $request->routeIs('admin.*') || $request->is('admin', 'admin/*');
 
                 return Inertia::render(
                     $isAdmin
