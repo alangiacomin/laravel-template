@@ -1,12 +1,44 @@
 export type AdminUserData = {
-  id: number;
-  name: string;
-  email: string;
-  isVerified: boolean;
-  isBanned: boolean;
-  avatar: string;
-  created_at: string | null;
-  roles: Array<string>;
+  readonly id: number;
+  readonly name: string;
+  readonly email: string;
+  readonly isVerified: boolean;
+  readonly isBanned: boolean;
+  readonly avatar: string;
+  readonly created_at: string | null;
+  readonly roles: string[];
+};
+export type CursorPaginatedDataCollection<TKey, TValue> = CursorPaginator<
+  TKey,
+  TValue
+>;
+export type CursorPaginator<TKey, TValue> = {
+  data: TKey extends string ? Record<TKey, TValue> : TValue[];
+  links: {
+    url: string | null;
+    label: string;
+    active: boolean;
+  }[];
+  meta: {
+    path: string;
+    per_page: number;
+    next_cursor: string | null;
+    next_page_url: string | null;
+    prev_cursor: string | null;
+    prev_page_url: string | null;
+  };
+};
+export type CursorPaginatorInterface<TKey, TValue> = CursorPaginator<
+  TKey,
+  TValue
+>;
+export type DashboardStats = {
+  users_total_count: number;
+  users_total_count_unverified: number;
+  users_month_count: number;
+  users_month_count_unverified: number;
+  users_last_month_count: number;
+  users_last_month_count_unverified: number;
 };
 export type EditUserRequest = {
   name: string;
@@ -23,11 +55,40 @@ export enum GateEnum {
   ROLE_MANAGE = "role_manage",
   ADMIN_ACCESS = "admin_access",
 }
+export type LengthAwarePaginator<TKey, TValue> = {
+  data: TKey extends string ? Record<TKey, TValue> : TValue[];
+  links: {
+    url: string | null;
+    label: string;
+    active: boolean;
+  }[];
+  meta: {
+    total: number;
+    current_page: number;
+    first_page_url: string;
+    from: number | null;
+    last_page: number;
+    last_page_url: string;
+    next_page_url: string | null;
+    path: string;
+    per_page: number;
+    prev_page_url: string | null;
+    to: number | null;
+  };
+};
+export type LengthAwarePaginatorInterface<TKey, TValue> = LengthAwarePaginator<
+  TKey,
+  TValue
+>;
 export type LoginRequest = {
   email: string;
   password: string;
   remember: boolean;
 };
+export type PaginatedDataCollection<TKey, TValue> = LengthAwarePaginator<
+  TKey,
+  TValue
+>;
 export enum PermissionEnum {
   USER_CREATE = "user_create",
   USER_READ = "user_read",
@@ -53,7 +114,7 @@ export type ResetPasswordRequest = {
 export type Role = {
   id: number;
   name: string;
-  permissions: Array<string>;
+  permissions: string[];
 };
 export enum RoleEnum {
   SUPER_ADMIN = "super-admin",
@@ -62,11 +123,11 @@ export enum RoleEnum {
   USER = "user",
 }
 export type UserData = {
-  id: number;
-  name: string;
-  email: string;
-  isVerified: boolean;
-  isBanned: boolean;
-  avatar: string;
-  created_at: string | null;
+  readonly id: number;
+  readonly name: string;
+  readonly email: string;
+  readonly isVerified: boolean;
+  readonly isBanned: boolean;
+  readonly avatar: string;
+  readonly created_at: string | null;
 };
