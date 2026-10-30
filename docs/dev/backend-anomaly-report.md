@@ -63,7 +63,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 
 ### P1 — Gravità media
 
-- [ ] #8 Sessione non rigenerata dopo registrazione; utente bannato autenticato prima del controllo `[media]`
+- [x] #8 Sessione non rigenerata dopo registrazione; utente bannato autenticato prima del controllo `[media]`
 - [ ] #9 Flusso auth incompleto (verifica email, reset password) `[media]`
 - [ ] #10 Logica anti-escalation nel livello Presentation (`RoleUpdateRequest`/`UserUpdateRequest` Admin) `[media]`
 - [ ] #11 Doppio sistema di autorizzazione incoerente (Gate, Request, Policy) `[media]`
@@ -150,7 +150,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: `register` fa `Auth::login` senza `session()->regenerate()`; in `login`, `Auth::attempt` autentica anche l'utente bannato prima del controllo `isBanned()`.
 - **Impatto**: rischio di session fixation; sessione autenticata temporanea per utenti bannati.
 - **Fix suggerito**: rigenerare la sessione dopo la registrazione; controllare il ban prima di autenticare (o fare logout immediato).
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — `register` rigenera la sessione dopo `Auth::login`; `login` verifica le credenziali via user provider (`retrieveByCredentials` + `validateCredentials`), controlla `isBanned()` e solo dopo fa `Auth::login` + `session()->regenerate()`: il bannato non viene mai autenticato (l'errore `account_banned` compare solo con password corretta). Test: aggiunto `test_registration_regenerates_the_session`, `test_a_banned_user_cannot_login` già esistente. Restano fuori #9, #15, #16.
 
 #### #9 Flusso auth incompleto
 

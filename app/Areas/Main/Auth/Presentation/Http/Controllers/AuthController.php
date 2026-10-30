@@ -59,6 +59,7 @@ class AuthController extends Controller
 
         if ($user) {
             Auth::login($user);
+            request()->session()->regenerate();
         }
 
         return $this->spaRedirect(route('verification.notice'));
@@ -80,7 +81,10 @@ class AuthController extends Controller
             ]);
         }
 
-        if (!Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->remember)) {
+        $provider = Auth::guard()->getProvider();
+        $user = $provider->retrieveByCredentials(['email' => $request->email]);
+
+        if (!$user || !$provider->validateCredentials($user, ['password' => $request->password])) {
             RateLimiter::hit($throttleKey);
 
             throw ValidationException::withMessages([
@@ -90,16 +94,13 @@ class AuthController extends Controller
 
         RateLimiter::clear($throttleKey);
 
-        $user = Auth::user();
-
         if ($user->isBanned()) {
-            Auth::logout();
-
             throw ValidationException::withMessages([
                 'email' => __('error.account_banned'),
             ]);
         }
 
+        Auth::login($user, (bool) $request->remember);
         request()->session()->regenerate();
 
         return $this->hardRedirect(route('home'));

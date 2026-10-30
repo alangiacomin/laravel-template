@@ -213,6 +213,23 @@ class AuthControllerTest extends TestCase
         Notification::assertSentTo($user, VerifyEmail::class);
     }
 
+    public function test_registration_regenerates_the_session(): void
+    {
+        Notification::fake();
+
+        $this->startSession();
+        $oldSessionId = session()->getId();
+
+        $this->post(route('register'), [
+            'name' => 'Mario Rossi',
+            'email' => 'mario.rossi@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+        ]);
+
+        $this->assertNotSame($oldSessionId, session()->getId());
+    }
+
     public function test_registration_is_throttled_per_ip(): void
     {
         for ($i = 0; $i < 10; $i++) {
