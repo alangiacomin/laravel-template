@@ -58,7 +58,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - [x] #3 Logout via GET `[alta]`
 - [x] #4 Nessun rate limiting sul login ed enumerazione account `[alta]`
 - [x] #5 Seeder con super-admin prevedibile senza guardia sull'ambiente `[alta]`
-- [ ] #6 Blocco utenti senza guardie sul target `[alta]`
+- [x] #6 Blocco utenti senza guardie sul target `[alta]`
 - [ ] #7 Gestore eccezioni che espone dettagli al client `[alta]`
 
 ### P1 — Gravità media
@@ -132,7 +132,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: nessun controllo sull'utente da bloccare.
 - **Impatto**: un admin può bannare sé stesso, un super-admin o un altro admin.
 - **Fix suggerito**: impedire auto-ban e ban di utenti con ruolo SUPER_ADMIN/ADMIN, nel Job o in una policy.
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — guardie nel Job (scelta confermata): `BloccaUtenteJob` riceve `actorId` e lancia `HttpException` 403 per auto-ban e target `SUPER_ADMIN`; gli admin restano bannabili (confermato). Messaggi in `lang/it/admin.php`. Test aggiunti in `UserControllerTest` (normale, altro admin, self, super-admin). Restano fuori #11, #12, #15.
 
 #### #7 Gestore eccezioni che espone dettagli
 

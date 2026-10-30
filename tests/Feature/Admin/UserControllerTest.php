@@ -126,6 +126,57 @@ class UserControllerTest extends TestCase
         $this->assertNotNull($other->refresh()->banned_at);
     }
 
+    public function test_admin_can_blocca_a_normal_user(): void
+    {
+        $admin = $this->userManagerAdmin();
+        $other = User::factory()->create();
+
+        $this->actingAs($admin)->patch(route('admin.user.blocca', ['id' => $other->id]))->assertRedirect();
+
+        $this->assertNotNull($other->refresh()->banned_at);
+    }
+
+    public function test_admin_can_blocca_another_admin(): void
+    {
+        $admin = $this->userManagerAdmin();
+        $other = User::factory()->create();
+        $other->assignRole(RoleEnum::ADMIN->value);
+
+        $this->actingAs($admin)->patch(route('admin.user.blocca', ['id' => $other->id]))->assertRedirect();
+
+        $this->assertNotNull($other->refresh()->banned_at);
+    }
+
+    public function test_admin_cannot_blocca_themselves(): void
+    {
+        $admin = $this->userManagerAdmin();
+
+        $this->actingAs($admin)->patch(route('admin.user.blocca', ['id' => $admin->id]))->assertForbidden();
+
+        $this->assertNull($admin->refresh()->banned_at);
+    }
+
+    public function test_super_admin_cannot_blocca_themselves(): void
+    {
+        $superAdmin = User::factory()->create();
+        $superAdmin->assignRole(RoleEnum::SUPER_ADMIN->value);
+
+        $this->actingAs($superAdmin)->patch(route('admin.user.blocca', ['id' => $superAdmin->id]))->assertForbidden();
+
+        $this->assertNull($superAdmin->refresh()->banned_at);
+    }
+
+    public function test_admin_cannot_blocca_a_super_admin(): void
+    {
+        $admin = $this->userManagerAdmin();
+        $superAdmin = User::factory()->create();
+        $superAdmin->assignRole(RoleEnum::SUPER_ADMIN->value);
+
+        $this->actingAs($admin)->patch(route('admin.user.blocca', ['id' => $superAdmin->id]))->assertForbidden();
+
+        $this->assertNull($superAdmin->refresh()->banned_at);
+    }
+
     public function test_super_admin_can_sblocca_a_user(): void
     {
         $admin = User::factory()->create();
@@ -244,6 +295,23 @@ class UserControllerTest extends TestCase
         ])->assertSessionHasNoErrors();
 
         $this->assertTrue($other->fresh()->hasRole(RoleEnum::ADMIN->value));
+    }
+
+    /**
+     * Admin con i permessi richiesti dal gate user_manage.
+     */
+    private function userManagerAdmin(): User
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole(RoleEnum::ADMIN->value);
+        $admin->givePermissionTo(
+            PermissionEnum::USER_CREATE->value,
+            PermissionEnum::USER_READ->value,
+            PermissionEnum::USER_UPDATE->value,
+            PermissionEnum::USER_DELETE->value,
+        );
+
+        return $admin;
     }
 
     /**

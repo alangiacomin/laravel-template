@@ -32,6 +32,8 @@ return [
     'all_verified' => 'Tutti verificati',
     'role_updated' => 'Ruolo aggiornato con successo.',
     'user_blocked' => 'Utente bloccato con successo.',
+    'user_block_self_forbidden' => 'Non puoi bloccare te stesso.',
+    'user_block_super_admin_forbidden' => 'Non puoi bloccare un super-admin.',
     'user_unblocked' => 'Utente sbloccato con successo.',
     'clear_filters' => 'Azzera filtri',
     'delete_confirm' => 'Vuoi eliminare questo elemento?',

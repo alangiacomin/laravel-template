@@ -10,6 +10,7 @@ use App\Infrastructure\Http\Controllers\Controller;
 use App\Models\User;
 use App\Shared\Infrastructure\Enums\GateEnum;
 use Illuminate\Routing\Attributes\Controllers\Middleware;
+use Illuminate\Support\Facades\Auth;
 
 #[Middleware('auth')]
 #[Middleware('not_banned')]
@@ -48,7 +49,7 @@ class UserController extends Controller
     #[Middleware('can:'.GateEnum::USER_MANAGE->value)]
     public function blocca(int $id)
     {
-        dispatch_sync(new BloccaUtenteJob($id));
+        dispatch_sync(new BloccaUtenteJob($id, (int) Auth::id()));
 
         return $this->flashSuccess(__('admin.user_blocked'));
     }
