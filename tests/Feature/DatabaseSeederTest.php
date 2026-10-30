@@ -28,7 +28,7 @@ class DatabaseSeederTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $user->fill(['banned_at' => now()])->save();
+        $user->forceFill(['banned_at' => now()])->save();
 
         $this->assertNull($user->refresh()->banned_at);
     }
