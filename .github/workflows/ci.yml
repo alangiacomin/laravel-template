@@ -55,6 +55,14 @@ jobs:
       - name: PHPStan
         run: vendor/bin/phpstan analyse --memory-limit=1G --error-format=github
 
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Build frontend assets (Vite manifest richiesto dai test)
+        run: |
+          bun install --frozen-lockfile
+          bun run build
+
       - name: Tests
         run: composer test
 
