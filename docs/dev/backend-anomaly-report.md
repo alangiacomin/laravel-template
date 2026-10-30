@@ -68,7 +68,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - [x] #10 Logica anti-escalation nel livello Presentation (`RoleUpdateRequest`/`UserUpdateRequest` Admin) `[media]`
 - [x] #11 Doppio sistema di autorizzazione incoerente (Gate, Request, Policy) `[media]`
 - [x] #12 `UserController::update` senza Job né risposta `[media]`
-- [ ] #13 `User::$fillable` include `banned_at`; seed non verificati `[media]`
+- [x] #13 `User::$fillable` include `banned_at`; seed non verificati `[media]`
 - [ ] #14 `RegisterUserJob` senza transazione `[media]`
 - [ ] #15 Middleware `not_banned` non uniforme `[media]`
 - [ ] #16 Helper di redirect con `redirect()->intended()` `[media]`
@@ -190,7 +190,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: `banned_at` è assegnabile in massa, ma il model ha già `ban()/unban()` con `forceFill`. `email_verified_at` e `remember_token` non sono fillable: `UsersSeeder::updateOrCreate` li scarta in silenzio.
 - **Impatto**: rischio di mass assignment; utenti seed non verificati.
 - **Fix suggerito**: togliere `banned_at` da `$fillable`; correggere il seeder con `forceFill` (aggiungere `email_verified_at` a `$fillable` solo se necessario).
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — `banned_at` rimosso da `User::$fillable` (restano `ban()/unban()`); `UsersSeeder` usa `firstOrNew` + `forceFill` + `save`, quindi `email_verified_at` e `remember_token` vengono salvati senza ampliare `$fillable`. Test in `DatabaseSeederTest`: utenti seed verificati e `banned_at` non assegnabile in massa.
 
 #### #14 `RegisterUserJob` senza transazione
 

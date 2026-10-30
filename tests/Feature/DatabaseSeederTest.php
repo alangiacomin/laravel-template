@@ -20,6 +20,17 @@ class DatabaseSeederTest extends TestCase
 
         $this->assertNotNull($admin);
         $this->assertTrue($admin->hasRole(RoleEnum::SUPER_ADMIN));
+        $this->assertNotNull($admin->email_verified_at);
+        $this->assertNotNull($admin->remember_token);
+    }
+
+    public function test_banned_at_is_not_mass_assignable(): void
+    {
+        $user = User::factory()->create();
+
+        $user->fill(['banned_at' => now()])->save();
+
+        $this->assertNull($user->refresh()->banned_at);
     }
 
     public function test_seeder_does_not_create_demo_users_in_production_environment(): void
