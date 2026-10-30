@@ -4,6 +4,8 @@ namespace App\Infrastructure\Providers;
 
 use App\Areas\Main\Auth\Application\Inertia\AbilityResolver;
 use App\Areas\Main\Auth\Infrastructure\Inertia\GateAbilityResolver;
+use App\Models\Policies\RolePolicy;
+use App\Models\Policies\UserPolicy;
 use App\Models\User;
 use App\Shared\Infrastructure\Enums\GateEnum;
 use App\Shared\Infrastructure\Enums\PermissionEnum;
@@ -15,6 +17,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Spatie\Permission\Models\Role;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -71,6 +74,9 @@ class AppServiceProvider extends ServiceProvider
                     : null;
             }
         );
+
+        Gate::policy(User::class, UserPolicy::class);
+        Gate::policy(Role::class, RolePolicy::class);
 
         Gate::define(GateEnum::USER_VIEW, fn (User $user) => $user->can([
             PermissionEnum::USER_READ,

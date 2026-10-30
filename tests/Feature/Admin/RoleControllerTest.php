@@ -2,11 +2,14 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Models\Policies\RolePolicy;
+use App\Models\Policies\UserPolicy;
 use App\Models\User;
 use App\Shared\Infrastructure\Enums\PermissionEnum;
 use App\Shared\Infrastructure\Enums\RoleEnum;
 use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -114,9 +117,15 @@ class RoleControllerTest extends TestCase
 
         $this->actingAs($admin)->patch(route('admin.role.update', ['id' => $role->id]), [
             'permissions' => [PermissionEnum::USER_READ->value => true],
-        ])->assertSessionHasErrors('permissions');
+        ])->assertForbidden();
 
         $this->assertFalse($role->fresh()->hasPermissionTo(PermissionEnum::USER_READ->value));
+    }
+
+    public function test_policies_are_registered_for_user_and_spatie_role(): void
+    {
+        $this->assertInstanceOf(RolePolicy::class, Gate::getPolicyFor(Role::class));
+        $this->assertInstanceOf(UserPolicy::class, Gate::getPolicyFor(User::class));
     }
 
     public function test_non_super_admin_cannot_grant_permissions_they_do_not_hold(): void

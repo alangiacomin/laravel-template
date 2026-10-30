@@ -39,7 +39,7 @@ class RolePolicy
     public function update(User $user, Role $model): bool
     {
         return $user->can(PermissionEnum::ROLE_UPDATE)
-            || $model->name !== RoleEnum::SUPER_ADMIN->value;
+            && $model->name !== RoleEnum::SUPER_ADMIN->value;
     }
 
     /**

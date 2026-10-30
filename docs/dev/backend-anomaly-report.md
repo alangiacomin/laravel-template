@@ -66,7 +66,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - [x] #8 Sessione non rigenerata dopo registrazione; utente bannato autenticato prima del controllo `[media]`
 - [x] #9 Flusso auth incompleto (verifica email, reset password) `[media]`
 - [x] #10 Logica anti-escalation nel livello Presentation (`RoleUpdateRequest`/`UserUpdateRequest` Admin) `[media]`
-- [ ] #11 Doppio sistema di autorizzazione incoerente (Gate, Request, Policy) `[media]`
+- [x] #11 Doppio sistema di autorizzazione incoerente (Gate, Request, Policy) `[media]`
 - [ ] #12 `UserController::update` senza Job né risposta `[media]`
 - [ ] #13 `User::$fillable` include `banned_at`; seed non verificati `[media]`
 - [ ] #14 `RegisterUserJob` senza transazione `[media]`
@@ -174,7 +174,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: controller → `can:GateEnum::X`; Request → `PermissionEnum::X` diretto; le policy non sono mai invocate (nessun `authorize()`/`Gate::policy`; `UserPolicy` è scoperta per convenzione, `RolePolicy` no perché il model è Spatie). `RolePolicy::update` usa `||` dove probabilmente serviva `&&` (`ROLE_UPDATE || name !== super-admin`). `GateEnum::USER_MANAGE` richiede 4 permessi (create/read/update/delete) per bannare: troppo rigido e poco leggibile. Il trait `AuthorizesRequests` è incluso ma inutilizzato.
 - **Impatto**: regole di accesso duplicate e potenzialmente discordanti; policy morte.
 - **Fix suggerito**: scegliere un solo meccanismo (consigliato: Gate in `AppServiceProvider` per le capability + Policy per le istanze, registrate con `Gate::policy`), rimuovere le duplicazioni nelle Request, correggere `RolePolicy::update` dopo aver verificato l'intento. **Richiede conferma dell'utente sul design.**
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — scelta (confermata) Gate + Policy: `Gate::policy` per `User` e `Spatie\Permission\Models\Role` in `AppServiceProvider`; i controller mantengono `can:GateEnum::X`; le tre `UserUpdateRequest`/`RoleUpdateRequest` delegano `authorize()` alla Policy (nessun `PermissionEnum` diretto). `RolePolicy::update` ora usa `&&`. `USER_MANAGE` invariato (scelta confermata). Effetto: un non super-admin che modifica il ruolo `super-admin` riceve 403 (prima 422 dal Job, che mantiene la guardia). Test: `test_non_super_admin_cannot_update_super_admin_role` ora 403, aggiunto `test_policies_are_registered_for_user_and_spatie_role`.
 
 #### #12 `UserController::update` senza Job né risposta
 

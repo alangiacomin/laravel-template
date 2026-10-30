@@ -3,13 +3,12 @@
 namespace App\Areas\Main\Auth\Presentation\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class UserUpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return Auth::check();
+        return $this->user()?->can('update', $this->user()) ?? false;
     }
 
     public function rules(): array

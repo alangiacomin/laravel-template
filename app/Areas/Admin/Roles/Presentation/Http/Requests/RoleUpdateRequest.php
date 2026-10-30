@@ -4,14 +4,14 @@ namespace App\Areas\Admin\Roles\Presentation\Http\Requests;
 
 use App\Shared\Infrastructure\Enums\PermissionEnum;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Validator;
+use Spatie\Permission\Models\Role;
 
 class RoleUpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return Auth::check() && Auth::user()->can(PermissionEnum::ROLE_UPDATE);
+        return $this->user()?->can('update', Role::findOrFail($this->route('id'))) ?? false;
     }
 
     public function rules(): array

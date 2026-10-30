@@ -2,17 +2,16 @@
 
 namespace App\Areas\Admin\Users\Presentation\Http\Requests;
 
-use App\Shared\Infrastructure\Enums\PermissionEnum;
+use App\Models\User;
 use App\Shared\Infrastructure\Enums\RoleEnum;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Validator;
 
 class UserUpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return Auth::check() && Auth::user()->can(PermissionEnum::USER_UPDATE);
+        return $this->user()?->can('update', User::findOrFail($this->route('id'))) ?? false;
     }
 
     public function rules(): array
