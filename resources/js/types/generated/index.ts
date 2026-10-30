@@ -18,11 +18,6 @@ export enum GateEnum {
   ROLE_VIEW = "role_view",
   ROLE_EDIT = "role_edit",
   ROLE_MANAGE = "role_manage",
-  TODOS_VIEW = "todos_view",
-  TODOS_EDIT = "todos_edit",
-  TODOS_COMPLETE = "todos_complete",
-  TODOS_ASSIGN = "todos_assign",
-  TODOS_MANAGE = "todos_manage",
   ADMIN_ACCESS = "admin_access",
 }
 export type LoginRequest = {
@@ -35,10 +30,6 @@ export enum PermissionEnum {
   USER_READ = "user_read",
   USER_UPDATE = "user_update",
   USER_DELETE = "user_delete",
-  TODOS_CREATE = "todos_create",
-  TODOS_READ = "todos_read",
-  TODOS_UPDATE = "todos_update",
-  TODOS_DELETE = "todos_delete",
   ROLE_CREATE = "role_create",
   ROLE_READ = "role_read",
   ROLE_UPDATE = "role_update",
