@@ -119,6 +119,32 @@ class RoleControllerTest extends TestCase
         $this->assertFalse($role->fresh()->hasPermissionTo(PermissionEnum::USER_READ->value));
     }
 
+    public function test_non_super_admin_cannot_grant_permissions_they_do_not_hold(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole(RoleEnum::ADMIN->value);
+        $role = Role::where('name', RoleEnum::EDITOR->value)->first();
+
+        $this->actingAs($admin)->patch(route('admin.role.update', ['id' => $role->id]), [
+            'permissions' => [PermissionEnum::USER_DELETE->value => true],
+        ])->assertSessionHasErrors('permissions');
+
+        $this->assertFalse($role->fresh()->hasPermissionTo(PermissionEnum::USER_DELETE->value));
+    }
+
+    public function test_non_super_admin_can_grant_permissions_they_hold(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole(RoleEnum::ADMIN->value);
+        $role = Role::where('name', RoleEnum::EDITOR->value)->first();
+
+        $this->actingAs($admin)->patch(route('admin.role.update', ['id' => $role->id]), [
+            'permissions' => [PermissionEnum::USER_READ->value => true],
+        ])->assertSessionHasNoErrors();
+
+        $this->assertTrue($role->fresh()->hasPermissionTo(PermissionEnum::USER_READ->value));
+    }
+
     public function test_non_super_admin_cannot_update_a_role_they_hold(): void
     {
         $admin = User::factory()->create();

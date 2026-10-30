@@ -65,7 +65,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 
 - [x] #8 Sessione non rigenerata dopo registrazione; utente bannato autenticato prima del controllo `[media]`
 - [x] #9 Flusso auth incompleto (verifica email, reset password) `[media]`
-- [ ] #10 Logica anti-escalation nel livello Presentation (`RoleUpdateRequest`/`UserUpdateRequest` Admin) `[media]`
+- [x] #10 Logica anti-escalation nel livello Presentation (`RoleUpdateRequest`/`UserUpdateRequest` Admin) `[media]`
 - [ ] #11 Doppio sistema di autorizzazione incoerente (Gate, Request, Policy) `[media]`
 - [ ] #12 `UserController::update` senza Job né risposta `[media]`
 - [ ] #13 `User::$fillable` include `banned_at`; seed non verificati `[media]`
@@ -166,7 +166,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: la logica è corretta nelle intenzioni (blocca super-admin, ruoli posseduti, ruoli privilegiati) ma risiede in Presentation e contiene `User::find` nella `after()`. Resta un rischio indiretto: un non super-admin può assegnare qualsiasi permesso a un ruolo che non possiede.
 - **Impatto**: regole di sicurezza difficili da testare e riusare; possibile escalation indiretta via permessi.
 - **Fix suggerito**: spostare la logica in Application (Job) o in policy; chiudere il caso dei permessi assegnabili a un ruolo.
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — logica spostata in `UpdateRolePermissionsJob` (Admin/Roles) e `UpdateUserRolesJob` (Admin/Users); i rifiuti restano `ValidationException` su `permissions`/`roles` (scelta confermata). Le Request mantengono solo il controllo sulle chiavi note. Caso permessi chiuso: un non super-admin può cambiare a un ruolo solo permessi che possiede (super-admin senza limiti). `UserController::update` ora passa solo `name` a `update()`. Test aggiunti in `RoleControllerTest` (permesso non posseduto rifiutato, permesso posseduto consentito). Resta fuori #12 (Job per il nome e risposta/flash) e #11.
 
 #### #11 Doppio sistema di autorizzazione incoerente
 

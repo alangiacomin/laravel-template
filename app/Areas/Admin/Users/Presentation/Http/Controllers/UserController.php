@@ -5,11 +5,13 @@ namespace App\Areas\Admin\Users\Presentation\Http\Controllers;
 use App\Areas\Admin\Users\Application\Data\AdminUserData;
 use App\Areas\Admin\Users\Application\Jobs\BloccaUtenteJob;
 use App\Areas\Admin\Users\Application\Jobs\SbloccaUtenteJob;
+use App\Areas\Admin\Users\Application\Jobs\UpdateUserRolesJob;
 use App\Areas\Admin\Users\Presentation\Http\Requests\UserUpdateRequest;
 use App\Infrastructure\Http\Controllers\Controller;
 use App\Models\User;
 use App\Shared\Infrastructure\Enums\GateEnum;
 use Illuminate\Routing\Attributes\Controllers\Middleware;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 
 #[Middleware('auth')]
@@ -41,10 +43,10 @@ class UserController extends Controller
     public function update(int $id, UserUpdateRequest $request)
     {
         $validatedData = $request->validated();
-        $user = User::findOrFail($id);
-        $user->update($validatedData);
 
-        $user->syncRoles(array_keys(array_filter($validatedData['roles'] ?? [])));
+        dispatch_sync(new UpdateUserRolesJob($id, (int) Auth::id(), $validatedData['roles'] ?? []));
+
+        User::findOrFail($id)->update(Arr::only($validatedData, ['name']));
     }
 
     #[Middleware('can:'.GateEnum::USER_MANAGE->value)]

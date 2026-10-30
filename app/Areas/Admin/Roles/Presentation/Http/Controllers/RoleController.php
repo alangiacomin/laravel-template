@@ -4,12 +4,13 @@
 
 namespace App\Areas\Admin\Roles\Presentation\Http\Controllers;
 
+use App\Areas\Admin\Roles\Application\Jobs\UpdateRolePermissionsJob;
 use App\Areas\Admin\Roles\Domain\Entities\Role;
 use App\Areas\Admin\Roles\Presentation\Http\Requests\RoleUpdateRequest;
 use App\Infrastructure\Http\Controllers\Controller;
 use App\Shared\Infrastructure\Enums\GateEnum;
 use Illuminate\Routing\Attributes\Controllers\Middleware;
-use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role as SpatieRole;
 
 #[Middleware('auth')]
@@ -36,10 +37,7 @@ class RoleController extends Controller
     #[Middleware('can:'.GateEnum::ROLE_EDIT->value)]
     public function update(int $id, RoleUpdateRequest $request)
     {
-        $validatedData = $request->validated();
-        $permissions = Arr::divide(Arr::where($validatedData['permissions'], fn ($enabled) => $enabled))[0];
-
-        SpatieRole::findOrFail($id)->syncPermissions($permissions);
+        dispatch_sync(new UpdateRolePermissionsJob($id, (int) Auth::id(), $request->validated()['permissions'] ?? []));
 
         return $this->flashSuccess(__('admin.role_updated'));
     }

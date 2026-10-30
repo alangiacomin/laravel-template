@@ -2,7 +2,6 @@
 
 namespace App\Areas\Admin\Users\Presentation\Http\Requests;
 
-use App\Models\User;
 use App\Shared\Infrastructure\Enums\PermissionEnum;
 use App\Shared\Infrastructure\Enums\RoleEnum;
 use Illuminate\Foundation\Http\FormRequest;
@@ -26,8 +25,7 @@ class UserUpdateRequest extends FormRequest
     }
 
     /**
-     * Accetta solo ruoli noti. Chi non è super-admin non può cambiare i ruoli
-     * privilegiati (super-admin, admin) né i propri ruoli.
+     * Accetta solo ruoli noti.
      *
      * @return array<int, callable(Validator): void>
      */
@@ -44,32 +42,6 @@ class UserUpdateRequest extends FormRequest
                 $knownRoles = array_map(fn (RoleEnum $role) => $role->value, RoleEnum::cases());
 
                 if (array_diff(array_keys($roles), $knownRoles) !== []) {
-                    $validator->errors()->add('roles', __('validation.in', ['attribute' => 'roles']));
-
-                    return;
-                }
-
-                if (Auth::user()->hasRole(RoleEnum::SUPER_ADMIN->value)) {
-                    return;
-                }
-
-                $target = User::find($this->route('id'));
-                $currentRoles = $target?->getRoleNames()->all() ?? [];
-                $requestedRoles = array_keys(array_filter(
-                    $roles,
-                    fn ($granted) => filter_var($granted, FILTER_VALIDATE_BOOLEAN),
-                ));
-
-                $privilegedRoles = [RoleEnum::SUPER_ADMIN->value, RoleEnum::ADMIN->value];
-                $changed = array_merge(
-                    array_diff($currentRoles, $requestedRoles),
-                    array_diff($requestedRoles, $currentRoles),
-                );
-
-                $changesPrivilegedRole = array_intersect($changed, $privilegedRoles) !== [];
-                $changesOwnRoles = $changed !== [] && $target?->is(Auth::user());
-
-                if ($changesPrivilegedRole || $changesOwnRoles) {
                     $validator->errors()->add('roles', __('validation.in', ['attribute' => 'roles']));
                 }
             },
