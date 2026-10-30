@@ -306,7 +306,9 @@ Da preservare durante i fix:
 
 ## Note sui punti ambigui
 
-- **#1**: ri-verificare con `php artisan event:list` (e `--event=UserRegistered`) prima di intervenire: il risultato descritto è quello dell'analisi iniziale.
-- **#11 — `RolePolicy::update`**: l'operatore `||` (`ROLE_UPDATE || name !== super-admin`) va verificato rispetto all'intento; con ogni probabilità serviva `&&`, ma l'analisi non lo prova. Chiedere conferma prima di cambiare la semantica.
-- **#11 / #10**: la scelta del meccanismo di autorizzazione è una decisione di design, da concordare con l'utente.
+Tutti verificati e chiusi (2026-10-30), nessuna modifica al codice necessaria:
+
+- **#1**: `php artisan event:list` mostra solo `Registered` → `SendEmailVerificationNotification`; nessun residuo di `UserRegistered`, `withEvents` o `EventServiceProvider`.
+- **#11 — `RolePolicy::update`**: usa già `&&` (`ROLE_UPDATE && name !== super-admin`), intento confermato.
+- **#11 / #10**: meccanismo scelto Gate + Policy (`Gate::policy` in `AppServiceProvider`); le Request delegano a `can('update', ...)`.
 - **Model `User`** (divergenze docs ↔ codice): deciso di documentare l'eccezione in `docs/ai`, senza migrare il model.

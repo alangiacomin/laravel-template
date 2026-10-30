@@ -2,15 +2,12 @@
 
 namespace App\Infrastructure\Http\Controllers;
 
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class Controller
 {
-    use AuthorizesRequests;
-
     public function flashSuccess(mixed $returnValue): RedirectResponse
     {
         return back()->with('success', $returnValue);
