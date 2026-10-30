@@ -95,7 +95,8 @@ class UserControllerTest extends TestCase
             'name' => 'New Name',
         ]);
 
-        $response->assertOk();
+        $response->assertRedirect();
+        $response->assertSessionHas('success', __('admin.user_updated'));
         $this->assertDatabaseHas('users', [
             'id' => $other->id,
             'name' => 'New Name',

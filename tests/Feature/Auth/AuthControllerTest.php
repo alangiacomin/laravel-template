@@ -436,7 +436,8 @@ class AuthControllerTest extends TestCase
             'name' => 'New Name',
         ]);
 
-        $response->assertOk();
+        $response->assertRedirect();
+        $response->assertSessionHas('success', __('user.profile_updated'));
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
             'name' => 'New Name',
@@ -450,7 +451,7 @@ class AuthControllerTest extends TestCase
 
         $this->actingAs($user)->patch(route('user.update'), [
             'name' => 'New Name',
-        ])->assertOk();
+        ])->assertRedirect();
 
         $this->actingAs($user)->patch('/profilo/'.$otherUser->id, [
             'name' => 'Hacked Name',

@@ -2,6 +2,7 @@
 
 return [
     'edit_profile' => 'Modifica profilo',
+    'profile_updated' => 'Profilo aggiornato con successo.',
     'name' => 'Nome',
     'registered_at' => 'Data di registrazione',
     'status_verified' => 'Verificato',

@@ -31,6 +31,7 @@ return [
     'unverified_count' => 'non verificati',
     'all_verified' => 'Tutti verificati',
     'role_updated' => 'Ruolo aggiornato con successo.',
+    'user_updated' => 'Utente aggiornato con successo.',
     'user_blocked' => 'Utente bloccato con successo.',
     'user_block_self_forbidden' => 'Non puoi bloccare te stesso.',
     'user_block_super_admin_forbidden' => 'Non puoi bloccare un super-admin.',

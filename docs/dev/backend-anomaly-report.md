@@ -67,7 +67,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - [x] #9 Flusso auth incompleto (verifica email, reset password) `[media]`
 - [x] #10 Logica anti-escalation nel livello Presentation (`RoleUpdateRequest`/`UserUpdateRequest` Admin) `[media]`
 - [x] #11 Doppio sistema di autorizzazione incoerente (Gate, Request, Policy) `[media]`
-- [ ] #12 `UserController::update` senza Job né risposta `[media]`
+- [x] #12 `UserController::update` senza Job né risposta `[media]`
 - [ ] #13 `User::$fillable` include `banned_at`; seed non verificati `[media]`
 - [ ] #14 `RegisterUserJob` senza transazione `[media]`
 - [ ] #15 Middleware `not_banned` non uniforme `[media]`
@@ -182,7 +182,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: `update` non restituisce nulla né usa un Job, contro il pattern CRUD dei docs (`dispatch_sync(new XJob)` + risposta/flash). L'Admin fa `update($validatedData)` passando anche la chiave `roles`, che Eloquent scarta in silenzio.
 - **Impatto**: controller non sottili, comportamento non uniforme, ruoli non aggiornati.
 - **Fix suggerito**: creare Job (`UpdateUserJob`, `UpdateUserRolesJob`) con risposta/flash esplicita (`flashSuccess`).
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — nuovi `UpdateUserJob` (Admin/Users) e `UpdateProfileJob` (Main/Auth); entrambi i controller `update` usano `dispatch_sync` e rispondono con `flashSuccess` (`admin.user_updated`, `user.profile_updated`). Il problema della chiave `roles` scartata era già risolto da #10 (`UpdateUserRolesJob`). Test: i due test di update esistenti ora verificano redirect e flash `success`. Nota: `UpdateUserRolesJob` riceve `roles ?? []`, quindi un PATCH senza `roles` rimuove tutti i ruoli del target (comportamento preesistente, da valutare a parte).
 
 #### #13 `User::$fillable` include `banned_at`; seed non verificati
 
