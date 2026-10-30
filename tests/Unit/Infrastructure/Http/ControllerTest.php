@@ -28,6 +28,23 @@ class ControllerTest extends TestCase
         $this->assertSame(url('/login'), $response->headers->get('Location'));
     }
 
+    public function test_redirects_ignore_the_intended_url(): void
+    {
+        session()->put('url.intended', url('/other'));
+
+        $this->assertSame(url('/dashboard'), $this->controller()->spaRedirect('/dashboard')->getTargetUrl());
+        $this->assertSame(url('/login'), $this->controller()->hardRedirect('/login')->headers->get('Location'));
+    }
+
+    public function test_hard_intended_redirect_uses_the_intended_url_when_present(): void
+    {
+        session()->put('url.intended', url('/other'));
+
+        $response = $this->controller()->hardIntendedRedirect('/dashboard');
+
+        $this->assertSame(url('/other'), $response->headers->get('Location'));
+    }
+
     private function controller(): Controller
     {
         return new class() extends Controller {};

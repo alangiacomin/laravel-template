@@ -71,7 +71,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - [x] #13 `User::$fillable` include `banned_at`; seed non verificati `[media]`
 - [x] #14 `RegisterUserJob` senza transazione `[media]`
 - [x] #15 Middleware `not_banned` non uniforme `[media]`
-- [ ] #16 Helper di redirect con `redirect()->intended()` `[media]`
+- [x] #16 Helper di redirect con `redirect()->intended()` `[media]`
 
 ### P2 — Gravità bassa / manutenzione
 
@@ -214,7 +214,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: usano `redirect()->intended()`, che può sovrascrivere la destinazione richiesta (es. dopo logout o registrazione → `verification.notice`).
 - **Impatto**: redirect inattesi.
 - **Fix suggerito**: usare `intended()` solo dopo il login; negli altri casi redirect esplicito.
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — `spaRedirect`/`hardRedirect` fanno ora un redirect esplicito (`redirect($route)`); nuovo `hardIntendedRedirect` con `intended()` usato solo da `AuthController::login`. Test in `ControllerTest` (redirect che ignorano l'intended, intended rispettato dopo il login).
 
 ### P2 — Gravità bassa / manutenzione
 

@@ -104,7 +104,7 @@ class AuthController extends Controller
         Auth::login($user, (bool) $request->remember);
         request()->session()->regenerate();
 
-        return $this->hardRedirect(route('home'));
+        return $this->hardIntendedRedirect(route('home'));
     }
 
     /**

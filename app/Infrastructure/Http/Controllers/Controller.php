@@ -18,11 +18,19 @@ abstract class Controller
 
     public function spaRedirect(string $route): RedirectResponse
     {
-        return redirect()->intended($route);
+        return redirect($route);
     }
 
     public function hardRedirect(string $route): Response
     {
-        return Inertia::location(redirect()->intended($route)->getTargetUrl());
+        return Inertia::location(redirect($route)->getTargetUrl());
+    }
+
+    /**
+     * Da usare solo dopo il login: torna alla destinazione richiesta in origine, se presente.
+     */
+    public function hardIntendedRedirect(string $default): Response
+    {
+        return Inertia::location(redirect()->intended($default)->getTargetUrl());
     }
 }
