@@ -53,11 +53,11 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 
 ### P0 — Gravità alta
 
-- [ ] #1 `UserRegisteredEvent` senza listener (mail di verifica non inviata) `[alta]`
+- [x] #1 `UserRegisteredEvent` senza listener (mail di verifica non inviata) `[alta]`
 - [x] #2 IDOR su `PATCH /profilo/{id}` `[alta]`
 - [x] #3 Logout via GET `[alta]`
 - [x] #4 Nessun rate limiting sul login ed enumerazione account `[alta]`
-- [ ] #5 Seeder con super-admin prevedibile senza guardia sull'ambiente `[alta]`
+- [x] #5 Seeder con super-admin prevedibile senza guardia sull'ambiente `[alta]`
 - [ ] #6 Blocco utenti senza guardie sul target `[alta]`
 - [ ] #7 Gestore eccezioni che espone dettagli al client `[alta]`
 
@@ -92,7 +92,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: il percorso di discovery punta a una cartella inesistente; i listener reali stanno in `app/Areas/Main/Auth/Infrastructure/Listeners/UserRegistered/` e `EventServiceProvider::$listen` è vuoto. `php artisan event:list --event=UserRegistered` non restituisce nulla. Inoltre `SendEmail` non invia nulla: ricarica l'utente e rilancia `Registered`.
 - **Impatto**: dopo la registrazione la mail di verifica non parte e il broadcast è inattivo.
 - **Fix suggerito**: puntare il discovery a `app/Areas/*/*/Infrastructure/Listeners` oppure registrare esplicitamente i listener in `EventServiceProvider::$listen`; far inviare davvero la verifica (listener standard su `Registered` / `sendEmailVerificationNotification`); aggiungere un test con `Event::fake` / `Notification::fake`. **Ri-verificare prima con `php artisan event:list`** (vedi note sui punti ambigui).
-- **Stato**: [x] risolto: rimossi `UserRegisteredEvent`, listener custom, `VerifyEmailCustom` e override in `User`; `RegisterUserJob` lancia `Registered` e Laravel invia la `VerifyEmail` di default.
+- **Stato**: [x] risolto: rimossi `UserRegisteredEvent`, listener custom, `VerifyEmailCustom` e override in `User`; `RegisterUserJob` lancia `Registered` e Laravel invia la `VerifyEmail` di default. Verificato: `event:list` senza residui, test `AuthControllerTest::test_a_user_can_register` (`Notification::assertSentTo($user, VerifyEmail::class)`), suite e phpstan verdi. Il broadcast sulla registrazione è stato rimosso: se serve ancora, decisione a parte.
 
 #### #2 IDOR su `PATCH /profilo/{id}`
 
@@ -124,7 +124,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: creano `admin@example.com` con password `password123` e ruolo SUPER_ADMIN, senza guardia sull'ambiente.
 - **Impatto**: se eseguiti in produzione = backdoor.
 - **Fix suggerito**: proteggere con `app()->isLocal()` / `environment('local', 'testing')` oppure leggere le credenziali da `.env`.
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — scelta (confermata dall'utente) guardia sull'ambiente: `UsersSeeder` esce subito fuori da `local`/`testing`; `DatabaseSeeder` fuori da `local`/`testing` esegue solo `RolesAndPermissionsSeeder` (nessun utente demo né `assignRole`). Test: `DatabaseSeederTest` (testing e production). Resta fuori: `forceFill`/fillable del seeder (vedi #13).
 
 #### #6 Blocco utenti senza guardie sul target
 

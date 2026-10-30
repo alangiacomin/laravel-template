@@ -16,16 +16,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(
-            [
-                RolesAndPermissionsSeeder::class,
-                UsersSeeder::class,
-            ]
-        );
+        $this->call(RolesAndPermissionsSeeder::class);
+
+        if (!app()->environment('local', 'testing')) {
+            return;
+        }
+
+        $this->call(UsersSeeder::class);
 
         User::where('email', 'admin@example.com')->first()->assignRole(RoleEnum::SUPER_ADMIN);
         User::where('email', 'editor@example.com')->first()->assignRole(RoleEnum::EDITOR, RoleEnum::USER);
         User::where('email', 'user@example.com')->first()->assignRole(RoleEnum::USER);
-        // User::where('email', 'user@example.com')->first()->assignRole(RoleEnum::SUPER_ADMIN);
     }
 }
