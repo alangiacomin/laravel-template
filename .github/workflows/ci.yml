@@ -21,6 +21,7 @@ env:
 jobs:
   backend:
     name: Backend (PHP ${{ matrix.php }})
+    needs: frontend
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -61,13 +62,11 @@ jobs:
       - name: PHPStan
         run: vendor/bin/phpstan analyse --memory-limit=1G --error-format=github
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-
-      - name: Build frontend assets (Vite manifest richiesto dai test)
-        run: |
-          bun install --frozen-lockfile
-          bun run build
+      - name: Download frontend build (Vite manifest richiesto dai test)
+        uses: actions/download-artifact@v5
+        with:
+          name: vite-build
+          path: public/build
 
       - name: Tests
         run: composer test
@@ -100,6 +99,16 @@ jobs:
           cp .env.example .env
           php artisan key:generate
 
+      - name: Build
+        run: bun run build
+
+      - name: Upload build
+        uses: actions/upload-artifact@v5
+        with:
+          name: vite-build
+          path: public/build
+          retention-days: 1
+
       - name: Biome
         run: bun run lint
 
@@ -108,9 +117,6 @@ jobs:
 
       - name: Vitest
         run: bun run test
-
-      - name: Build
-        run: bun run build
 
   generated-types:
     name: Generated types in sync
