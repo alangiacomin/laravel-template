@@ -27,9 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'not_banned' => EnsureUserIsNotBanned::class,
         ]);
         $middleware->redirectGuestsTo(fn () => route('login'));
-    })->withEvents(discover: [
-        __DIR__.'/../app/Main/*/Domain/Listeners',
-    ])
+    })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->renderable(function (Throwable $e, $request) {
             // dd($e->getMessage());

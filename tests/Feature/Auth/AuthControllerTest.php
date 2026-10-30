@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Database\Seeders\RolesAndPermissionsSeeder;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
@@ -208,6 +209,8 @@ class AuthControllerTest extends TestCase
 
         $this->assertAuthenticatedAs($user);
         $this->assertTrue($user->hasRole('user'));
+
+        Notification::assertSentTo($user, VerifyEmail::class);
     }
 
     public function test_registration_is_throttled_per_ip(): void

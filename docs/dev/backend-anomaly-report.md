@@ -92,7 +92,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: il percorso di discovery punta a una cartella inesistente; i listener reali stanno in `app/Areas/Main/Auth/Infrastructure/Listeners/UserRegistered/` e `EventServiceProvider::$listen` è vuoto. `php artisan event:list --event=UserRegistered` non restituisce nulla. Inoltre `SendEmail` non invia nulla: ricarica l'utente e rilancia `Registered`.
 - **Impatto**: dopo la registrazione la mail di verifica non parte e il broadcast è inattivo.
 - **Fix suggerito**: puntare il discovery a `app/Areas/*/*/Infrastructure/Listeners` oppure registrare esplicitamente i listener in `EventServiceProvider::$listen`; far inviare davvero la verifica (listener standard su `Registered` / `sendEmailVerificationNotification`); aggiungere un test con `Event::fake` / `Notification::fake`. **Ri-verificare prima con `php artisan event:list`** (vedi note sui punti ambigui).
-- **Stato**: [ ] da fare
+- **Stato**: [x] risolto: rimossi `UserRegisteredEvent`, listener custom, `VerifyEmailCustom` e override in `User`; `RegisterUserJob` lancia `Registered` e Laravel invia la `VerifyEmail` di default.
 
 #### #2 IDOR su `PATCH /profilo/{id}`
 

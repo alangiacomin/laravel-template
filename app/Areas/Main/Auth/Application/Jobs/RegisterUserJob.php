@@ -2,9 +2,9 @@
 
 namespace App\Areas\Main\Auth\Application\Jobs;
 
-use App\Areas\Main\Auth\Domain\Events\UserRegisteredEvent;
 use App\Models\User;
 use App\Shared\Infrastructure\Enums\RoleEnum;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Bus\Dispatchable;
 
 class RegisterUserJob
@@ -27,7 +27,7 @@ class RegisterUserJob
 
         $user->assignRole(RoleEnum::USER);
 
-        event(new UserRegisteredEvent($user));
+        event(new Registered($user));
 
         return $user;
     }
