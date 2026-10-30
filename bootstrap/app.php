@@ -5,8 +5,8 @@ use App\Infrastructure\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -29,36 +29,21 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo(fn () => route('login'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->renderable(function (Throwable $e, $request) {
-            // dd($e->getMessage());
+        $exceptions->renderable(function (HttpException $e, $request) {
+            $status = $e->getStatusCode();
 
-            // Lascia che Inertia gestisca ValidationException correttamente
-            if ($e instanceof ValidationException) {
-                return null;
+            if ($request->inertia() && !$request->isMethod('GET')) {
+                return back()->with('error', $e->getMessage());
             }
-
-            $status = method_exists($e, 'getStatusCode')
-                ? $e->getStatusCode()
-                : $e->getCode();
-
-            if ($request->inertia()) {
-                if (!$request->isMethod('GET')) {
-                    return back()->with('error', $e->getMessage());
-                }
-                // dd('son qua');
-            }
-            // dd($status);
 
             if (in_array($status, [403, 404, 500, 503])) {
+                $reason = $status >= 500 && !config('app.debug') ? '' : $e->getMessage();
                 $shared = app(HandleInertiaRequests::class)->share($request);
                 $props = array_merge($shared, [
                     'status' => $status,
-                    'reason' => $e->getMessage(),
+                    'reason' => $reason,
                 ]);
                 $isAdmin = $request->routeIs('admin.*') || str_starts_with($request->path(), 'admin');
-
-                // dd("isAdmin: $isAdmin", $request->route()->getName(), $props);
-                // dd($request->user(), Auth::user(), $request->hasSession(), $props);
 
                 return Inertia::render(
                     $isAdmin

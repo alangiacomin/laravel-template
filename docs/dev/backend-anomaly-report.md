@@ -59,7 +59,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - [x] #4 Nessun rate limiting sul login ed enumerazione account `[alta]`
 - [x] #5 Seeder con super-admin prevedibile senza guardia sull'ambiente `[alta]`
 - [x] #6 Blocco utenti senza guardie sul target `[alta]`
-- [ ] #7 Gestore eccezioni che espone dettagli al client `[alta]`
+- [x] #7 Gestore eccezioni che espone dettagli al client `[alta]`
 
 ### P1 — Gravità media
 
@@ -140,7 +140,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: `$e->getMessage()` viene passato al client come `reason` anche per i 500 e flashato come `error` sulle richieste Inertia non-GET; `renderable` intercetta qualsiasi `Throwable`, usa `$e->getCode()` come status (può non essere un codice HTTP valido) e contiene `dd()` commentati.
 - **Impatto**: fuga di informazioni interne e status code errati.
 - **Fix suggerito**: non esporre `getMessage()` in produzione; limitare `renderable` ai `HttpException`; rimuovere i `dd` commentati.
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — `renderable` in `bootstrap/app.php` gestisce solo `HttpException` (status da `getStatusCode()`, `reason` vuoto per 5xx fuori debug), `dd()` rimossi; le eccezioni generiche usano il rendering di Laravel (nessun messaggio interno esposto). Test in `ExceptionHandlingTest`. Nota: i 500 non HTTP perdono l'ErrorPage Inertia.
 
 ### P1 — Gravità media
 
