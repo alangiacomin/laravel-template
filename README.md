@@ -1,5 +1,7 @@
 # Laravel Template
 
+[![CI](https://github.com/alangiacomin/laravel-template/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/alangiacomin/laravel-template/actions/workflows/ci.yml)
+
 Template Laravel pronto per avviare nuovi progetti con una base moderna, coerente e già configurata per lo sviluppo quotidiano.
 
 ## Cosa include
