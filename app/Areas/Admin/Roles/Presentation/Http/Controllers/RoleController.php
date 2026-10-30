@@ -15,7 +15,6 @@ use Spatie\Permission\Models\Role as SpatieRole;
 
 #[Middleware('auth')]
 #[Middleware('verified')]
-#[Middleware('not_banned')]
 class RoleController extends Controller
 {
     #[Middleware('can:'.GateEnum::ROLE_VIEW->value)]

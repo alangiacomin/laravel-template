@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Auth;
 
 #[Middleware('auth')]
 #[Middleware('verified')]
-#[Middleware('not_banned')]
 class UserController extends Controller
 {
     #[Middleware('can:'.GateEnum::USER_VIEW->value)]

@@ -38,7 +38,6 @@ class AuthController extends Controller
 
     #[Middleware('auth')]
     #[Middleware('verified')]
-    #[Middleware('not_banned')]
     public function userView(): Response|ResponseFactory
     {
         return inertia('App/User/User', [
@@ -131,7 +130,6 @@ class AuthController extends Controller
     }
 
     #[Middleware('auth')]
-    #[Middleware('not_banned')]
     #[Middleware('signed')]
     public function emailVerification(EmailVerificationRequest $request)
     {
@@ -141,7 +139,6 @@ class AuthController extends Controller
     }
 
     #[Middleware('auth')]
-    #[Middleware('not_banned')]
     #[Middleware('throttle:6,1')]
     public function resendVerification(Request $request): RedirectResponse
     {

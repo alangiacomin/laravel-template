@@ -348,6 +348,30 @@ class AuthControllerTest extends TestCase
         $response->assertForbidden();
     }
 
+    public function test_banned_user_is_blocked_on_routes_without_explicit_middleware(): void
+    {
+        $user = User::factory()->create([
+            'banned_at' => now(),
+        ]);
+
+        $this->actingAs($user)->get(route('example.page'))->assertForbidden();
+        $this->assertGuest();
+
+        $this->actingAs($user)->get(route('verification.notice'))->assertForbidden();
+        $this->assertGuest();
+    }
+
+    public function test_banned_user_can_still_logout(): void
+    {
+        $user = User::factory()->create([
+            'banned_at' => now(),
+        ]);
+
+        $this->actingAs($user)->post(route('logout'))->assertRedirect();
+
+        $this->assertGuest();
+    }
+
     public function test_guest_is_redirected_from_verification_notice(): void
     {
         $response = $this->get(route('verification.notice'));

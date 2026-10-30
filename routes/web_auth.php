@@ -3,6 +3,7 @@
 use App\Areas\Main\Auth\Presentation\Http\Controllers\AuthController;
 use App\Areas\Main\Auth\Presentation\Http\Controllers\PasswordResetController;
 use App\Areas\Main\Auth\Presentation\Http\Controllers\UserController;
+use App\Infrastructure\Middleware\EnsureUserIsNotBanned;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/accedi', [AuthController::class, 'loginView'])->name('login');
@@ -20,6 +21,6 @@ Route::post('/registrati', [AuthController::class, 'register']);
 Route::post('/verifica-email/reinvia', [AuthController::class, 'resendVerification'])->name('verification.send');
 Route::post('/password-dimenticata', [PasswordResetController::class, 'sendResetLink'])->name('password.email');
 Route::post('/reimposta-password', [PasswordResetController::class, 'resetPassword'])->name('password.update');
-Route::post('/esci', [AuthController::class, 'logout'])->name('logout');
+Route::post('/esci', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware(EnsureUserIsNotBanned::class);
 
 Route::patch('/profilo', [UserController::class, 'update'])->name('user.update');

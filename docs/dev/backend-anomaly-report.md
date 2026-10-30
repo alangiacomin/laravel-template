@@ -70,7 +70,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - [x] #12 `UserController::update` senza Job né risposta `[media]`
 - [x] #13 `User::$fillable` include `banned_at`; seed non verificati `[media]`
 - [x] #14 `RegisterUserJob` senza transazione `[media]`
-- [ ] #15 Middleware `not_banned` non uniforme `[media]`
+- [x] #15 Middleware `not_banned` non uniforme `[media]`
 - [ ] #16 Helper di redirect con `redirect()->intended()` `[media]`
 
 ### P2 — Gravità bassa / manutenzione
@@ -206,7 +206,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: `not_banned` è applicato per singolo metodo; assente su `verificationNoticeView`, `logout`, route `example.page` e route Fallback; non è nel gruppo `web`.
 - **Impatto**: dimenticare il middleware lascia route accessibili a utenti bannati.
 - **Fix suggerito**: applicare `not_banned` (e `SessionPreserver`) a livello di gruppo `web`, valutando le eccezioni (logout, pagina di blocco).
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — `EnsureUserIsNotBanned` è ora nel gruppo `web` (`bootstrap/app.php`, prima di `HandleInertiaRequests`); rimossi l'alias `not_banned` e tutti gli attributi `#[Middleware('not_banned')]` dai controller. Unica eccezione: `POST /esci` (`withoutMiddleware`), così un bannato può sempre uscire. Coperte ora anche `example.page`, `verification.notice`, fallback e reset password. Test in `AuthControllerTest`: bannato bloccato su route prima scoperte e logout consentito. `SessionPreserver` non toccato (usato già dal middleware). Resta fuori #16.
 
 #### #16 Helper di redirect con `redirect()->intended()`
 

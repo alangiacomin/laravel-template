@@ -11,7 +11,6 @@ class UserController extends Controller
 {
     #[Middleware('auth')]
     #[Middleware('verified')]
-    #[Middleware('not_banned')]
     public function update(UserUpdateRequest $request)
     {
         dispatch_sync(new UpdateProfileJob($request->user(), $request->validated()['name']));

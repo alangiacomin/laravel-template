@@ -13,7 +13,6 @@ class DashboardController extends Controller
 {
     #[Middleware('auth')]
     #[Middleware('verified')]
-    #[Middleware('not_banned')]
     #[Middleware('can:'.GateEnum::ADMIN_ACCESS->value)]
     public function index()
     {

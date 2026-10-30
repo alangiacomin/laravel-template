@@ -18,14 +18,12 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(
             append: [
+                EnsureUserIsNotBanned::class,
                 HandleInertiaRequests::class,
             ],
             prepend: [
             ]);
 
-        $middleware->alias([
-            'not_banned' => EnsureUserIsNotBanned::class,
-        ]);
         $middleware->redirectGuestsTo(fn () => route('login'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
