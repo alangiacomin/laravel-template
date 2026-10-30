@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Areas\Admin\Dashboard\Domain\Entities;
+namespace App\Areas\Admin\Dashboard\Application\Data;
 
 use Spatie\LaravelData\Data;
 

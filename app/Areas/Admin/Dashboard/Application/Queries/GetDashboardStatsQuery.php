@@ -2,7 +2,7 @@
 
 namespace App\Areas\Admin\Dashboard\Application\Queries;
 
-use App\Areas\Admin\Dashboard\Domain\Entities\DashboardStats;
+use App\Areas\Admin\Dashboard\Application\Data\DashboardStats;
 use App\Models\User;
 use Carbon\CarbonInterface;
 

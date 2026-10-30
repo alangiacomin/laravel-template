@@ -9,7 +9,7 @@ strumenti disponibili.
 
 1. **Requisiti dell'utente** e vincoli espliciti della richiesta.
 2. **Questa documentazione (`docs/ai/`)** e le istruzioni sovrane in `AGENTS.md`.
-3. **Convenzioni e skill generiche del framework**: hanno valore sussidiario. **In caso di conflitto, le regole in `docs/ai/` prevalgono SEMPRE sulle convenzioni generiche di Laravel e sulle skill** (es. l'architettura modulare per Area e Contesto ha priorità sul posizionamento piatto standard `app/Models`).
+3. **Convenzioni e skill generiche del framework**: hanno valore sussidiario. **In caso di conflitto, le regole in `docs/ai/` prevalgono SEMPRE sulle convenzioni generiche di Laravel e sulle skill** (es. l'architettura modulare per Area e Contesto ha priorità sul posizionamento piatto standard `app/Models`, con l'unica eccezione di `App\Models\User`).
 4. **Convenzioni osservabili nel codice esistente**.
 
 In caso di conflitto va segnalato il conflitto e va seguita la fonte con priorità maggiore. Le istruzioni specifiche di un prodotto sono adapter: possono indicare dove trovare questa documentazione, ma non devono cambiarne il significato.

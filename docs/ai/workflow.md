@@ -13,7 +13,7 @@ Se non sono esplicitamente indicati nella richiesta dell'utente:
 
 ### B. Verifica delle Regole di Progetto
 - Consultare [`docs/ai/architecture.md`](architecture.md) per identificare i namespace, i percorsi e le convenzioni esatte.
-- Riconoscere che l'architettura per Aree/Contesti ha priorità assoluta su qualsiasi skill o convenzione standard di Laravel (es. non proporre mai model in `app/Models`).
+- Riconoscere che l'architettura per Aree/Contesti ha priorità assoluta su qualsiasi skill o convenzione standard di Laravel (es. non proporre model in `app/Models`, tranne l'eccezione di `App\Models\User`).
 - Verificare se esiste un playbook pertinente in [`docs/ai/playbooks/`](playbooks/README.md) (es. per nuove pagine o per nuovi model/migration).
 
 ---

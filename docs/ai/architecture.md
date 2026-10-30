@@ -25,7 +25,16 @@ separazione tra `Presentation`, `Application`, `Domain` e `Infrastructure`.
 Controller e route devono coordinare la richiesta; la logica non banale va
 spostata nel livello appropriato.
 
+### Livelli
+
+- `Presentation`: controller, Request, route handler HTTP.
+- `Application`: Job, Query e Data (Spatie Data per input/output, in `Application/Data`).
+- `Domain`: riservato a logica di dominio pura (entità, value object, eventi di dominio). Oggi non è usato: non collocarvi Data/DTO.
+- `Infrastructure`: persistenza Eloquent, broadcasting, listener e integrazioni.
+
 ### Model Eloquent, Migration e Persistenza (Clean Architecture parziale)
+
+**Eccezione**: il model di autenticazione `App\Models\User` (con le Policy in `app/Models/Policies`) resta in `app/Models`, con tabella `users` al plurale e senza `$table`, perché è il model predefinito di `auth.providers.users.model`. Ogni altro model segue la regola seguente.
 
 I model Eloquent e le relative migration devono seguire la struttura modulare clean per area e contesto:
 
@@ -103,6 +112,7 @@ return new class extends Migration
 - I job applicativi (`Application/Jobs/*Job`, classi con `Dispatchable`, creati senza queue) contengono le mutazioni usando Eloquent, senza delegarle ad action e senza introdurre repository quando non servono;
 - Le letture possono usare query Eloquent native, mantenute in classi applicative dedicate quando la loro composizione appesantisce il controller;
 - I controller estendono `App\Infrastructure\Http\Controllers\Controller` (helper `flashSuccess`, `spaRedirect`, `hardRedirect`, `hardIntendedRedirect`); l'autorizzazione tramite Gate si dichiara con `#[Middleware('can:'.GateEnum::X->value)]` (capability di route), mentre le regole sulle singole istanze stanno nelle Policy (`app/Models/Policies`, registrate con `Gate::policy`) richiamate da `authorize()` nelle Request, senza usare `PermissionEnum` direttamente;
+- Autorizzazione: i permessi sono Spatie Permission (`PermissionEnum`); le capability di route sono Gate definiti in `AppServiceProvider` (`GateEnum`); `Gate::before` blocca gli utenti bannati;
 - Usa Spatie Data per contratti espliciti di input/output condivisi o trasformati, annotandoli con `#[TypeScript]` quando devono generare tipi frontend. Le regole di validazione HTTP restano nei Request;
 - Rigenera `resources/js/types/generated/index.ts` con `php artisan typescript:transform` e importa i tipi generati nei componenti, invece di ridefinire localmente le stesse strutture.
 

@@ -20,6 +20,7 @@ class AdminUserData extends Data
         public readonly ?string $avatar = null,
         public readonly ?string $created_at = null,
         /** @var list<string> */
+        #[TypeScriptType('string[]')]
         public readonly array $roles = [],
     ) {}
 

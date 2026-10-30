@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Areas\Admin\Roles\Domain\Entities;
+namespace App\Areas\Admin\Roles\Application\Data;
 
 use Spatie\LaravelData\Data;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;

@@ -6,10 +6,13 @@ export type AdminUserData = {
   isBanned: boolean;
   avatar: string;
   created_at: string | null;
-  roles: Array<any>;
+  roles: Array<string>;
 };
 export type EditUserRequest = {
   name: string;
+};
+export type ForgotPasswordRequest = {
+  email: string;
 };
 export enum GateEnum {
   USER_VIEW = "user_view",
@@ -37,6 +40,12 @@ export enum PermissionEnum {
 }
 export type RegisterRequest = {
   name: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+};
+export type ResetPasswordRequest = {
+  token: string;
   email: string;
   password: string;
   password_confirmation: string;

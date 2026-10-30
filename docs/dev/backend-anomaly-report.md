@@ -277,18 +277,20 @@ Verifica incrociata dei punti #1–#22 sui punti di contatto. Tutti i punti risu
 - **#1**: rimosso il listener frontend `utente.registrato` (evento non più emesso); rigenerati `ziggy.js`/`ziggy.d.ts`.
 - **#9**: reset password per utenti bannati confermato come scelta (già coperto da `test_banned_user_can_reset_password_but_cannot_login`).
 - **Docs**: `docs/ai/workflow.md` allineato alla lingua unica, `docs/ai/architecture.md` a PHP 8.5.
-- Non verificati: lint/build frontend (`bun` assente); restano non verificate le altre righe della tabella "Divergenze docs ↔ codice".
+- Non verificati: lint/build frontend (`bun` assente).
 
 ## Divergenze docs ↔ codice
 
-| Docs | Realtà | Cosa aggiornare in `docs/ai` |
+Tutte le divergenze sono chiuse (2026-10-30).
+
+| Docs | Realtà | Stato |
 |---|---|---|
-| Model in `app/Areas/{Area}/{Ctx}/Infrastructure/Persistence/Eloquent/Models`, tabella singolare con `$table` | `app/Models/User.php`, tabella `users` plurale, nessun `$table`; policy in `app/Models/Policies` | Dichiarare `app/Models` come eccezione per l'utente di autenticazione, oppure migrare il model (richiede migration di rinomina tabella e `auth.providers.users.model`) |
-| Letture/scritture via Job, controller sottili | `update` dei controller scrive direttamente; logica di business nelle Request | Nessuna modifica ai docs: allineare il codice (#10, #12) |
-| Stack "PHP 8.4" | Le linee guida di progetto parlano di PHP 8.5 | Aggiornare la versione di PHP |
-| `workflow.md`: "controlla entrambe le lingue (it, en)" e "route localizzate" | `architecture.md`: app a lingua unica IT, `lang/it` soltanto | Uniformare `workflow.md` alla lingua unica |
-| Domain = logica di dominio | `Domain/Entities/*` contengono (a quanto visto dai nomi/uso) DTO/Data per l'UI, non entità di dominio; l'unico evento di dominio non è collegato | Chiarire il ruolo di `Domain` e dei Data |
-| Docs di architettura non citano Spatie Permission né Gate/Policy come regola | Autorizzazione basata su Spatie + Gate + Request + Policy non coordinati | Documentare il meccanismo di autorizzazione scelto (#11) |
+| Model in `Areas/.../Infrastructure/Persistence/Eloquent/Models`, tabella singolare | `app/Models/User.php`, tabella `users`, policy in `app/Models/Policies` | [x] `architecture.md`, `workflow.md` e `README.md` dichiarano `App\Models\User` come eccezione (nessuna migrazione del model) |
+| Scritture via Job, controller sottili | `update` scriveva direttamente, logica nelle Request | [x] codice allineato con #10 e #12; nessuna modifica ai docs |
+| Stack "PHP 8.4" | PHP 8.5 | [x] `architecture.md` aggiornato |
+| `workflow.md`: lingue it/en e route localizzate | App a lingua unica IT | [x] `workflow.md` uniformato |
+| Domain = logica di dominio | `Domain/Entities` conteneva Data per l'UI | [x] `Role` e `DashboardStats` spostati in `Application/Data`; `architecture.md` ha la sezione "Livelli" (`Domain` riservato a logica pura, oggi non usato) |
+| Autorizzazione non documentata | Spatie + Gate + Policy | [x] documentata in `architecture.md` (Flussi applicativi CRUD) |
 
 ## Cose positive
 
@@ -307,4 +309,4 @@ Da preservare durante i fix:
 - **#1**: ri-verificare con `php artisan event:list` (e `--event=UserRegistered`) prima di intervenire: il risultato descritto è quello dell'analisi iniziale.
 - **#11 — `RolePolicy::update`**: l'operatore `||` (`ROLE_UPDATE || name !== super-admin`) va verificato rispetto all'intento; con ogni probabilità serviva `&&`, ma l'analisi non lo prova. Chiedere conferma prima di cambiare la semantica.
 - **#11 / #10**: la scelta del meccanismo di autorizzazione è una decisione di design, da concordare con l'utente.
-- **Model `User`** (divergenze docs ↔ codice): decidere se aggiornare i docs o migrare il model prima di toccare `app/Models`.
+- **Model `User`** (divergenze docs ↔ codice): deciso di documentare l'eccezione in `docs/ai`, senza migrare il model.

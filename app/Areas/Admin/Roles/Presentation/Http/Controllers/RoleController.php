@@ -2,8 +2,8 @@
 
 namespace App\Areas\Admin\Roles\Presentation\Http\Controllers;
 
+use App\Areas\Admin\Roles\Application\Data\Role;
 use App\Areas\Admin\Roles\Application\Jobs\UpdateRolePermissionsJob;
-use App\Areas\Admin\Roles\Domain\Entities\Role;
 use App\Areas\Admin\Roles\Presentation\Http\Requests\RoleUpdateRequest;
 use App\Infrastructure\Http\Controllers\Controller;
 use App\Shared\Infrastructure\Enums\GateEnum;
