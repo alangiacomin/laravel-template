@@ -9,6 +9,7 @@ use Illuminate\Routing\Attributes\Controllers\Middleware;
 class UserController extends Controller
 {
     #[Middleware('auth')]
+    #[Middleware('verified')]
     #[Middleware('not_banned')]
     public function update(UserUpdateRequest $request)
     {

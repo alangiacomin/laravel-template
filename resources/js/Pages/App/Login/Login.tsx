@@ -96,6 +96,11 @@ const Login: FC = (): ReactNode => {
                 </div>
               )}
               {/* Fake login - end */}
+              <div className="mt-3 text-center">
+                <Link href={route("password.request")}>
+                  {__("login.forgot_password")}
+                </Link>
+              </div>
               <div className="mt-4 text-center">
                 <p className="mb-0 text-muted">
                   {__("login.new_user")}{" "}

@@ -4,6 +4,7 @@ namespace App\Areas\Main\Auth\Presentation\Http\Controllers;
 
 use App\Areas\Main\Auth\Application\Data\UserData;
 use App\Areas\Main\Auth\Application\Jobs\RegisterUserJob;
+use App\Areas\Main\Auth\Application\Jobs\ResendVerificationEmailJob;
 use App\Areas\Main\Auth\Presentation\Http\Requests\LoginRequest;
 use App\Areas\Main\Auth\Presentation\Http\Requests\RegisterRequest;
 use App\Infrastructure\Http\Controllers\Controller;
@@ -36,6 +37,7 @@ class AuthController extends Controller
     }
 
     #[Middleware('auth')]
+    #[Middleware('verified')]
     #[Middleware('not_banned')]
     public function userView(): Response|ResponseFactory
     {
@@ -135,6 +137,20 @@ class AuthController extends Controller
     {
         $request->fulfill();
 
-        return inertia('App/Register/VerificationVerify');
+        return redirect()->route('home')->with('success', __('verification.verified_message'));
+    }
+
+    #[Middleware('auth')]
+    #[Middleware('not_banned')]
+    #[Middleware('throttle:6,1')]
+    public function resendVerification(Request $request): RedirectResponse
+    {
+        $sent = dispatch_sync(new ResendVerificationEmailJob($request->user()));
+
+        if (!$sent) {
+            return $this->spaRedirect(route('home'));
+        }
+
+        return $this->flashSuccess(__('verification.resent'));
     }
 }

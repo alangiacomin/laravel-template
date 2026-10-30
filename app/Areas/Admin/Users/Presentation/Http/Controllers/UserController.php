@@ -13,6 +13,7 @@ use Illuminate\Routing\Attributes\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 
 #[Middleware('auth')]
+#[Middleware('verified')]
 #[Middleware('not_banned')]
 class UserController extends Controller
 {

@@ -8,6 +8,7 @@ use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
 class AuthControllerTest extends TestCase
@@ -353,6 +354,63 @@ class AuthControllerTest extends TestCase
         $response = $this->actingAs($user)->get(route('verification.notice'));
 
         $response->assertOk();
+    }
+
+    public function test_email_verification_redirects_home_with_success_flash(): void
+    {
+        $user = User::factory()->unverified()->create();
+        $url = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            ['id' => $user->id, 'hash' => sha1($user->getEmailForVerification())],
+        );
+
+        $response = $this->actingAs($user)->get($url);
+
+        $response->assertRedirect(route('home'));
+        $response->assertSessionHas('success');
+        $this->assertTrue($user->fresh()->hasVerifiedEmail());
+    }
+
+    public function test_unverified_user_can_resend_verification_email(): void
+    {
+        Notification::fake();
+        $user = User::factory()->unverified()->create();
+
+        $response = $this->actingAs($user)->post(route('verification.send'));
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+        Notification::assertSentTo($user, VerifyEmail::class);
+    }
+
+    public function test_verified_user_does_not_receive_verification_email_again(): void
+    {
+        Notification::fake();
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->post(route('verification.send'));
+
+        $response->assertRedirect();
+        Notification::assertNothingSent();
+    }
+
+    public function test_guest_cannot_resend_verification_email(): void
+    {
+        $this->post(route('verification.send'))->assertRedirect();
+        $this->assertGuest();
+    }
+
+    public function test_resend_verification_email_is_throttled(): void
+    {
+        Notification::fake();
+        $user = User::factory()->unverified()->create();
+
+        for ($i = 0; $i < 6; $i++) {
+            $this->actingAs($user)->post(route('verification.send'))->assertRedirect();
+        }
+
+        $this->actingAs($user)->post(route('verification.send'))->assertStatus(429);
     }
 
     public function test_guest_cannot_update_a_user_profile(): void

@@ -64,7 +64,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 ### P1 — Gravità media
 
 - [x] #8 Sessione non rigenerata dopo registrazione; utente bannato autenticato prima del controllo `[media]`
-- [ ] #9 Flusso auth incompleto (verifica email, reset password) `[media]`
+- [x] #9 Flusso auth incompleto (verifica email, reset password) `[media]`
 - [ ] #10 Logica anti-escalation nel livello Presentation (`RoleUpdateRequest`/`UserUpdateRequest` Admin) `[media]`
 - [ ] #11 Doppio sistema di autorizzazione incoerente (Gate, Request, Policy) `[media]`
 - [ ] #12 `UserController::update` senza Job né risposta `[media]`
@@ -158,7 +158,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: nessuna route per reinvio della mail di verifica né per il reset password, pur esistendo tabella e traduzioni. Il middleware `verified` non è usato: l'email verificata non limita nulla. `emailVerification` risponde con una pagina Inertia su GET invece di un redirect.
 - **Impatto**: funzionalità attese ma mancanti; la verifica email non ha effetto.
 - **Fix suggerito**: da decidere con l'utente (implementare reinvio/reset, applicare `verified` dove serve, redirect in `emailVerification`).
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — `emailVerification` fa redirect a `home` con flash di successo (rimossa `VerificationVerify.tsx`); aggiunta `verification.send` (POST, `auth`, `throttle:6,1`, `ResendVerificationEmailJob`) con pulsante in `VerificationNotice`; reset password con `PasswordResetController`, `SendPasswordResetLinkJob`, `ResetPasswordJob`, richieste dedicate, pagine `ForgotPassword`/`ResetPassword`, link in `Login` e risposta di invio sempre generica; `verified` applicato a `/profilo` (GET/PATCH) e a tutti i controller admin. Test: `AuthControllerTest`, `PasswordResetTest`, `VerifiedMiddlewareTest`.
 
 #### #10 Logica anti-escalation nel livello Presentation
 
