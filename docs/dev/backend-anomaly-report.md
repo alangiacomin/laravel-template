@@ -69,7 +69,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - [x] #11 Doppio sistema di autorizzazione incoerente (Gate, Request, Policy) `[media]`
 - [x] #12 `UserController::update` senza Job né risposta `[media]`
 - [x] #13 `User::$fillable` include `banned_at`; seed non verificati `[media]`
-- [ ] #14 `RegisterUserJob` senza transazione `[media]`
+- [x] #14 `RegisterUserJob` senza transazione `[media]`
 - [ ] #15 Middleware `not_banned` non uniforme `[media]`
 - [ ] #16 Helper di redirect con `redirect()->intended()` `[media]`
 
@@ -198,7 +198,7 @@ Ordine di priorità consigliato: **P0** (gravità alta) → **P1** (gravità med
 - **Problema**: `create` + `assignRole` + `event()` non sono atomici.
 - **Impatto**: un errore su `assignRole` lascia un utente senza ruolo.
 - **Fix suggerito**: racchiudere in transazione (evento dopo il commit).
-- **Stato**: [ ] da fare
+- **Stato**: [x] fatto — `create` + `assignRole` in `DB::transaction` e `event(new Registered)` dopo il commit. Test: `test_registration_is_rolled_back_when_role_assignment_fails` (ruolo mancante → nessun utente creato, nessuna notifica). Restano fuori #15, #16.
 
 #### #15 Middleware `not_banned` non uniforme
 

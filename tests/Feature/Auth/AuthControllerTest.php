@@ -2,13 +2,17 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Areas\Main\Auth\Application\Jobs\RegisterUserJob;
 use App\Models\User;
+use App\Shared\Infrastructure\Enums\RoleEnum;
 use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
+use Spatie\Permission\Exceptions\RoleDoesNotExist;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class AuthControllerTest extends TestCase
@@ -212,6 +216,22 @@ class AuthControllerTest extends TestCase
         $this->assertTrue($user->hasRole('user'));
 
         Notification::assertSentTo($user, VerifyEmail::class);
+    }
+
+    public function test_registration_is_rolled_back_when_role_assignment_fails(): void
+    {
+        Notification::fake();
+        Role::where('name', RoleEnum::USER->value)->delete();
+
+        try {
+            dispatch_sync(new RegisterUserJob('Mario Rossi', 'mario.rossi@example.com', 'password123'));
+            $this->fail('Expected RoleDoesNotExist exception.');
+        } catch (RoleDoesNotExist) {
+            // atteso
+        }
+
+        $this->assertDatabaseMissing('users', ['email' => 'mario.rossi@example.com']);
+        Notification::assertNothingSent();
     }
 
     public function test_registration_regenerates_the_session(): void
