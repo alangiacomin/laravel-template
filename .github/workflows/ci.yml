@@ -63,7 +63,7 @@ jobs:
         run: vendor/bin/phpstan analyse --memory-limit=1G --error-format=github
 
       - name: Download frontend build (Vite manifest richiesto dai test)
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: vite-build
           path: public/build
