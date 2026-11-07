@@ -1,4 +1,5 @@
 import { type FC, type ReactNode, useState } from "react";
+import useTranslations from "../../../../hooks/useTranslations.tsx";
 import Header from "./Header.tsx";
 import Sidebar from "./Sidebar.tsx";
 
@@ -7,6 +8,7 @@ type LayoutProps = {
 };
 
 const Layout: FC<LayoutProps> = ({ children }: LayoutProps): ReactNode => {
+  const __ = useTranslations();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -18,19 +20,26 @@ const Layout: FC<LayoutProps> = ({ children }: LayoutProps): ReactNode => {
   };
 
   return (
-    <div className="vh-100">
+    <div className="h-dvh-100">
+      <a href="#main-content" className="visually-hidden-focusable">
+        {__("skip_to_content")}
+      </a>
       <div className="d-flex flex-column h-100">
         <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
         <div className="d-flex flex-grow-1 overflow-hidden position-relative">
           <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
-          <main className="flex-grow-1 bg-light p-0 overflow-auto">
+          <main
+            id="main-content"
+            tabIndex={-1}
+            className="flex-grow-1 bg-light p-0 overflow-auto"
+          >
             {children}
           </main>
           {/* Mobile overlay when the sidebar is open */}
           {isSidebarOpen && (
             <button
               type="button"
-              aria-label="Close sidebar"
+              aria-label={__("close")}
               className="position-absolute top-0 start-0 w-100 h-100 bg-black opacity-50 border-0 p-0 d-lg-none"
               style={{ zIndex: 1040 }}
               onClick={toggleSidebar}

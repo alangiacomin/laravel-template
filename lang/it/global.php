@@ -18,5 +18,8 @@ return [
     'breadcrumb' => 'Percorso di navigazione',
     'close' => 'Chiudi',
     'copyright' => '© :year Company Inc.',
+    'main_navigation' => 'Navigazione principale',
+    'skip_to_content' => 'Vai al contenuto',
+    'actions' => 'Azioni',
     'meta_description' => 'Template Laravel riutilizzabile per progetti web moderni.',
 ];

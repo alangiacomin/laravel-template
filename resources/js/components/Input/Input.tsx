@@ -71,13 +71,14 @@ const Input: FC<InputProps> = ({
   return (
     <div
       className={classNames("mb-3", {
-        "d-flex align-items-center gap-2": labelOnLeft,
+        "d-flex flex-column flex-sm-row align-items-sm-center gap-1 gap-sm-2":
+          labelOnLeft,
       })}
     >
       <label
         htmlFor={name}
         className={classNames("form-label", {
-          "mb-0": labelOnLeft,
+          "mb-sm-0": labelOnLeft,
         })}
         style={labelOnLeft ? { flexShrink: 0 } : undefined}
       >
@@ -93,7 +94,7 @@ const Input: FC<InputProps> = ({
         <div className="input-group">
           {icon && (
             <span className="input-group-text">
-              <i className={classnames("bi", icon)}></i>
+              <i className={classnames("bi", icon)} aria-hidden="true"></i>
             </span>
           )}
           <input
@@ -105,6 +106,8 @@ const Input: FC<InputProps> = ({
             )}
             id={name}
             name={name}
+            aria-invalid={errors[name] ? true : undefined}
+            aria-describedby={errors[name] ? `${name}-error` : undefined}
             type={type}
             {...rest}
             checked={isCheckbox ? Boolean(inputValue) : undefined}
@@ -113,7 +116,7 @@ const Input: FC<InputProps> = ({
           />
         </div>
 
-        {hasError && <FieldError error={errors[name]} />}
+        {hasError && <FieldError id={`${name}-error`} error={errors[name]} />}
       </div>
     </div>
   );

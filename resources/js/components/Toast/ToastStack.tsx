@@ -11,19 +11,17 @@ const ToastStack = () => {
   }
   const { toasts, removeToast } = toastContext;
 
-  if (!toasts.length) {
-    return null;
-  }
-
   return (
     <div
       className="toast-container position-fixed top-0 end-0 p-3"
-      style={{ zIndex: 1055 }}
+      style={{ zIndex: 1055, maxWidth: "100%" }}
+      role="status"
+      aria-live="polite"
     >
       {toasts.map((toast) => (
         <div key={toast.id} className={`toast show text-bg-${toast.type} mb-2`}>
           <div className="toast-body d-flex justify-content-between align-items-center">
-            <span>{toast.message}</span>
+            <span className="text-break">{toast.message}</span>
             <button
               type="button"
               className="btn-close btn-close-white ms-2"

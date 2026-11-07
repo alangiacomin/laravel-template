@@ -19,10 +19,10 @@ const CallToAction: FC = () => {
             <div className="row g-4">
               <div className="col-md-6">
                 <div className="p-3 border-start border-primary border-4 bg-light rounded-end">
-                  <h5 className="fw-bold">
+                  <h3 className="h5 fw-bold">
                     <i className="bi bi-cart-x me-2 text-primary"></i>
                     {__("home.cta_stop_dupes_title")}
-                  </h5>
+                  </h3>
                   <p className="small text-muted mb-0">
                     {__("home.cta_stop_dupes_subtitle")}
                   </p>
@@ -30,10 +30,10 @@ const CallToAction: FC = () => {
               </div>
               <div className="col-md-6">
                 <div className="p-3 border-start border-primary border-4 bg-light rounded-end">
-                  <h5 className="fw-bold">
+                  <h3 className="h5 fw-bold">
                     <i className="bi bi-graph-up me-2 text-primary"></i>
                     {__("home.cta_stats_title")}
-                  </h5>
+                  </h3>
                   <p className="small text-muted mb-0">
                     {__("home.cta_stats_subtitle")}
                   </p>
@@ -41,10 +41,10 @@ const CallToAction: FC = () => {
               </div>
               <div className="col-md-6">
                 <div className="p-3 border-start border-primary border-4 bg-light rounded-end">
-                  <h5 className="fw-bold">
+                  <h3 className="h5 fw-bold">
                     <i className="bi bi-layers me-2 text-primary"></i>
                     {__("home.cta_editions_title")}
-                  </h5>
+                  </h3>
                   <p className="small text-muted mb-0">
                     {__("home.cta_editions_subtitle")}
                   </p>
@@ -52,10 +52,10 @@ const CallToAction: FC = () => {
               </div>
               <div className="col-md-6">
                 <div className="p-3 border-start border-primary border-4 bg-light rounded-end">
-                  <h5 className="fw-bold">
+                  <h3 className="h5 fw-bold">
                     <i className="bi bi-cloud-check me-2 text-primary"></i>
                     {__("home.cta_cloud_title")}
-                  </h5>
+                  </h3>
                   <p className="small text-muted mb-0">
                     {__("home.cta_cloud_subtitle")}
                   </p>

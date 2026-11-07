@@ -6,7 +6,7 @@ export const useRoutes = () => {
   const { url } = usePage<SharedPageProps>();
 
   const normalizePath = useCallback((path: string): string => {
-    const segments = path.split("/").filter(Boolean);
+    const segments = path.split(/[?#]/)[0].split("/").filter(Boolean);
 
     return `/${segments.join("/")}`;
   }, []);

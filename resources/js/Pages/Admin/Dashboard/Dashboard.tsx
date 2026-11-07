@@ -32,7 +32,7 @@ const Dashboard: FC = (): ReactNode => {
       <div className="d-flex flex-column gap-4">
         <section className="card">
           <div className="card-body">
-            <h3 className="h5 mb-1">{__("admin.user_management")}</h3>
+            <h2 className="h5 mb-1">{__("admin.user_management")}</h2>
             <p className="text-muted mb-4">
               {__("admin.user_management_dashboard_subtitle")}
             </p>

@@ -38,7 +38,7 @@ const Sidebar: FC<SidebarProps> = ({
   ) => (
     <button
       type="button"
-      className="nav-link text-secondary text-uppercase small fw-semibold w-100 text-start border-0 bg-transparent px-3"
+      className="nav-link text-light opacity-75 text-uppercase small fw-semibold w-100 text-start border-0 bg-transparent px-3"
       aria-expanded={isOpen}
       onClick={() => setIsOpen(!isOpen)}
     >

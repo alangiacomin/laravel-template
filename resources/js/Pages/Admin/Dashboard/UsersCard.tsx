@@ -19,9 +19,9 @@ const UsersCard: FC<UsersCardProps> = ({
   return (
     <div className="card shadow-sm">
       <div className="card-body">
-        <h5 className="mb-1">{title}</h5>
+        <h3 className="h5 mb-1">{title}</h3>
         <p className="text-muted mb-2">{subtitle}</p>
-        <h3 className="card-title">{count ?? 0}</h3>
+        <p className="h3 card-title">{count ?? 0}</p>
         {unverifiedCount ? (
           <span className="badge bg-warning text-dark mt-2">
             {unverifiedCount} {__("admin.unverified_count")}

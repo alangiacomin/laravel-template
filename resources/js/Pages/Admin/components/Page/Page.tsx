@@ -25,7 +25,7 @@ const Page: FC<PageProps> = ({
         {breadcrumb && <Breadcrumb elements={breadcrumb} />}
         {title && (
           <div className="mb-4">
-            <h2 className="mb-1">{title}</h2>
+            <h1 className="h2 mb-1">{title}</h1>
             {subtitle && <p className="text-muted">{subtitle}</p>}
           </div>
         )}
