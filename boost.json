@@ -20,6 +20,8 @@
         "testing-best-practices",
         "configure-nightwatch",
         "inertia-react-development",
+        "echo-react-development",
+        "echo-development",
         "laravel-permission-development"
     ]
 }
