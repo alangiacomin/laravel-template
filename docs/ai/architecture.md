@@ -145,6 +145,34 @@ Qualsiasi testo visibile all'utente deve passare dal sistema di traduzione
 appropriato, con le chiavi definite in `lang/it/`, l'unico set di traduzioni
 presente nell'applicazione.
 
+### Accessibilità e mobile-friendly (invariante)
+
+L'applicazione deve essere **accessibile in ogni suo punto** e **perfettamente mobile-friendly**. Vale per tutte le aree (pubblica, collezione, autenticazione, backoffice `Admin`) e per ogni elemento di interfaccia: pagine, modali, menu, tabelle, filtri, form, sidebar.
+
+- **Accessibilità**: HTML semantico (landmark, titoli gerarchici, liste, pulsanti e link usati per il loro scopo); ogni campo ha una `label` associata e gli errori di validazione sono collegati al campo e annunciati; pulsanti e link con sola icona hanno un nome accessibile (testo tradotto da `lang/it/`); le immagini informative (es. copertine) hanno `alt` significativo, quelle decorative `alt=""`; tutto è utilizzabile da tastiera con focus sempre visibile, ordine logico e gestione del focus in modali e menu (apertura, chiusura con `Esc`, ritorno del focus); contrasto sufficiente; nessuna informazione veicolata solo dal colore; flash e messaggi di stato annunciati agli screen reader; rispetto di `prefers-reduced-motion`.
+- **Mobile-friendly**: approccio mobile-first, con layout pienamente usabili anche su viewport stretti (circa 320px) senza scroll orizzontale della pagina; target touch adeguati (almeno circa 44×44px); tabelle, sidebar, filtri e modali devono adattarsi ai piccoli schermi (es. layout a schede o scroll confinato nel contenitore, navigazione apribile/richiudibile); testo leggibile senza zoom e zoom non bloccato.
+- Nessuna funzione può essere raggiungibile solo da desktop o solo con il mouse, backoffice incluso. Non sono ammesse eccezioni "da sistemare dopo": un componente non accessibile o non responsive è incompleto.
+- Riusa i componenti esistenti già conformi invece di duplicarli; se un componente condiviso non rispetta questi requisiti, correggilo alla radice.
+
+### Struttura dei componenti e hook
+
+- Le pagine non devono essere monolitiche: una pagina compone sotto-componenti (es. form, campi, tabella, intestazioni) collocati accanto alla pagina o, se condivisi, in `resources/js/components`. Lo stesso componente va riusato tra creazione e modifica e tra risorse simili, non duplicato.
+- La logica (stato, validazione lato client, chiamate Inertia, trasformazioni dei dati) va separata dalla grafica in hook dedicati (`resources/js/hooks` se condivisi, accanto alla pagina se specifici). I componenti restano il più possibile di sola presentazione.
+- Prima di creare un componente o un hook cerca quelli esistenti da riusare.
+
+### Elenchi con filtri
+
+- Gli elenchi potenzialmente lunghi sono paginati e filtrati **lato server**; i filtri stanno nella query string (richieste GET), non nello stato locale, così gli URL sono condivisibili e il tasto indietro funziona.
+- Il backend valida i filtri in un Request dedicato, li applica nella Query applicativa (o nella query Eloquent del controller se semplice) e usa `paginate()->withQueryString()` per conservarli nella paginazione. Valori non validi non devono produrre errori 500.
+- Il frontend isola la sincronizzazione filtri/query string (inclusi debounce degli input testuali e azzeramento) in un hook, con componenti separati per barra dei filtri e singoli filtri.
+- Le colonne usate per filtrare e ordinare vanno indicizzate nella migration.
+
+### Sezioni del backoffice
+
+- Ogni nuova sezione del backoffice ha una voce (o un gruppo di sotto voci) nella sidebar (`resources/js/Pages/Admin/components/Layout/Sidebar.tsx`).
+- Le route della sezione vanno in `routes/web_admin.php`, nel gruppo `admin`, con nome route logico. L'accesso a una sezione riservata a un role si dichiara con un Gate/permesso dedicato (middleware `can:`), non con controlli sul nome del role nei controller.
+- Le azioni non previste per un role (es. eliminazione) non hanno route né UI: non vanno solo nascoste.
+
 ## Database e configurazione
 
 Le modifiche allo schema richiedono una migration. Non modificare direttamente

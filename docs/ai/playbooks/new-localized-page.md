@@ -14,11 +14,14 @@ logico della route e i componenti Inertia necessari.
 3. Crea o aggiorna controller e classi nell'area corretta, seguendo la
    struttura dei livelli già usata.
 4. Crea la pagina frontend e i tipi necessari, riusando componenti esistenti.
+   La pagina deve essere accessibile e perfettamente mobile-friendly (vedi
+   `docs/ai/architecture.md`, sezione "Accessibilità e mobile-friendly").
 5. Aggiungi le chiavi di traduzione in `lang/it` per ogni testo visibile.
 6. Aggiungi test per autorizzazione, risposta e comportamento non banale.
 
 ## Verifica
 
 Controlla la route registrata, il nome logico (`route('nome')`), la build
-frontend e i test backend pertinenti. Aggiorna `docs/dev/development.md` se il
+frontend e i test backend pertinenti. Verifica la pagina su viewport stretto e
+solo da tastiera. Aggiorna `docs/dev/development.md` se il
 flusso introduce una nuova convenzione.

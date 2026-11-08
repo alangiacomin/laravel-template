@@ -32,6 +32,7 @@ Quando si propone un piano:
 - Applica la modifica più piccola e coerente che risolve il requisito, riusando helper, pattern e naming esistenti.
 - Mantieni i tipi PHP rigorosi e aggiungi validazione nei punti di ingresso (Request).
 - Non nascondere errori con catch generici, fallback silenziosi o ritorni che simulano il successo.
+- Ogni modifica all'interfaccia deve rispettare l'invariante di accessibilità e mobile-friendly descritto in [`architecture.md`](architecture.md#accessibilità-e-mobile-friendly-invariante).
 - Per modifiche cross-stack verifica tutte le superfici: route, controller, servizi, componenti React/Inertia, tipi TypeScript (`php artisan typescript:transform`), traduzioni `lang/` e test.
 
 ---
@@ -42,6 +43,7 @@ Scegli ed esegui i controlli pertinenti in base ai file modificati:
 
 - **PHP/backend**: `composer test` (PHPUnit) e `composer lint` (Laravel Pint e PHPStan).
 - **Frontend**: `bun run lint` (Biome) e `bun run build`.
+- **UI (accessibilità e mobile)**: per ogni modifica di interfaccia controlla la resa su viewport stretto (circa 320px, senza scroll orizzontale), l'uso completo da tastiera con focus visibile, label e nomi accessibili, `alt` delle immagini e contrasto.
 - **Routing**: controlla i nomi route (app a lingua unica `it`).
 - **Migration/configurazione**: esegui i test pertinenti verificando il funzionamento delle migration su SQLite/database di test.
 
