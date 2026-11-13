@@ -40,7 +40,7 @@
     "@faker-js/faker": "^10.6.0",
     "@inertiajs/react": "^3.11.0",
     "@laravel/echo-react": "^2.6.3",
-    "@vitejs/plugin-react": "^6.2.1",
+    "@vitejs/plugin-react": "^6.3.0",
     "change-case": "^5.4.4",
     "classnames": "^2.5.1",
     "fs-extra": "^11.4.1",
