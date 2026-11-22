@@ -137,6 +137,14 @@ export default defineConfig({
     // assetsInlineLimit: 4096, // Per caricare file di dimensioni maggiori come file esterni
     minify: "esbuild", // Usa Terser per una migliore compressione del codice
   },
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+    strictPort: true,
+    hmr: {
+      host: '192.168.1.127',
+    },
+  },
   // server: {
   //   watch: {
   //     ignored: [
