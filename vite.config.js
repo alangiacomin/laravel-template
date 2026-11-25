@@ -138,11 +138,11 @@ export default defineConfig({
     minify: "esbuild", // Usa Terser per una migliore compressione del codice
   },
   server: {
-    host: '0.0.0.0',
+    host: "0.0.0.0",
     port: 5173,
     strictPort: true,
     hmr: {
-      host: '192.168.1.127',
+      host: "192.168.1.127",
     },
   },
   // server: {
