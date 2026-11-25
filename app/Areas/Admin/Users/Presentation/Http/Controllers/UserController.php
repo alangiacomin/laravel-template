@@ -2,14 +2,14 @@
 
 namespace App\Areas\Admin\Users\Presentation\Http\Controllers;
 
-use App\Areas\Admin\Users\Application\Data\AdminUserData;
 use App\Areas\Admin\Users\Application\Jobs\BlockUserJob;
 use App\Areas\Admin\Users\Application\Jobs\UnblockUserJob;
 use App\Areas\Admin\Users\Application\Jobs\UpdateUserJob;
 use App\Areas\Admin\Users\Application\Jobs\UpdateUserRolesJob;
+use App\Areas\Admin\Users\Application\Queries\GetUserQuery;
+use App\Areas\Admin\Users\Application\Queries\ListUsersQuery;
 use App\Areas\Admin\Users\Presentation\Http\Requests\UserUpdateRequest;
 use App\Infrastructure\Http\Controllers\Controller;
-use App\Models\User;
 use App\Shared\Infrastructure\Enums\GateEnum;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Attributes\Controllers\Middleware;
@@ -20,22 +20,18 @@ use Inertia\ResponseFactory;
 class UserController extends Controller
 {
     #[Middleware('can:'.GateEnum::USER_VIEW->value)]
-    public function index(): Response|ResponseFactory
+    public function index(ListUsersQuery $query): Response|ResponseFactory
     {
-        $users = User::with('roles')->orderBy('id')->paginate(15)->withQueryString();
-
         return inertia('Admin/Users/Users', [
-            'users' => $users->through(fn (User $user) => AdminUserData::fromModel($user)),
+            'users' => $query->handle()->withQueryString(),
         ]);
     }
 
     #[Middleware('can:'.GateEnum::USER_VIEW->value)]
-    public function show(int $id): Response|ResponseFactory
+    public function show(int $id, GetUserQuery $query): Response|ResponseFactory
     {
-        $user = User::with('roles')->findOrFail($id);
-
         return inertia('Admin/Users/User', [
-            'user' => AdminUserData::fromModel($user),
+            'user' => $query->handle($id),
         ]);
     }
 

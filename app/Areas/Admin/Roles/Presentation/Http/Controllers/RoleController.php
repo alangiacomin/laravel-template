@@ -2,8 +2,9 @@
 
 namespace App\Areas\Admin\Roles\Presentation\Http\Controllers;
 
-use App\Areas\Admin\Roles\Application\Data\Role;
 use App\Areas\Admin\Roles\Application\Jobs\UpdateRolePermissionsJob;
+use App\Areas\Admin\Roles\Application\Queries\GetRoleQuery;
+use App\Areas\Admin\Roles\Application\Queries\ListRolesQuery;
 use App\Areas\Admin\Roles\Presentation\Http\Requests\RoleUpdateRequest;
 use App\Infrastructure\Http\Controllers\Controller;
 use App\Shared\Infrastructure\Enums\GateEnum;
@@ -12,23 +13,22 @@ use Illuminate\Routing\Attributes\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 use Inertia\ResponseFactory;
-use Spatie\Permission\Models\Role as SpatieRole;
 
 class RoleController extends Controller
 {
     #[Middleware('can:'.GateEnum::ROLE_VIEW->value)]
-    public function index(): Response|ResponseFactory
+    public function index(ListRolesQuery $query): Response|ResponseFactory
     {
         return inertia('Admin/Roles/Roles', [
-            'roles' => SpatieRole::with('permissions')->get()->map(fn (SpatieRole $role) => Role::fromModel($role)),
+            'roles' => $query->handle(),
         ]);
     }
 
     #[Middleware('can:'.GateEnum::ROLE_VIEW->value)]
-    public function show(int $id): Response|ResponseFactory
+    public function show(int $id, GetRoleQuery $query): Response|ResponseFactory
     {
         return inertia('Admin/Roles/Role', [
-            'role' => Role::fromModel(SpatieRole::with('permissions')->findOrFail($id)),
+            'role' => $query->handle($id),
         ]);
     }
 

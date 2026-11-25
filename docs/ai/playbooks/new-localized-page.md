@@ -12,7 +12,9 @@ logico della route e i componenti Inertia necessari.
 2. Registra la route con un path stabile e un nome logico chiaro, senza prefisso
    di locale.
 3. Crea o aggiorna controller e classi nell'area corretta, seguendo la
-   struttura dei livelli già usata.
+   struttura dei livelli già usata. I dati mostrati dalla pagina si leggono
+   tramite una Query in `Application/Queries` (mai Eloquent inline nel
+   controller Inertia), in modo che siano riusabili da una futura API.
 4. Crea la pagina frontend e i tipi necessari, riusando componenti esistenti.
    La pagina deve essere accessibile e perfettamente mobile-friendly (vedi
    `docs/ai/architecture.md`, sezione "Accessibilità e mobile-friendly").

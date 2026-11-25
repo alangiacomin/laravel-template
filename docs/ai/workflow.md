@@ -30,6 +30,7 @@ Quando si propone un piano:
 ## 3. Implementazione
 
 - Applica la modifica più piccola e coerente che risolve il requisito, riusando helper, pattern e naming esistenti.
+- Inertia è solo presentazione: i controller non leggono dati direttamente (Eloquent/`fromModel` inline) ma usano Query (letture) e Job (scritture) di `Application`, riusabili anche da future API. Vedi [`architecture.md`](architecture.md#flussi-applicativi-crud).
 - Mantieni i tipi PHP rigorosi e aggiungi validazione nei punti di ingresso (Request).
 - Non nascondere errori con catch generici, fallback silenziosi o ritorni che simulano il successo.
 - Ogni modifica all'interfaccia deve rispettare l'invariante di accessibilità e mobile-friendly descritto in [`architecture.md`](architecture.md#accessibilità-e-mobile-friendly-invariante).
